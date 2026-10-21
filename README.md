@@ -57,3 +57,20 @@ The starter workspaces and evidence are fictional South African demonstrations. 
 The collapsed bidding guide links to the official [CSD](https://secure.csd.gov.za/), [SARS TCS](https://www.sars.gov.za/individuals/manage-your-tax-compliance-status/) and [the dtic B-BBEE](https://www.thedtic.gov.za/financial-and-non-financial-support/b-bbee/) pages (checked 21 October 2026). It explains tender-specific supplier evidence, bid forms, briefings, VAT and submission requirements without treating them as universally mandatory or verifying supplier eligibility. AI prompts use the same South African context, preserve source currencies and terms, and distinguish demonstration evidence from real supplier capabilities.
 
 AI features send supplied clauses, uploaded pages and evidence to Gemini through the server. Users must assess their POPIA obligations; local storage does not provide account access controls, and the app does not claim POPIA compliance or South-African-only processing. See the [Information Regulator](https://inforegulator.org.za/) for official guidance.
+
+## Privacy, legal notices and verified capabilities
+
+Review the public [Legal overview](/legal), [Privacy notice](/privacy), [Terms of use](/terms), [Data sources](/data-sources), and [AI & limitations](/ai-disclosure) pages, linked from every screen. Read [LEGAL_LAUNCH_CHECKLIST.md](LEGAL_LAUNCH_CHECKLIST.md) before public or commercial launch.
+
+- Bidcraft is independent, **not** affiliated with National Treasury or procuring entities.
+- Source records and metadata can be incomplete or stale. Tender availability, closing dates, briefings, amendments and eligibility must be independently checked in original procurement documents. Importing a notice does not submit a bid.
+- Most bid state is browser-local and may disappear when site data is cleared. This is not an account-based sync or remote backup.
+- Explicit AI actions send selected tender clauses, evidence, text and uploaded scans from the browser through the server to Google Gemini. The Google API key stays server-side. **Gemini unpaid-tier submissions may be used by Google for improving services and reviewed by humans; paid-tier terms differ.** The actual deployed billing plan and any cross-border processing agreement must be verified before inviting sensitive uploads. No POPIA or confidentiality guarantee is made.
+- AI grades, compliance flags, suggested text and retrieval ranks are review aids, not verified eligibility, credentials, sign-off, legal advice, or certainty of a tender award.
+- There are no guaranteed automated background alerts, no user accounts, no in-app tender submissions and no payment/subscription checkout in this release.
+
+### Operator identity is required before public launch
+
+Complete the server-side environment variables `LEGAL_OPERATOR_NAME`, `LEGAL_CONTACT_EMAIL`, `LEGAL_CONTACT_PHONE`, `LEGAL_SERVICE_ADDRESS` and, for registered entities, `LEGAL_REGISTRATION_NUMBER` from **verified** records. The public pages clearly flag missing information. Do not invent an entity, registration number or contact address. Redeploy after setting variables; the pages may be prerendered at build time. Get independent South African legal review of the published details and obligations.
+
+The notices describe the currently reviewed code, not a certificate of POPIA, PAIA, ECTA or CPA compliance. Deployment configurations, third-party logs and Gemini data settings require separate operational verification.
