@@ -1,0 +1,10 @@
+# Quora Bid Architect — Vertical AI Tender & RFP Studio
+
+> Quora Bid Architect is a Vertical AI SaaS platform built with Next.js 15, TypeScript, Tailwind CSS, Three.js, and Google Gemini (`gemini-3.8-flash` & `gemini-embedding-2-preview`). It empowers small and medium enterprises (SMEs) and bid engineering teams to ingest complex government and corporate tender documents (RFPs), cross-reference mandatory requirements against a vector-indexed corporate memory vault, audit statutory compliance, track full proposal version history, and auto-draft winning proposals.
+
+## Key Modules
+
+1. **Workspace Overview & Bid Pipeline**: Opportunity Sales & Bid Process tracker (Qualify -> Develop -> Propose -> Close), Bid Compliance Score gauge, and Interactive 3D Vector Core.
+2. **Document Comparison Tool**: 50/50 Side-by-Side and Unified Overlay diff studio comparing original RFP clauses against AI-generated proposal responses.
+3. **Version Control System**: Immutable revision snapshots with diff inspection and one-click version restoration.
+4. **AI Compliance & Vector Vault**: Automated discrepancy detection, Vision OCR scanned tender ingestion, and vector similarity search.

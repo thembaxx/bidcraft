@@ -1,0 +1,6 @@
+{
+  "name": "Quora Bid Architect",
+  "description": "Vertical AI Tender & RFP Architect with vector-indexed corporate memory, compliance cross-referencing, and automated proposal drafting.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

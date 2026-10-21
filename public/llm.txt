@@ -1,0 +1,20 @@
+# Quora Bid Architect — Vertical AI Tender & RFP Studio
+
+> Quora Bid Architect is a Vertical AI SaaS platform built with Next.js 15, TypeScript, Tailwind CSS, Three.js, and Google Gemini (`gemini-3.8-flash` & `gemini-embedding-2-preview`). It empowers small and medium enterprises (SMEs) and bid engineering teams to ingest complex government and corporate tender documents (RFPs), cross-reference mandatory requirements against a vector-indexed corporate memory vault, audit statutory compliance, track full proposal version history, and auto-draft winning proposals.
+
+## Core Capabilities
+
+- **Interactive Tender vs. Proposal Comparison Studio**: Side-by-side (50/50) and Unified Overlay diff inspection between original RFP mandatory clauses and AI-drafted proposal commitments, featuring live token-level SLA and metric highlighting.
+- **Proposal Version Control & Immutable Audit Trail**: Snapshot history capturing AI auto-drafts, Vision OCR clause syncs, and manual legal edits with side-by-side version comparison and one-click restoration.
+- **AI Compliance Checking & Auto-Remediation**: Automated verification of statutory thresholds (e.g., Public Liability minimums, Performance Bonds, PPN 06/21 Net Zero Carbon Reduction Plans, ISO/IEC 27001:2022 sovereignty) against corporate vault evidence.
+- **Vision OCR Scanned Addendum Ingestion**: Extracts structured mandatory clauses from scanned tender pages or raw text addenda and synthesizes compliant responses.
+- **Vector Embeddings Knowledge Base**: Semantic cosine similarity retrieval across past winning bids, audited financial statements, and statutory insurance certificates.
+- **3D Spatial Vector Architecture (Three.js)**: Interactive 3D Geodesic Vector Vault & Compliance Core visualizer with PBR metallic/glass materials, studio environment lighting, and collapsible camera controls.
+- **Progressive Web App (PWA) & Offline Continuity**: Standalone installable manifest, service worker asset caching (`/sw.js`), seamless light/dark adaptive browser theming, and local storage persistence.
+
+## Architecture & API Endpoints
+
+- `POST /api/tender-ai`: Server-side Gemini AI proxy handling `compliance_audit`, `draft_clause`, `ocr_extract`, and `vector_search` actions.
+- `GET /manifest.webmanifest`: Web App Manifest for standalone desktop and mobile installation.
+- `GET /llms.txt` & `GET /llm.txt`: Machine-readable specification for AI agents and LLM crawlers.
+- `GET /robots.txt` & `GET /sitemap.xml`: Search engine indexing and canonical route discovery.
