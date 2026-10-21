@@ -1,8 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { ArrowRight, ArrowUpRight, BookmarkSimple, CheckCircle, FileText, X } from '@phosphor-icons/react';
+import { ArrowRight, ArrowUpRight, BookmarkSimple, CalendarBlank, CheckCircle, FileText, WarningCircle, X } from '@phosphor-icons/react';
 import { Dialog } from '@/components/ui/dialog';
+import { downloadTenderReminder } from '@/lib/discovery/calendar';
 import { formatTenderDate } from '@/lib/discovery/model';
 import { isTenderDetail } from '@/lib/discovery/storage';
 import type { SavedTender, TenderDetail, TenderNotice } from '@/lib/discovery/types';
@@ -27,6 +28,7 @@ export function NoticeDetail({ notice, saved, feedback, onSave, onImport, onClos
     return () => controller.abort();
   }, [notice.id, retry]);
   const current = detail ?? notice;
+  const missedBriefing = current.briefing === 'required' && Boolean(current.briefingAt && Date.parse(current.briefingAt) < Date.now());
   const briefing = { required: 'Compulsory briefing', optional: 'Optional briefing', none: 'No briefing listed', unknown: 'Not published' }[current.briefing];
   return <Dialog labelledBy="discovery-detail-title" onClose={onClose} className="discovery-detail-dialog">
     <div className="discovery-detail-top"><span className="discovery-source"><span aria-hidden="true" /> National Treasury eTender</span><button type="button" className="discovery-icon-button" aria-label="Close tender details" onClick={onClose}><X size={20} /></button></div>
@@ -35,11 +37,27 @@ export function NoticeDetail({ notice, saved, feedback, onSave, onImport, onClos
     <p className="discovery-detail-buyer">{current.buyer || 'Buyer not published'}</p>
     <div className="discovery-detail-actions"><button type="button" className="discovery-primary" onClick={() => onImport(current)}>Create bid workspace <ArrowRight size={18} aria-hidden="true" /></button><button type="button" className="discovery-secondary" aria-pressed={Boolean(saved)} onClick={() => onSave(current, detail)}><BookmarkSimple size={17} weight={saved ? 'fill' : 'regular'} aria-hidden="true" />{saved ? 'Saved tender' : 'Save tender'}</button></div>
     <p className="discovery-small">Your proposal starts blank, with the official reference attached.</p>
+    <div className="discovery-eligibility-note" role="note"><WarningCircle size={18} aria-hidden="true"/><p><strong>Check before you bid.</strong> A matching tender is not proof of eligibility. Review every mandatory condition and supporting document{missedBriefing ? ' — the listed compulsory briefing date has passed.' : '.'}</p></div>
+    {current.closesAt && Date.parse(current.closesAt) > Date.now() && <button type="button" className="discovery-calendar-action" onClick={() => downloadTenderReminder(current)}><CalendarBlank size={17} aria-hidden="true"/> Download a calendar reminder <ArrowUpRight size={14} aria-hidden="true"/></button>}
     {feedback && <p role="status" className="discovery-alert">{feedback}</p>}
     {status === 'loading' && <p role="status" className="discovery-inline-status">Checking the official notice and documents…</p>}
     {status === 'error' && <div className="discovery-alert" role="status"><p>{detail ? 'Showing your saved source details. The latest notice could not be checked.' : 'The latest source details could not be loaded. Your saved notice is still available.'}</p><button type="button" onClick={() => { setStatus('loading'); setRetry(retry + 1); }}>Try again</button></div>}
     {detail?.deadlineConflict && <p className="discovery-alert" role="status">The official feeds show different closing times. The time below follows the eTender portal; confirm it in the original tender documents.</p>}
-    <dl className="discovery-detail-facts"><div><dt>Closing date · SAST</dt><dd>{formatTenderDate(current.closesAt, true)}</dd></div><div><dt>Province</dt><dd>{current.province || 'Not published'}</dd></div><div><dt>Buyer / department</dt><dd>{current.buyer || 'Not published'}</dd></div><div><dt>Category</dt><dd>{current.category || 'Not published'}</dd></div><div><dt>Procurement type</dt><dd>{current.procurementType || 'Not published'}</dd></div><div><dt>Source status</dt><dd>{current.sourceStatus || 'Not published'}</dd></div><div><dt>Published</dt><dd>{formatTenderDate(current.publishedAt)}</dd></div><div><dt>Estimated value · ZAR</dt><dd>Not published</dd></div></dl>
+    <dl className="discovery-detail-facts discovery-key-facts">
+      <div><dt>Closes · SAST</dt><dd>{formatTenderDate(current.closesAt, true)}</dd></div>
+      <div><dt>Province</dt><dd>{current.province || 'Not published'}</dd></div>
+      <div><dt>Briefing</dt><dd>{briefing}{current.briefingAt ? ' · ' + formatTenderDate(current.briefingAt, true) : ''}</dd></div>
+    </dl>
+    <details className="discovery-secondary-details"><summary>More tender information <span aria-hidden="true">+</span></summary>
+      <dl className="discovery-detail-facts">
+        <div><dt>Buyer / department</dt><dd>{current.buyer || 'Not published'}</dd></div>
+        <div><dt>Category</dt><dd>{current.category || 'Not published'}</dd></div>
+        <div><dt>Procurement type</dt><dd>{current.procurementType || 'Not published'}</dd></div>
+        <div><dt>Source status</dt><dd>{current.sourceStatus || 'Not published'}</dd></div>
+        <div><dt>Published</dt><dd>{formatTenderDate(current.publishedAt)}</dd></div>
+        <div><dt>Estimated value · ZAR</dt><dd>Not published</dd></div>
+      </dl>
+    </details>
     {detail && detail.description !== current.title && <section className="discovery-detail-section"><h3>Notice description</h3><p>{detail.description}</p></section>}
     <section className="discovery-detail-section"><h3>Briefing & delivery</h3><p>{briefing}{current.briefingAt ? ` · ${formatTenderDate(current.briefingAt, true)} SAST` : ''}</p>{detail?.briefingVenue && <p>{detail.briefingVenue}</p>}{detail?.delivery && <p>{detail.delivery}</p>}</section>
     {detail?.conditions && <section className="discovery-detail-section"><h3>Conditions from the source</h3><p className="discovery-preserve-copy">{detail.conditions}</p></section>}
