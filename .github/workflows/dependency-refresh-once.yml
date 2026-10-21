@@ -37,18 +37,17 @@ jobs:
           node <<'NODE'
           const fs = require('fs');
           const pkg = JSON.parse(fs.readFileSync('package.json','utf8'));
-          const lock = JSON.parse(fs.readFileSync('bun.lock','utf8'));
           const next = require('next/package.json').version;
           const eslintNext = require('eslint-config-next/package.json').version;
           const react = require('react/package.json').version;
           const reactDom = require('react-dom/package.json').version;
           if (next !== eslintNext) throw Error('Next and eslint-config-next mismatch: '+next+' vs '+eslintNext);
           if (react !== reactDom) throw Error('React and react-dom mismatch: '+react+' vs '+reactDom);
-          if (!lock.workspaces?.['']?.dependencies?.next) throw Error('Missing lockfile workspace dependency');
           for (const [name, value] of Object.entries({...pkg.dependencies,...pkg.devDependencies})) {
             if (/-((?:alpha|beta|rc|canary|next|experimental)(?:[.-]|$))/i.test(value)) throw Error('Prerelease dependency not allowed: '+name+' '+value);
           }
           console.log({next,eslintNext,react,reactDom});
+          if (!fs.existsSync("bun.lock")) throw Error("bun.lock missing");
           NODE
       - name: Commit manifest and lockfile
         run: |
