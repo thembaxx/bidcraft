@@ -536,7 +536,7 @@ function BidWorkspace() {
                   aria-pressed={isSelected}
                   onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); setSelectedTenderId(tender.id); } }}
                   onClick={() => setSelectedTenderId(tender.id)}
-                  className={`rounded-3xl p-4 transition-all cursor-pointer border ${
+                  className={`motion-surface rounded-3xl p-4 transition-colors cursor-pointer border ${
                     isSelected
                       ? 'bg-[#DDFB82] text-[#0D0F0E] border-transparent shadow-sm'
                       : 'bg-[#F6F7F6] dark:bg-[#1A1E1D] text-[#0D0F0E] dark:text-white border-neutral-200/60 dark:border-neutral-800 hover:border-[#168B7A]'
