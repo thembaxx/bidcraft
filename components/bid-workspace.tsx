@@ -525,18 +525,26 @@ function BidWorkspace() {
           {/* Tender Cards Queue */}
           <div className="space-y-3">
             {filteredTenders.length === 0 && <p role="status" className="py-8 text-center text-xs text-neutral-500">No tenders match your search.</p>}
+            <AnimatePresence initial={false} mode="popLayout">
             {filteredTenders.map((tender) => {
               const isSelected = tender.id === activeTender.id;
               return (
-                <div
+                <motion.div
                   key={tender.id}
+                  layout="position"
+                  initial={reducedMotion ? false : { opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={reducedMotion ? { opacity: 0 } : { opacity: 0, y: -6 }}
+                  whileHover={reducedMotion ? undefined : { y: -2 }}
+                  whileTap={reducedMotion ? undefined : { scale: 0.995 }}
+                  transition={{ type: 'spring', stiffness: 290, damping: 29 }}
                   role="button"
                   tabIndex={0}
                   aria-label={`Open ${tender.title}`}
                   aria-pressed={isSelected}
                   onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); setSelectedTenderId(tender.id); } }}
                   onClick={() => setSelectedTenderId(tender.id)}
-                  className={`motion-surface rounded-3xl p-4 transition-colors cursor-pointer border ${
+                  className={`rounded-3xl p-4 transition-colors cursor-pointer border ${
                     isSelected
                       ? 'bg-[#DDFB82] text-[#0D0F0E] border-transparent shadow-sm'
                       : 'bg-[#F6F7F6] dark:bg-[#1A1E1D] text-[#0D0F0E] dark:text-white border-neutral-200/60 dark:border-neutral-800 hover:border-[#168B7A]'
@@ -618,9 +626,10 @@ function BidWorkspace() {
                       {tender.leadScore}
                     </span>
                   </div>
-                </div>
+                </motion.div>
               );
             })}
+            </AnimatePresence>
           </div>
         </section>
 
