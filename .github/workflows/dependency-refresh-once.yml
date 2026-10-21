@@ -1,0 +1,60 @@
+name: One-time dependency refresh
+
+# This job runs only when this workflow is first added to the upgrade branch.
+# The generated package/lock commit does not re-trigger it.
+on:
+  push:
+    branches: [chore/deps-latest-compatible-20261021]
+    paths:
+      - .github/workflows/dependency-refresh-once.yml
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: chore/deps-latest-compatible-20261021
+          persist-credentials: true
+      - uses: oven-sh/setup-bun@v2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Resolve latest stable direct and transitive dependencies
+        run: |
+          bun update --latest --ignore-scripts
+          # Only Phosphor icons are used; drop a leftover unused icon package.
+          bun remove lucide-react --ignore-scripts
+          # Keep Node typings aligned with the tested Node 22 LTS runtime.
+          bun add --dev '@types/node@22' --ignore-scripts
+          bun install --frozen-lockfile --ignore-scripts
+      - name: Check direct dependency alignment
+        run: |
+          node <<'NODE'
+          const fs = require('fs');
+          const pkg = JSON.parse(fs.readFileSync('package.json','utf8'));
+          const lock = JSON.parse(fs.readFileSync('bun.lock','utf8'));
+          const next = require('next/package.json').version;
+          const eslintNext = require('eslint-config-next/package.json').version;
+          const react = require('react/package.json').version;
+          const reactDom = require('react-dom/package.json').version;
+          if (next !== eslintNext) throw Error('Next and eslint-config-next mismatch: '+next+' vs '+eslintNext);
+          if (react !== reactDom) throw Error('React and react-dom mismatch: '+react+' vs '+reactDom);
+          if (!lock.workspaces?.['']?.dependencies?.next) throw Error('Missing lockfile workspace dependency');
+          for (const [name, value] of Object.entries({...pkg.dependencies,...pkg.devDependencies})) {
+            if (/-((?:alpha|beta|rc|canary|next|experimental)(?:[.-]|$))/i.test(value)) throw Error('Prerelease dependency not allowed: '+name+' '+value);
+          }
+          console.log({next,eslintNext,react,reactDom});
+          NODE
+      - name: Commit manifest and lockfile
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package.json bun.lock
+          git diff --cached --check
+          git commit -m "chore(deps): refresh stable versions and Bun lockfile"
+          git push origin HEAD:chore/deps-latest-compatible-20261021
