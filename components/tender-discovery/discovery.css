@@ -223,3 +223,27 @@
   .discovery-notice-meta > span:last-child:nth-child(3) { display: none; }
   .brand-dialog.discovery-detail-dialog { position: fixed; inset: 0; width: 100%; max-width: none; height: 100dvh; max-height: 100dvh; margin: 0; border: 0; border-radius: 0; padding: 20px 18px calc(32px + env(safe-area-inset-bottom)); }
 }
+
+/* Bidcraft motion: focus, choice and state feedback without visual overload. */
+.discovery-search-bar {
+  transition: border-color .28s cubic-bezier(.32,.72,0,1), box-shadow .28s cubic-bezier(.32,.72,0,1);
+}
+.discovery-search-bar:focus-within {
+  border-color: var(--d-teal);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--d-teal) 12%, transparent);
+}
+.discovery-notice h3 svg {
+  transition: transform .32s cubic-bezier(.32,.72,0,1), opacity .32s;
+}
+.discovery-page .discovery-bookmark[aria-pressed="true"] { color: var(--d-teal); }
+.discovery-chips button, .discovery-icon-button {
+  transition: background-color .24s cubic-bezier(.32,.72,0,1), color .24s cubic-bezier(.32,.72,0,1), transform .24s cubic-bezier(.32,.72,0,1);
+}
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .discovery-notice h3 button:hover svg { transform: translate(2px,-2px); opacity: 1; }
+  .discovery-chips button:hover, .discovery-icon-button:hover { transform: translateY(-1px); }
+  .discovery-primary:hover, .discovery-secondary:hover { transform: translateY(-2px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .discovery-search-bar, .discovery-notice h3 svg, .discovery-chips button, .discovery-icon-button { transition: none; }
+}
