@@ -6,6 +6,7 @@ import { Alert } from './ui/alert';
 import { Dialog } from './ui/dialog';
 import { BrandLogoMark } from './brand-logo';
 import dynamic from 'next/dynamic';
+import Link from 'next/link';
 import { recordClauseReview } from '@/lib/bid-anatomy';
 import type { ClauseReview } from '@/lib/types';
 const BidAnatomyPanel = dynamic(() => import('./bid-anatomy/panel'), { loading: () => <div role="status" className="rounded-3xl bg-white p-8 text-sm text-neutral-500 dark:bg-[#161918]">Opening the inspection bench…</div> });
@@ -124,6 +125,13 @@ function BidWorkspace() {
   const aiBusy = useRef(false);
   const tendersRef = useRef(tenders);
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    if (window.location.hash !== '#bid-studio') return;
+    const studio = document.getElementById('bid-studio');
+    studio?.scrollIntoView({ block: 'start', behavior: 'instant' });
+    studio?.focus({ preventScroll: true });
+  }, []);
 
   useEffect(() => { tendersRef.current = tenders; }, [tenders]);
   useEffect(() => () => { if (toastTimer.current) clearTimeout(toastTimer.current); }, []);
@@ -298,7 +306,7 @@ function BidWorkspace() {
     notify(`Moved tender to ${stage.toUpperCase()}.`);
   };
   const handleExportProposal = () => {
-    const md = `# ${activeTender.title}\n**Issuing Authority:** ${activeTender.Authority}\n**RFP Reference:** ${activeTender.rfpNumber}\n**Contract Budget:** ${activeTender.budget}\n**Compliance Score:** ${activeTender.leadScore}% (${activeTender.grade})\n**Active Version:** ${activeTender.versions[0]?.versionNumber || 'No snapshots'}\n\n## Executive Summary\n${activeTender.executiveSummary}\n\n## Proposal Responses\n${activeTender.clauses.map((clause) => `### [${clause.code}] ${clause.proposalSectionTitle}\n**Requirement:** ${clause.originalText}\n\n**Response (${clause.complianceStatus}; ${clause.confidenceScore}% confidence):**\n${clause.proposalResponseText}\n\n**Human review:** ${clause.review ? `${clause.review.outcome} by ${clause.review.reviewer} on ${clause.review.reviewedAt} — ${clause.review.note}` : 'Not recorded'}\n\n*AI note:* ${clause.aiNote}`).join('\n\n---\n\n')}`;
+    const md = `# ${activeTender.title}\n**Issuing Authority:** ${activeTender.Authority}\n**RFP Reference:** ${activeTender.rfpNumber}\n${activeTender.source ? `**Official source:** ${activeTender.source.provider} — ${activeTender.source.url}\n**Source notice ID:** ${activeTender.source.noticeId}\n` : ''}**Contract Budget:** ${activeTender.budget}\n**Compliance Score:** ${activeTender.leadScore}% (${activeTender.grade})\n**Active Version:** ${activeTender.versions[0]?.versionNumber || 'No snapshots'}\n\n## Executive Summary\n${activeTender.executiveSummary}\n\n## Proposal Responses\n${activeTender.clauses.map((clause) => `### [${clause.code}] ${clause.proposalSectionTitle}\n**Requirement:** ${clause.originalText}\n\n**Response (${clause.complianceStatus}; ${clause.confidenceScore}% confidence):**\n${clause.proposalResponseText}\n\n**Human review:** ${clause.review ? `${clause.review.outcome} by ${clause.review.reviewer} on ${clause.review.reviewedAt} — ${clause.review.note}` : 'Not recorded'}\n\n*AI note:* ${clause.aiNote}`).join('\n\n---\n\n')}`;
     const url = URL.createObjectURL(new Blob([md], { type: 'text/markdown;charset=utf-8' }));
     const link = document.createElement('a');
     link.href = url;
@@ -329,7 +337,7 @@ function BidWorkspace() {
   };
 
   const stages: { key: PipelineStage; label: string }[] = [
-    { key: 'qualify', label: 'Qualify (3 D)' },
+    { key: 'qualify', label: `Qualify (${activeTender.activeDays} D)` },
     { key: 'develop', label: 'Develop' },
     { key: 'propose', label: 'Propose' },
     { key: 'close', label: 'Close' },
@@ -478,6 +486,8 @@ function BidWorkspace() {
             </div>
           </div>
 
+          <Link href="/tenders" className="flex min-h-11 items-center justify-between gap-3 rounded-xl border border-[#168B7A]/25 bg-[#168B7A]/5 px-3 py-2.5 text-xs font-semibold text-[#12695C] dark:text-[#9BDBBE]">Find South African tenders <span aria-hidden="true">↗</span></Link>
+
           {/* Search Filter Input */}
           <div className="relative">
             <MagnifyingGlass
@@ -600,7 +610,7 @@ function BidWorkspace() {
         </section>
 
         {/* Pane 3 (Right Main Studio - 7 Cols on Desktop): Active Tender Architect Workspace */}
-        <section className="min-w-0 lg:col-span-7 space-y-4">
+        <section id="bid-studio" tabIndex={-1} aria-label="Bid studio" className="min-w-0 scroll-mt-24 lg:col-span-7 space-y-4">
           {/* Top Lime-Tinted Action Ribbon inspired directly by IMG_5846 & IMG_5849 */}
           <div className="rounded-3xl bg-linear-to-r from-[#DDFB82]/70 via-[#DDFB82]/35 to-white dark:from-[#DDFB82]/20 dark:via-[#168B7A]/15 dark:to-[#161918] border border-neutral-200/80 dark:border-neutral-800 p-3 flex flex-wrap items-center justify-between gap-2">
             <div className="flex flex-wrap items-center gap-1.5">
@@ -671,6 +681,7 @@ function BidWorkspace() {
                 <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-[#0D0F0E] dark:text-white text-balance">
                   {activeTender.title}
                 </h2>
+                {activeTender.source && <><p className="pt-2 text-xs leading-6 text-neutral-500 dark:text-neutral-400">From {activeTender.source.provider}{activeTender.source.province ? ` · ${activeTender.source.province}` : ''}. <a className="font-semibold text-[#12695C] underline underline-offset-4 dark:text-[#9BDBBE]" href={activeTender.source.url} target="_blank" rel="noopener noreferrer">Official listing ↗</a> <Link className="ml-2 font-semibold text-[#12695C] dark:text-[#9BDBBE]" href={`/tenders?q=${encodeURIComponent(activeTender.rfpNumber)}`}>Check latest notice ↗</Link></p>{!activeTender.clauses.length && <p className="pt-2 text-xs leading-6 text-neutral-600 dark:text-neutral-300">Ready for the requirements. Review the official documents, then <button type="button" className="font-semibold text-[#12695C] underline underline-offset-4 dark:text-[#9BDBBE]" onClick={() => setActiveTab('compliance')}>import tender clauses →</button></p>}</>}
               </div>
 
               <div className="flex flex-wrap items-center gap-4 text-xs">

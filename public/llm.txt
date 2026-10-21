@@ -27,3 +27,10 @@
 - Local text similarity search is available without an AI key. Similarity scores are retrieval aids, not proof of compliance.
 - Generated drafts and compliance reviews require human validation against original tender documents and current corporate evidence.
 - Public product information does not disclose any user’s locally saved tender data.
+
+## South African tender discovery
+- [Find South African tenders](/tenders): Search National Treasury's advertised tender notices by keyword, province, buyer, category, procurement type, closing window, publication window and briefing requirement. Filters have shareable URLs.
+- Source records are public Treasury data, separate from the workspace's demonstration tenders. Coverage is incomplete and source endpoints can change. Freshness, unavailable values and timestamp conflicts are shown; original documents govern submission requirements.
+- Users can save notices in this browser and create a blank bid workspace with source attribution, ZAR and SAST metadata. Re-import opens an existing bid rather than overwriting it.
+- Saved notices and recent successful search pages are browser-local copies without cross-device sync or downloaded attachments. Failed source refreshes must not be described as fresh, successful searches.
+- Tender discovery does not require a paid tender API or Gemini configuration. AI drafting, audits and OCR still require the server-side Gemini key.

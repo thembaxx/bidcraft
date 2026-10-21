@@ -28,3 +28,7 @@ Anatomy drawing kit — MIT © 2026 Ryan
 https://github.com/wheresryan22/anatomy
 
 The unmodified drawing kit files in `vendor/anatomy` are pinned to commit `1482e8469b0a9e0d8cc18ea2740a01423d29ae80`. The complete MIT notice is included in `vendor/anatomy/LICENSE`. Bidcraft's inspection bench is original geometry authored with this kit, using generated SVG paths and scoped brand styles.
+
+## South African procurement data
+
+Tender discovery republishes data supplied through National Treasury's eTender portal and OCDS API. The [publication policy](https://data.etenders.gov.za/Home/LearnMore) permits commercial and non-commercial reuse and republication with a link to the original source. The [OCDS API schema](https://ocds-api.etenders.gov.za/swagger/v1/swagger.json) identifies the Open Data Commons Public Domain Dedication and Licence (PDDL). Source links and provider attribution are retained. This data is not a complete or guaranteed-current record of South African procurement.

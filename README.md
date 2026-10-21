@@ -33,3 +33,17 @@ The Bid Anatomy tab adds an Anatomy-powered SVG inspection bench with six visibl
 Review decisions create immutable `Human Review` snapshots with local timestamps and an explicit `Local reviewer` attribution. Editing the response, replacing it with an AI draft/fix, or changing evidence links clears that clause's prior review. Restoring a snapshot restores its review state. Reviews are local browser records, without authenticated reviewer identity or a legal eligibility guarantee.
 
 Geometry is precomputed with the vendored Anatomy kit, then lazy-loaded when the tab opens. Run `npm run anatomy:build` to regenerate it and `npm run anatomy:audit` for geometry verification. Upstream source and license details are in `vendor/anatomy/README.md` and `THIRD_PARTY_NOTICES.md`.
+
+## South African tender discovery
+
+Open `/tenders` to search National Treasury's advertised notices. Province, category, buyer, procurement type, closing date, publication date and briefing filters run across the retrieved collection before pagination. Filters are reflected in the URL. No paid data service or Gemini key is required.
+
+The server adapter uses the official portal's public listing JSON, with 15-minute Next.js Data Cache entries, bounded pagination and concurrency, and schema validation. These portal endpoints are undocumented and can change. Up to 8,000 source records are retrieved; an incomplete/changing collection is explicitly identified. Historical awards and closed notices are outside this advertised collection.
+
+The matching documented OCDS feed is checked when opening details, where available. OCIDs are taken only from matched source records. Portal wall-clock dates use South African time; disagreement with OCDS timestamps is shown and must be checked against the source documents. Blank status, missing dates and value placeholders are not treated as verified facts.
+
+Saved opportunities, optional source-detail snapshots and the last three successful result pages are stored in this browser. A failed source refresh retains a matching cached result with a clear label. These are local copies, without cross-device sync or downloaded attachment contents. Clearing site data removes them. Explicit save/import storage failures are reported.
+
+Creating a bid preserves source provenance, uses ZAR and SAST, and starts with no drafted clauses or proposal text. Re-importing a source notice opens its existing workspace without replacing proposal work.
+
+Sources and reuse: [official listings](https://www.etenders.gov.za/Home/opportunities?id=1), [OCDS OpenAPI](https://ocds-api.etenders.gov.za/swagger/v1/swagger.json), [publication policy](https://data.etenders.gov.za/Home/LearnMore). Treasury allows commercial and non-commercial reuse with source attribution, but does not guarantee complete, current or accurate coverage. Live upstream checks are separate from deterministic browser tests in `tests/tender-discovery.spec.ts`.

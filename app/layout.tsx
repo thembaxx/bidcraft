@@ -27,7 +27,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     '@context': 'https://schema.org', '@type': 'SoftwareApplication', name: site.name,
     applicationCategory: 'BusinessApplication', operatingSystem: 'Web', description: site.description,
     ...(siteUrl ? { url: siteUrl.href, image: new URL('/brand/social-card.png', siteUrl).href } : {}),
-    featureList: ['Tender workspace', 'Evidence-backed AI proposal drafts', 'Clause comparison', 'Compliance review', 'Proposal version history', 'Local browser persistence'],
+    featureList: ['South African tender discovery', 'Tender workspace', 'Evidence-backed AI proposal drafts', 'Clause comparison', 'Compliance review', 'Proposal version history', 'Local browser persistence'],
   };
   return <html lang="en" className={`${urbanist.variable} ${mono.variable}`} suppressHydrationWarning>
     <head>

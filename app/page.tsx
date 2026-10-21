@@ -1,6 +1,7 @@
 import BidWorkspace from '@/components/bid-workspace';
 import { BrandWordmark } from '@/components/brand-logo';
 import { BrandScene } from '@/components/brand-scene';
+import Link from 'next/link';
 
 export default function Home() {
   return <>
@@ -8,7 +9,8 @@ export default function Home() {
       <BrandWordmark />
       <nav aria-label="Main navigation" className="flex items-center gap-5 text-xs font-semibold">
         <a href="/about" className="hidden text-neutral-500 transition-colors hover:text-[#168B7A] sm:block">The Bidcraft approach</a>
-        <a href="#workspace" className="inline-flex min-h-10 items-center gap-3 rounded-full bg-[#101714] px-5 text-white transition-colors hover:bg-[#168B7A]">Your workspace <span aria-hidden="true">→</span></a>
+        <Link href="/tenders" className="inline-flex min-h-10 items-center gap-3 rounded-full bg-[#101714] px-5 text-white transition-colors hover:bg-[#168B7A]">Find tenders <span aria-hidden="true">→</span></Link>
+        <a href="#workspace" className="hidden min-h-10 items-center text-neutral-600 sm:inline-flex">Your workspace</a>
       </nav>
     </header>
     <section aria-labelledby="brand-heading" className="mx-auto grid max-w-[1600px] grid-cols-1 items-center gap-6 px-5 pb-8 pt-3 sm:px-8 lg:grid-cols-2 lg:gap-12 lg:pb-12 lg:pt-5">

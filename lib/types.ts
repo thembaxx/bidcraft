@@ -61,6 +61,13 @@ export interface ComplianceDiscrepancy {
 }
 
 export interface TenderProject {
+  source?: {
+    provider: string;
+    noticeId: string;
+    url: string;
+    importedAt: string;
+    province: string;
+  };
   id: string;
   title: string;
   Authority: string;
