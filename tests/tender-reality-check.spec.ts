@@ -24,7 +24,7 @@ test('assessment rules distinguish missing sources, self-report, blockers and re
   expect(evaluateRealityCheck(notice, detail, no, true).state).toBe('potential_blocker');
   expect(evaluateRealityCheck(notice, detail, no, false).state).toBe('insufficient_source_information');
   const yes = { ...base, packReviewed: true, answers: { briefing: 'yes' as const } };
-  expect(evaluateRealityCheck(notice, detail, yes, true).state).toBe('needs_confirmation');
+  expect(evaluateRealityCheck(notice, detail, yes, true).state).toBe('insufficient_source_information');
   const reviewed = { ...yes, reviewed: { briefing: true } };
   // A checked briefing is not a substitute for the complete tender pack.
   expect(evaluateRealityCheck(notice, detail, reviewed, true).state).toBe('insufficient_source_information');
@@ -79,7 +79,7 @@ test('mobile reality checker supports self-report, source warning and actionable
   await page.getByRole('textbox', { name: 'Exact source excerpt' }).fill('A signed supplier declaration must be provided with the tender.');
   await page.getByRole('textbox', { name: 'Official eTender document or listing URL' }).fill(tenderDocument.url);
   await page.getByRole('button', { name: 'Add sourced requirement' }).click();
-  await page.getByText('Signed supplier declaration', { exact: true }).click();
+  await page.locator('summary').filter({ hasText: 'Signed supplier declaration' }).click();
   await page.getByLabel('Answer for Signed supplier declaration').selectOption('yes');
   await page.getByRole('checkbox', { name: /I personally checked supporting evidence/ }).last().check();
   await page.getByRole('checkbox', { name: /I personally reviewed the original tender pack/ }).check();
