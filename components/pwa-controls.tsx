@@ -107,7 +107,7 @@ export function PWAInstallControl() {
               </button>
             </div>
             <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-300 leading-relaxed">
-              Bidcraft is offline-ready with service worker caching and local browser storage so you can review tenders and edit proposals anywhere.
+              After an online visit, some cached pages and locally saved bid content may be available offline. Offline access is not guaranteed; live tender updates and AI processing require a connection.
             </p>
             {isIOS ? (
               <div className="mt-4 p-4 rounded-2xl bg-[#F8F6EF] dark:bg-[#0D0F0E] text-xs space-y-2 text-neutral-700 dark:text-neutral-300">
