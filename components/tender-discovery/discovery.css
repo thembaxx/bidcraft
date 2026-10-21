@@ -194,3 +194,32 @@
   .discovery-sort { width: 100%; }
   .discovery-detail-facts { grid-template-columns: 1fr; }
 }
+
+/* Progressive disclosure: urgent facts first, documents and provenance still accessible. */
+.discovery-eligibility-note { display: flex; align-items: flex-start; gap: 10px; border: 1px solid var(--d-line); border-radius: 14px; background: var(--d-soft); padding: 12px 14px; font-size: 12px; line-height: 1.65; color: var(--d-muted); }
+.discovery-eligibility-note svg { flex-shrink: 0; color: var(--d-warn); margin-top: 2px; }
+.discovery-eligibility-note strong { color: var(--d-ink); }
+.discovery-calendar-action { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; margin-block: 8px; font-size: 12px; font-weight: 650; color: var(--d-teal); }
+.discovery-calendar-action:hover { text-decoration: underline; text-underline-offset: 4px; }
+.discovery-key-facts { margin-block: 12px; }
+.discovery-secondary-details { border-block: 1px solid var(--d-line); padding-block: 6px; }
+.discovery-secondary-details > summary { display: flex; align-items: center; justify-content: space-between; cursor: pointer; min-height: 44px; font-size: 12px; font-weight: 650; list-style: none; }
+.discovery-secondary-details > summary::-webkit-details-marker { display: none; }
+.discovery-secondary-details > summary span { color: var(--d-teal); }
+.discovery-secondary-details[open] summary { margin-bottom: 8px; }
+.discovery-page .discovery-notice { transition: background-color .18s ease; }
+.discovery-page .discovery-notice:hover { background: color-mix(in srgb, var(--d-soft) 35%, transparent); }
+@media (max-width: 1023px) {
+  .discovery-page { padding-bottom: calc(78px + env(safe-area-inset-bottom)); }
+}
+@media (max-width: 680px) {
+  .discovery-intro { padding-block: 8px 18px; }
+  .discovery-intro h1 { font-size: clamp(27px, 7.5vw, 34px); margin-block: 10px; }
+  .discovery-intro > p:last-child { max-width: 320px; }
+  .discovery-results-heading h2 { font-size: 19px; }
+  .discovery-notice { border-radius: 0; }
+  .discovery-notice-tags > span:first-child { max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .discovery-country { display: none; }
+  .discovery-notice-meta > span:last-child:nth-child(3) { display: none; }
+  .brand-dialog.discovery-detail-dialog { position: fixed; inset: 0; width: 100%; max-width: none; height: 100dvh; max-height: 100dvh; margin: 0; border: 0; border-radius: 0; padding: 20px 18px calc(32px + env(safe-area-inset-bottom)); }
+}
