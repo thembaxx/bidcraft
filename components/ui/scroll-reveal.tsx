@@ -1,11 +1,12 @@
 'use client';
 
-import type { ReactNode } from 'react';
-import { motion, useReducedMotion } from 'motion/react';
+import { useEffect, useRef, type ReactNode } from 'react';
+import { motion, useAnimationControls, useInView, useReducedMotion } from 'motion/react';
 
 /**
- * A one-shot, transform-only reveal for editorial sections.
- * Never use this around sticky UI or content that must remain continuously interactive.
+ * Progressive-enhancement scroll reveal for editorial sections.
+ * Content starts visible on the server, with JavaScript disabled, and before
+ * the intersection observer runs. It never hides information to animate it.
  */
 export function ScrollReveal({
   children,
@@ -18,18 +19,19 @@ export function ScrollReveal({
   delay?: number;
   distance?: number;
 }) {
+  const ref = useRef<HTMLDivElement>(null);
   const reducedMotion = useReducedMotion();
-  return (
-    <motion.div
-      className={className}
-      initial={reducedMotion ? false : { opacity: 0, y: distance }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.12, margin: '0px 0px -24px 0px' }}
-      transition={reducedMotion ? { duration: 0 } : {
-        type: 'spring', stiffness: 110, damping: 24, mass: 0.85, delay,
-      }}
-    >
-      {children}
-    </motion.div>
-  );
+  const inView = useInView(ref, { once: true, amount: 0.12, margin: '0px 0px -24px 0px' });
+  const controls = useAnimationControls();
+
+  useEffect(() => {
+    if (!inView || reducedMotion) return;
+    void controls.start({
+      opacity: [0.74, 1],
+      y: [distance, 0],
+      transition: { type: 'spring', stiffness: 110, damping: 24, mass: 0.85, delay },
+    });
+  }, [controls, delay, distance, inView, reducedMotion]);
+
+  return <motion.div ref={ref} className={className} initial={false} animate={controls}>{children}</motion.div>;
 }
