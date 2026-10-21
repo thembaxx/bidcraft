@@ -1,7 +1,7 @@
 export const site = {
   name: 'Bidcraft',
   title: 'Bidcraft — AI Tender & Proposal Workspace',
-  description: 'Make every bid count. Organize tenders, draft evidence-backed proposals, compare requirements, review compliance, and keep every version in one workspace.',
+  description: 'Make every bid count. Find South African tenders, draft evidence-backed proposals, compare requirements, review compliance, and keep every version in one workspace.',
 };
 
 export function getSiteUrl(): URL | undefined {
