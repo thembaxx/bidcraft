@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion, MotionConfig, useReducedMotion } from 'motion/react';
 import { AnimatedTabs } from './ui/animated-tabs';
+import { MobileGlobalNav } from './mobile-global-nav';
 import { Alert } from './ui/alert';
 import { Dialog } from './ui/dialog';
 import { BrandLogoMark } from './brand-logo';
@@ -22,6 +23,7 @@ import {
   MagnifyingGlass,
   ArrowsClockwise,
   CalendarBlank,
+  CaretDown,
   FloppyDisk,
   Plus,
   ShieldCheck,
@@ -355,7 +357,7 @@ function BidWorkspace() {
   ];
 
   return (
-    <MotionConfig reducedMotion="user"><div id="workspace" className="scroll-mt-4 min-h-dvh flex flex-col bg-[#F8F6EF] dark:bg-[#0D0F0E] text-[#0D0F0E] dark:text-[#F5F7F6] pb-20 lg:pb-6">
+    <MotionConfig reducedMotion="user"><div id="workspace" className="scroll-mt-4 min-h-dvh flex flex-col bg-[#F8F6EF] dark:bg-[#0D0F0E] text-[#0D0F0E] dark:text-[#F5F7F6] pb-[calc(96px+env(safe-area-inset-bottom))] lg:pb-6">
       <OfflineBanner />
 
       <header className="sticky top-0 z-30 border-y border-neutral-200/80 bg-[#F8F6EF]/95 px-4 py-3 backdrop-blur-md dark:border-neutral-800 dark:bg-[#0D0F0E]/95 lg:px-8">
@@ -475,7 +477,7 @@ function BidWorkspace() {
         </aside>
 
         {/* Pane 2 (Middle Column - 3 Cols on Desktop): "My Work" Active Tenders Queue inspired by IMG_5846 & IMG_5847 */}
-        <section className="min-w-0 lg:col-span-3 rounded-3xl bg-white/75 dark:bg-[#141716] border border-neutral-200/70 dark:border-neutral-800 p-4 space-y-4">
+        <section className="hidden min-w-0 lg:block lg:col-span-3 rounded-3xl bg-white/75 dark:bg-[#141716] border border-neutral-200/70 dark:border-neutral-800 p-4 space-y-4">
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-bold tracking-tight text-[#0D0F0E] dark:text-white">
               My Tenders
@@ -624,8 +626,27 @@ function BidWorkspace() {
 
         {/* Pane 3 (Right Main Studio - 7 Cols on Desktop): Active Tender Architect Workspace */}
         <section id="bid-studio" tabIndex={-1} aria-label="Bid studio" className="min-w-0 scroll-mt-24 lg:col-span-7 space-y-4">
+          <div className="flex items-end gap-2 rounded-2xl border border-neutral-200/75 bg-white/80 p-3 dark:border-neutral-800 dark:bg-[#161918] lg:hidden">
+            <label htmlFor="mobile-bid-switcher" className="min-w-0 flex-1 text-[11px] font-bold text-neutral-500 dark:text-neutral-400">Current bid
+              <select id="mobile-bid-switcher" value={activeTender.id} onChange={(event) => { setSelectedTenderId(event.target.value); setActiveTab('summary'); }} className="mt-1.5 block min-h-12 w-full min-w-0 rounded-xl border border-neutral-200 bg-[#F8F6EF] px-3 text-sm font-semibold text-[#101714] focus:border-[#168B7A] dark:border-neutral-700 dark:bg-[#0D0F0E] dark:text-white">
+                {tenders.map((tender) => <option key={tender.id} value={tender.id}>{tender.title}</option>)}
+              </select>
+            </label>
+            <button type="button" aria-label="Create a new bid" onClick={() => setShowNewTenderModal(true)} className="grid min-h-12 min-w-12 place-items-center rounded-xl bg-[#101714] text-white dark:bg-[#DDFB82] dark:text-[#101714]"><Plus size={20} weight="bold" aria-hidden="true"/></button>
+          </div>
+          <div className="space-y-2 lg:hidden">
+            <button type="button" disabled={isAuditing} onClick={handleRunComplianceAudit} className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-[#DDFB82] px-5 text-xs font-bold text-[#101714] transition-transform active:scale-[.99]"><ShieldCheck size={18} aria-hidden="true"/>{isAuditing ? 'Checking compliance…' : 'Check this bid'}</button>
+            <details className="rounded-2xl border border-neutral-200 bg-white/65 px-4 dark:border-neutral-800 dark:bg-[#161918]">
+              <summary className="flex min-h-11 cursor-pointer items-center justify-between text-xs font-semibold">More bid actions <CaretDown size={16} aria-hidden="true"/></summary>
+              <div className="flex flex-wrap gap-2 pb-3">
+                <button type="button" onClick={() => handleCreateCheckpoint('Manual save by ' + activeTender.ownerName)} className="min-h-11 rounded-xl border border-neutral-200 px-3 text-xs font-semibold dark:border-neutral-700">Save snapshot</button>
+                <button type="button" onClick={handleExportProposal} className="min-h-11 rounded-xl border border-neutral-200 px-3 text-xs font-semibold dark:border-neutral-700">Export proposal</button>
+                <button type="button" onClick={() => setActiveTab('comparison')} className="min-h-11 rounded-xl border border-neutral-200 px-3 text-xs font-semibold dark:border-neutral-700">Compare clauses</button>
+              </div>
+            </details>
+          </div>
           {/* Top Lime-Tinted Action Ribbon inspired directly by IMG_5846 & IMG_5849 */}
-          <div className="rounded-3xl bg-linear-to-r from-[#DDFB82]/70 via-[#DDFB82]/35 to-white dark:from-[#DDFB82]/20 dark:via-[#168B7A]/15 dark:to-[#161918] border border-neutral-200/80 dark:border-neutral-800 p-3 flex flex-wrap items-center justify-between gap-2">
+          <div className="hidden lg:flex rounded-3xl bg-linear-to-r from-[#DDFB82]/70 via-[#DDFB82]/35 to-white dark:from-[#DDFB82]/20 dark:via-[#168B7A]/15 dark:to-[#161918] border border-neutral-200/80 dark:border-neutral-800 p-3 flex flex-wrap items-center justify-between gap-2">
             <div className="flex flex-wrap items-center gap-1.5">
               <button
                 onClick={() =>
@@ -731,7 +752,7 @@ function BidWorkspace() {
                 </span>
               </div>
 
-              <div className="grid grid-cols-4 gap-2">
+              <div className="hidden grid-cols-4 gap-2 sm:grid">
                 {stages.map((st, idx) => {
                   const currentIdx = stages.findIndex(
                     (s) => s.key === activeTender.stage
@@ -767,13 +788,38 @@ function BidWorkspace() {
               </div>
             </div>
 
-            <AnimatedTabs activeTab={activeTab} onChange={setActiveTab} tabs={[
+            <div className="hidden lg:block"><AnimatedTabs activeTab={activeTab} onChange={setActiveTab} tabs={[
               { id: 'summary', label: 'Overview' },
               { id: 'anatomy', label: 'Bid Anatomy' },
               { id: 'comparison', label: 'Clause comparison', badge: activeTender.clauses.length },
               { id: 'compliance', label: 'Compliance & vault', badge: activeTender.discrepancies.filter((flag) => !flag.resolved && flag.severity !== 'verified').length },
               { id: 'versions', label: 'History', badge: activeTender.versions.length },
-            ]} />
+            ]} /></div>
+            <div className="space-y-3 lg:hidden">
+              <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-neutral-500 dark:text-neutral-400">Your bid, step by step</p>
+              <div className="grid grid-cols-3 gap-1.5 rounded-2xl bg-[#F8F6EF] p-1.5 dark:bg-[#0D0F0E]" role="group" aria-label="Bid preparation steps">
+                {([
+                  { id: 'summary', label: 'Understand' },
+                  { id: 'compliance', label: 'Prepare' },
+                  { id: 'anatomy', label: 'Review' },
+                ] as const).map((step) => {
+                  const selected = activeTab === step.id;
+                  return <button key={step.id} type="button" aria-pressed={selected} onClick={() => setActiveTab(step.id)} className={`relative min-h-12 rounded-xl px-1.5 text-xs font-bold transition-colors ${selected ? 'text-[#101714]' : 'text-neutral-600 dark:text-neutral-300'}`}>
+                    {selected && <motion.span layoutId="bid-workflow-step" className="absolute inset-0 rounded-xl bg-[#DDFB82]" transition={reducedMotion ? { duration: 0 } : { type: 'spring', stiffness: 420, damping: 34 }} aria-hidden="true" />}
+                    <span className="relative z-10">{step.label}</span>
+                  </button>;
+                })}
+              </div>
+              <details className="group rounded-xl border border-neutral-200/75 bg-white/50 px-3 dark:border-neutral-800 dark:bg-[#161918]/50">
+                <summary className="flex min-h-11 cursor-pointer items-center justify-between text-xs font-semibold text-neutral-600 dark:text-neutral-300">
+                  More bid tools <CaretDown size={16} className="transition-transform group-open:rotate-180" aria-hidden="true" />
+                </summary>
+                <div className="grid grid-cols-2 gap-2 pb-3">
+                  <button type="button" onClick={() => setActiveTab('comparison')} aria-pressed={activeTab === 'comparison'} className={`min-h-11 rounded-xl border px-2 text-xs font-semibold ${activeTab === 'comparison' ? 'border-[#168B7A] bg-[#168B7A]/10' : 'border-neutral-200 dark:border-neutral-700'}`}>Compare clauses</button>
+                  <button type="button" onClick={() => setActiveTab('versions')} aria-pressed={activeTab === 'versions'} className={`min-h-11 rounded-xl border px-2 text-xs font-semibold ${activeTab === 'versions' ? 'border-[#168B7A] bg-[#168B7A]/10' : 'border-neutral-200 dark:border-neutral-700'}`}>Version history</button>
+                </div>
+              </details>
+            </div>
           </div>
 
           {/* Tab Content Switching */}
@@ -970,66 +1016,7 @@ function BidWorkspace() {
         </section>
       </main>
 
-      {/* Mobile & Tablet Touch-First Bottom Navigation Bar (<15% viewport height, >=44px hitboxes) */}
-      <nav
-        aria-label="Mobile workspace navigation"
-        className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-[#141716]/95 backdrop-blur-md border-t border-neutral-200 dark:border-neutral-800 px-2 py-1.5 grid grid-cols-5 gap-1"
-      >
-        <button
-          onClick={() => setActiveTab('summary')}
-          className={`min-h-[48px] rounded-2xl flex flex-col items-center justify-center transition-colors cursor-pointer ${
-            activeTab === 'summary'
-              ? 'bg-[#DDFB82] text-[#0D0F0E] font-bold'
-              : 'text-neutral-500 dark:text-neutral-400'
-          }`}
-        >
-          <House size={20} weight={activeTab === 'summary' ? 'fill' : 'regular'} />
-          <span className="text-[10px] mt-0.5">Summary</span>
-        </button>
-
-        <button onClick={() => setActiveTab('anatomy')} className={`min-h-[48px] rounded-2xl flex flex-col items-center justify-center transition-colors ${activeTab === 'anatomy' ? 'bg-[#DDFB82] text-[#0D0F0E] font-bold' : 'text-neutral-500 dark:text-neutral-400'}`}>
-          <MagnifyingGlass size={20} weight={activeTab === 'anatomy' ? 'bold' : 'regular'} /><span className="text-[10px] mt-0.5">Anatomy</span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab('comparison')}
-          className={`min-h-[48px] rounded-2xl flex flex-col items-center justify-center transition-colors cursor-pointer ${
-            activeTab === 'comparison'
-              ? 'bg-[#DDFB82] text-[#0D0F0E] font-bold'
-              : 'text-neutral-500 dark:text-neutral-400'
-          }`}
-        >
-          <Columns size={20} weight={activeTab === 'comparison' ? 'fill' : 'regular'} />
-          <span className="text-[10px] mt-0.5">50/50 Diff</span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab('compliance')}
-          className={`min-h-[48px] rounded-2xl flex flex-col items-center justify-center transition-colors cursor-pointer ${
-            activeTab === 'compliance'
-              ? 'bg-[#DDFB82] text-[#0D0F0E] font-bold'
-              : 'text-neutral-500 dark:text-neutral-400'
-          }`}
-        >
-          <Database size={20} weight={activeTab === 'compliance' ? 'fill' : 'regular'} />
-          <span className="text-[10px] mt-0.5">Vault & OCR</span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab('versions')}
-          className={`min-h-[48px] rounded-2xl flex flex-col items-center justify-center transition-colors cursor-pointer ${
-            activeTab === 'versions'
-              ? 'bg-[#DDFB82] text-[#0D0F0E] font-bold'
-              : 'text-neutral-500 dark:text-neutral-400'
-          }`}
-        >
-          <ClockCounterClockwise
-            size={20}
-            weight={activeTab === 'versions' ? 'fill' : 'regular'}
-          />
-          <span className="text-[10px] mt-0.5">Versions</span>
-        </button>
-      </nav>
+      <MobileGlobalNav />
 
       {/* Modal for Ingesting a New Tender RFP */}
       {showNewTenderModal && (

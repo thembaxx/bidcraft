@@ -17,7 +17,7 @@ test('a new South African bid preserves its reference and SAST deadline in anoth
   const context = await browser.newContext({ baseURL, timezoneId: 'America/Los_Angeles', viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
   try {
     const page = await context.newPage(); await page.goto('/');
-    await page.getByRole('button', { name: 'New Bid', exact: true }).click();
+    await page.getByRole('button', { name: 'Create a new bid', exact: true }).click();
     await page.getByLabel('Tender Title', { exact: true }).fill('Municipal water telemetry');
     await page.getByLabel('Issuing authority', { exact: true }).fill('City of Tshwane');
     await page.getByLabel('Contract budget', { exact: true }).fill('850 000,50');
@@ -34,7 +34,8 @@ test('a new South African bid preserves its reference and SAST deadline in anoth
     await expect(page.getByRole('heading', { name: 'Municipal water telemetry', exact: true })).toBeVisible();
     await expect(page.getByText(saved.deadline, { exact: true })).toBeVisible();
     const downloadPromise = page.waitForEvent('download');
-    await page.getByRole('button', { name: 'Export Proposal', exact: true }).click();
+    await page.getByText('More bid actions', { exact: true }).click();
+    await page.getByRole('button', { name: 'Export proposal', exact: true }).click();
     const download = await downloadPromise;
     const markdown = await readFile((await download.path())!, 'utf8');
     expect(markdown).toContain('**Bid / Tender Reference:** RFQ/2026/104');

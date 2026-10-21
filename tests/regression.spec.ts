@@ -99,10 +99,12 @@ test('mobile navigation, keyboard tabs and layout support reduced motion', async
   await page.emulateMedia({ reducedMotion: 'reduce' });
   const errors: string[] = []; page.on('pageerror', (error) => errors.push(error.message));
   await page.goto('/');
-  const overview = page.getByRole('tab', { name: 'Overview', exact: true });
-  await overview.focus(); await page.keyboard.press('ArrowRight');
-  await expect(page.getByRole('tab', { name: 'Bid Anatomy', exact: true })).toHaveAttribute('aria-selected', 'true');
-  await expect(page.getByRole('navigation', { name: 'Mobile workspace navigation' })).toBeVisible();
+  const stages = page.getByRole('group', { name: 'Bid preparation steps' });
+  await expect(stages.getByRole('button', { name: 'Understand' })).toHaveAttribute('aria-pressed', 'true');
+  await stages.getByRole('button', { name: 'Review' }).click();
+  await expect(stages.getByRole('button', { name: 'Review' })).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.getByRole('navigation', { name: 'Main mobile navigation' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'My bids', exact: true })).toHaveAttribute('aria-current', 'page');
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
   expect(errors).toEqual([]);
 });
