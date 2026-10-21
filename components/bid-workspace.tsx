@@ -180,7 +180,7 @@ function BidWorkspace() {
     updateTender(activeTender.id, (tender) => commitProposal(tender, {
       clauses: tender.clauses.map((clause) => clause.id === clauseId ? {
         ...clause, review: undefined, proposalResponseText: text, complianceStatus: 'partial', confidenceScore: 0,
-        aiNote: 'Manually edited. Run a compliance audit to verify this response.',
+        aiNote: 'Manually edited. Run a new AI review and verify this response yourself.',
       } : clause),
       discrepancies: tender.discrepancies.map((flag) => flag.clauseCode === tender.clauses.find((clause) => clause.id === clauseId)?.code ? { ...flag, currentProposalText: text, resolved: false } : flag),
     }, trigger, summary));
@@ -240,7 +240,7 @@ function BidWorkspace() {
       } : clause),
       discrepancies: tender.discrepancies.map((item) => item.id === flag.id ? { ...item, currentProposalText: flag.recommendedFix, resolved: true } : item),
     }, 'AI Compliance Fix', `Applied suggested wording for ${flag.clauseCode}; review required`));
-    notify(`Applied suggested wording for ${flag.clauseCode}. Run an audit to verify it.`);
+    notify(`Applied suggested wording for ${flag.clauseCode}. Review source evidence before submission.`);
   };
 
   const handleRecordReview = (clauseId: string, outcome: ClauseReview['outcome'], note: string) => {
@@ -953,7 +953,7 @@ function BidWorkspace() {
                       </span>
                     </div>
                     <p className="text-xs text-neutral-500 dark:text-neutral-400">
-                      Compare historical snapshots and export final compliant bid package.
+                      Compare snapshots and export a draft for independent review.
                     </p>
                   </div>
                 </div>
