@@ -18,7 +18,7 @@ export function commitProposal(
     id: `ver-${crypto.randomUUID()}`,
     versionNumber: `v1.${revision}`,
     timestamp: new Date().toISOString(),
-    author: triggerType === 'Manual Edit' ? tender.ownerName : 'Bidcraft AI (Gemini)',
+    author: triggerType === 'Human Review' ? 'Local reviewer' : triggerType === 'Manual Edit' ? tender.ownerName : 'Bidcraft AI (Gemini)',
     triggerType,
     summary,
     complianceScoreSnapshot: updated.leadScore,

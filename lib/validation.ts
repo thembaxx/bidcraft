@@ -15,7 +15,9 @@ export function isClause(value: unknown): value is TenderClause {
   return isRecord(value) && strings(value, ['id', 'code', 'title', 'originalText', 'proposalSectionTitle', 'proposalResponseText', 'aiNote']) &&
     typeof value.mandatory === 'boolean' &&
     ['Legal & Statutory', 'Technical Architecture', 'Financial & SLA', 'Security & ISO'].includes(value.category as string) &&
-    isComplianceStatus(value.complianceStatus) && isScore(value.confidenceScore) && stringArray(value.matchedVaultDocIds);
+    isComplianceStatus(value.complianceStatus) && isScore(value.confidenceScore) && stringArray(value.matchedVaultDocIds) &&
+    (value.review === undefined || (isRecord(value.review) && strings(value.review, ['reviewedAt', 'reviewer', 'note']) &&
+      Number.isFinite(Date.parse(value.review.reviewedAt as string)) && ['approved', 'changes-requested'].includes(value.review.outcome as string)));
 }
 
 export function isDiscrepancy(value: unknown): value is ComplianceDiscrepancy {
@@ -25,7 +27,7 @@ export function isDiscrepancy(value: unknown): value is ComplianceDiscrepancy {
 
 function isVersion(value: unknown): value is ProposalVersion {
   return isRecord(value) && strings(value, ['id', 'versionNumber', 'timestamp', 'author', 'summary', 'executiveSummarySnapshot']) &&
-    ['AI Auto-Draft', 'Manual Edit', 'AI Compliance Fix', 'AI Compliance Audit', 'OCR Clause Sync'].includes(value.triggerType as string) &&
+    ['AI Auto-Draft', 'Manual Edit', 'AI Compliance Fix', 'AI Compliance Audit', 'OCR Clause Sync', 'Human Review'].includes(value.triggerType as string) &&
     isScore(value.complianceScoreSnapshot) && Array.isArray(value.clausesSnapshot) && value.clausesSnapshot.every(isClause) &&
     (value.discrepanciesSnapshot === undefined || (Array.isArray(value.discrepanciesSnapshot) && value.discrepanciesSnapshot.every(isDiscrepancy)));
 }

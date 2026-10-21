@@ -9,7 +9,10 @@
     "lint": "eslint .",
     "clean": "node -e \"require('node:fs').rmSync('.next', { recursive: true, force: true })\"",
     "typecheck": "tsc --noEmit",
-    "test": "playwright test"
+    "test": "playwright test",
+    "anatomy:build": "node scripts/build-bid-anatomy.mjs",
+    "anatomy:audit": "node scripts/build-bid-anatomy.mjs --audit",
+    "anatomy:verify": "node scripts/verify-bid-anatomy.mjs"
   },
   "dependencies": {
     "@google/genai": "^2.4.0",

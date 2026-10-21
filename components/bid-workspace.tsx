@@ -5,6 +5,10 @@ import { AnimatedTabs } from './ui/animated-tabs';
 import { Alert } from './ui/alert';
 import { Dialog } from './ui/dialog';
 import { BrandLogoMark } from './brand-logo';
+import dynamic from 'next/dynamic';
+import { recordClauseReview } from '@/lib/bid-anatomy';
+import type { ClauseReview } from '@/lib/types';
+const BidAnatomyPanel = dynamic(() => import('./bid-anatomy/panel'), { loading: () => <div role="status" className="rounded-3xl bg-white p-8 text-sm text-neutral-500 dark:bg-[#161918]">Opening the inspection bench…</div> });
 import React, { useState, useEffect, useMemo, useRef, useSyncExternalStore } from 'react';
 import {
   House,
@@ -58,7 +62,7 @@ import { rankVaultDocuments } from '@/lib/search';
 const STORAGE_KEY_TENDERS = 'quora_bid_architect_tenders_v1';
 const STORAGE_KEY_THEME = 'quora_bid_architect_theme_v1';
 
-type ActiveTab = 'summary' | 'comparison' | 'compliance' | 'versions';
+type ActiveTab = 'anatomy' | 'summary' | 'comparison' | 'compliance' | 'versions';
 
 const STORAGE_KEY_SELECTION = 'quora_bid_architect_selection_v1';
 const subscribeToHydration = () => () => {};
@@ -103,6 +107,7 @@ function BidWorkspace() {
   const [selectedTenderId, setSelectedTenderId] = useState(() => readPreference(STORAGE_KEY_SELECTION) || INITIAL_TENDERS[0].id);
   const [vaultDocs, setVaultDocs] = useState<VaultDocument[]>(INITIAL_VAULT_DOCS);
   const [activeTab, setActiveTab] = useState<ActiveTab>('summary');
+  const [comparisonClauseId, setComparisonClauseId] = useState<string | undefined>();
   const [searchFilter, setSearchFilter] = useState('');
   const [darkMode, setDarkMode] = useState(() => readPreference(STORAGE_KEY_THEME) === 'dark');
   const [isAuditing, setIsAuditing] = useState(false);
@@ -157,7 +162,7 @@ function BidWorkspace() {
   const handleUpdateClause = (clauseId: string, text: string, summary: string, trigger: 'Manual Edit' | 'AI Auto-Draft') => {
     updateTender(activeTender.id, (tender) => commitProposal(tender, {
       clauses: tender.clauses.map((clause) => clause.id === clauseId ? {
-        ...clause, proposalResponseText: text, complianceStatus: 'partial', confidenceScore: 0,
+        ...clause, review: undefined, proposalResponseText: text, complianceStatus: 'partial', confidenceScore: 0,
         aiNote: 'Manually edited. Run a compliance audit to verify this response.',
       } : clause),
       discrepancies: tender.discrepancies.map((flag) => flag.clauseCode === tender.clauses.find((clause) => clause.id === clauseId)?.code ? { ...flag, currentProposalText: text, resolved: false } : flag),
@@ -176,7 +181,7 @@ function BidWorkspace() {
       const latest = tendersRef.current.find((tender) => tender.id === tenderId)?.clauses.find((item) => item.id === clause.id);
       if (latest?.proposalResponseText !== clause.proposalResponseText) throw new Error('The clause changed while AI was drafting. Retry using the latest text.');
       updateTender(tenderId, (tender) => commitProposal(tender, {
-        clauses: tender.clauses.map((item) => item.id === clause.id ? { ...item, ...result } : item),
+        clauses: tender.clauses.map((item) => item.id === clause.id ? { ...item, ...result, review: undefined } : item),
         discrepancies: tender.discrepancies.map((flag) => flag.clauseCode === clause.code ? { ...flag, currentProposalText: result.proposalResponseText, resolved: false } : flag),
       }, 'AI Auto-Draft', result.versionSummary));
       notify(`Saved AI draft for ${clause.code}. Review its evidence before submission.`);
@@ -200,7 +205,7 @@ function BidWorkspace() {
         leadScore: result.overallComplianceScore, grade: result.grade, discrepancies,
         clauses: tender.clauses.map((clause) => {
           const flags = discrepancies.filter((flag) => flag.clauseCode === clause.code && !flag.resolved);
-          return { ...clause, complianceStatus: flags.some((flag) => flag.severity === 'critical') ? 'non-compliant' : flags.length ? 'partial' : 'compliant' };
+          return { ...clause, review: flags.length ? undefined : clause.review, complianceStatus: flags.some((flag) => flag.severity === 'critical') ? 'non-compliant' : flags.length ? 'partial' : 'compliant' };
         }),
       }, 'AI Compliance Audit', result.auditSummary));
       notify(`AI audit complete: ${result.overallComplianceScore}% (${result.grade}).`);
@@ -213,13 +218,34 @@ function BidWorkspace() {
     if (!activeTender.clauses.some((clause) => clause.code === flag.clauseCode)) { notify('This flag has no matching clause. Run the audit again.'); return; }
     updateTender(activeTender.id, (tender) => commitProposal(tender, {
       clauses: tender.clauses.map((clause) => clause.code === flag.clauseCode ? {
-        ...clause, proposalResponseText: flag.recommendedFix, complianceStatus: 'partial', confidenceScore: 0,
+        ...clause, review: undefined, proposalResponseText: flag.recommendedFix, complianceStatus: 'partial', confidenceScore: 0,
         aiNote: `Suggested remediation using ${flag.vaultEvidenceCited}. Awaiting compliance review.`,
       } : clause),
       discrepancies: tender.discrepancies.map((item) => item.id === flag.id ? { ...item, currentProposalText: flag.recommendedFix, resolved: true } : item),
     }, 'AI Compliance Fix', `Applied suggested wording for ${flag.clauseCode}; review required`));
     notify(`Applied suggested wording for ${flag.clauseCode}. Run an audit to verify it.`);
   };
+
+  const handleRecordReview = (clauseId: string, outcome: ClauseReview['outcome'], note: string) => {
+    if (aiBusy.current) { notify('Wait for the AI request to finish before recording a review.'); return false; }
+    const current = tendersRef.current.find((tender) => tender.id === activeTender.id);
+    if (!current) return false;
+    try {
+      const updated = recordClauseReview(current, clauseId, vaultDocs, outcome, note);
+      updateTender(current.id, () => updated);
+      notify(outcome === 'approved' ? 'Human review recorded with a new proposal snapshot.' : 'Requested changes saved with a new proposal snapshot.');
+      return true;
+    } catch (error) { notify(error instanceof Error ? error.message : 'The review could not be saved.'); return false; }
+  };
+  const handleEvidenceChange = (clauseId: string, ids: string[]) => {
+    const allowed = [...new Set(ids)].filter((id) => vaultDocs.some((doc) => doc.id === id));
+    updateTender(activeTender.id, (tender) => commitProposal(tender, {
+      clauses: tender.clauses.map((clause) => clause.id === clauseId ? { ...clause, matchedVaultDocIds: allowed, review: undefined } : clause),
+      leadScore: tender.leadScore, grade: tender.grade,
+    }, 'Manual Edit', 'Updated clause evidence links; human review required'));
+    notify('Evidence links saved. The previous human review was cleared.');
+  };
+  const openClauseComparison = (clauseId: string) => { setComparisonClauseId(clauseId); setActiveTab('comparison'); };
 
   const handleRestoreVersion = (version: ProposalVersion) => {
     updateTender(activeTender.id, (tender) => restoreProposal(tender, version));
@@ -272,7 +298,7 @@ function BidWorkspace() {
     notify(`Moved tender to ${stage.toUpperCase()}.`);
   };
   const handleExportProposal = () => {
-    const md = `# ${activeTender.title}\n**Issuing Authority:** ${activeTender.Authority}\n**RFP Reference:** ${activeTender.rfpNumber}\n**Contract Budget:** ${activeTender.budget}\n**Compliance Score:** ${activeTender.leadScore}% (${activeTender.grade})\n**Active Version:** ${activeTender.versions[0]?.versionNumber || 'No snapshots'}\n\n## Executive Summary\n${activeTender.executiveSummary}\n\n## Proposal Responses\n${activeTender.clauses.map((clause) => `### [${clause.code}] ${clause.proposalSectionTitle}\n**Requirement:** ${clause.originalText}\n\n**Response (${clause.complianceStatus}; ${clause.confidenceScore}% confidence):**\n${clause.proposalResponseText}\n\n*Review note:* ${clause.aiNote}`).join('\n\n---\n\n')}`;
+    const md = `# ${activeTender.title}\n**Issuing Authority:** ${activeTender.Authority}\n**RFP Reference:** ${activeTender.rfpNumber}\n**Contract Budget:** ${activeTender.budget}\n**Compliance Score:** ${activeTender.leadScore}% (${activeTender.grade})\n**Active Version:** ${activeTender.versions[0]?.versionNumber || 'No snapshots'}\n\n## Executive Summary\n${activeTender.executiveSummary}\n\n## Proposal Responses\n${activeTender.clauses.map((clause) => `### [${clause.code}] ${clause.proposalSectionTitle}\n**Requirement:** ${clause.originalText}\n\n**Response (${clause.complianceStatus}; ${clause.confidenceScore}% confidence):**\n${clause.proposalResponseText}\n\n**Human review:** ${clause.review ? `${clause.review.outcome} by ${clause.review.reviewer} on ${clause.review.reviewedAt} — ${clause.review.note}` : 'Not recorded'}\n\n*AI note:* ${clause.aiNote}`).join('\n\n---\n\n')}`;
     const url = URL.createObjectURL(new Blob([md], { type: 'text/markdown;charset=utf-8' }));
     const link = document.createElement('a');
     link.href = url;
@@ -718,6 +744,7 @@ function BidWorkspace() {
 
             <AnimatedTabs activeTab={activeTab} onChange={setActiveTab} tabs={[
               { id: 'summary', label: 'Overview' },
+              { id: 'anatomy', label: 'Bid Anatomy' },
               { id: 'comparison', label: 'Clause comparison', badge: activeTender.clauses.length },
               { id: 'compliance', label: 'Compliance & vault', badge: activeTender.discrepancies.filter((flag) => !flag.resolved && flag.severity !== 'verified').length },
               { id: 'versions', label: 'History', badge: activeTender.versions.length },
@@ -872,10 +899,13 @@ function BidWorkspace() {
             </div>
           )}
 
+          {activeTab === 'anatomy' && <BidAnatomyPanel key={activeTender.id} tender={activeTender} vaultDocs={vaultDocs} darkMode={darkMode} onReview={handleRecordReview} onEvidenceChange={handleEvidenceChange} onOpenComparison={openClauseComparison} onOpenVault={() => setActiveTab('compliance')} />}
+
           {activeTab === 'comparison' && (
             <DocumentComparisonTool
               key={activeTender.id}
               clauses={activeTender.clauses}
+              initialClauseId={comparisonClauseId}
               vaultDocs={vaultDocs}
               onUpdateClause={handleUpdateClause}
               onDraftClauseWithAI={handleDraftClauseWithAI}
@@ -918,7 +948,7 @@ function BidWorkspace() {
       {/* Mobile & Tablet Touch-First Bottom Navigation Bar (<15% viewport height, >=44px hitboxes) */}
       <nav
         aria-label="Mobile workspace navigation"
-        className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-[#141716]/95 backdrop-blur-md border-t border-neutral-200 dark:border-neutral-800 px-2 py-1.5 grid grid-cols-4 gap-1"
+        className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-[#141716]/95 backdrop-blur-md border-t border-neutral-200 dark:border-neutral-800 px-2 py-1.5 grid grid-cols-5 gap-1"
       >
         <button
           onClick={() => setActiveTab('summary')}
@@ -930,6 +960,10 @@ function BidWorkspace() {
         >
           <House size={20} weight={activeTab === 'summary' ? 'fill' : 'regular'} />
           <span className="text-[10px] mt-0.5">Summary</span>
+        </button>
+
+        <button onClick={() => setActiveTab('anatomy')} className={`min-h-[48px] rounded-2xl flex flex-col items-center justify-center transition-colors ${activeTab === 'anatomy' ? 'bg-[#DDFB82] text-[#0D0F0E] font-bold' : 'text-neutral-500 dark:text-neutral-400'}`}>
+          <MagnifyingGlass size={20} weight={activeTab === 'anatomy' ? 'bold' : 'regular'} /><span className="text-[10px] mt-0.5">Anatomy</span>
         </button>
 
         <button

@@ -99,7 +99,7 @@ test('mobile navigation, keyboard tabs and layout support reduced motion', async
   await page.goto('/');
   const overview = page.getByRole('tab', { name: 'Overview', exact: true });
   await overview.focus(); await page.keyboard.press('ArrowRight');
-  await expect(page.getByRole('tab', { name: 'Clause comparison' })).toHaveAttribute('aria-selected', 'true');
+  await expect(page.getByRole('tab', { name: 'Bid Anatomy', exact: true })).toHaveAttribute('aria-selected', 'true');
   await expect(page.getByRole('navigation', { name: 'Mobile workspace navigation' })).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
   expect(errors).toEqual([]);

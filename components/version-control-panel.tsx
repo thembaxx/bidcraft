@@ -134,7 +134,7 @@ export function VersionControlPanel({
 
                 <div className="mt-2.5 flex items-center justify-between text-[11px] text-neutral-500 dark:text-neutral-400">
                   <span className="flex items-center gap-1">
-                    {ver.triggerType === 'Manual Edit' ? (
+                    {(ver.triggerType === 'Manual Edit' || ver.triggerType === 'Human Review') ? (
                       <UserCircle size={13} />
                     ) : ver.triggerType === 'OCR Clause Sync' ? (
                       <Scan size={13} />
@@ -239,9 +239,10 @@ export function VersionControlPanel({
                   const comparedClause = compareTarget?.clausesSnapshot.find(
                     (c) => c.code === clause.code
                   );
-                  const changed =
-                    comparedClause &&
-                    comparedClause.proposalResponseText !== clause.proposalResponseText;
+                  const responseChanged = comparedClause && comparedClause.proposalResponseText !== clause.proposalResponseText;
+                  const reviewChanged = comparedClause && JSON.stringify(comparedClause.review) !== JSON.stringify(clause.review);
+                  const evidenceChanged = comparedClause && JSON.stringify(comparedClause.matchedVaultDocIds) !== JSON.stringify(clause.matchedVaultDocIds);
+                  const changed = responseChanged || reviewChanged || evidenceChanged;
 
                   return (
                     <div
@@ -258,13 +259,18 @@ export function VersionControlPanel({
                             changed ? 'text-[#168B7A] dark:text-[#DDFB82]' : 'text-neutral-400'
                           }`}
                         >
-                          {!comparedClause ? 'Added in this version' : changed ? 'Modified in this version' : 'Unchanged'}
+                          {!comparedClause ? 'Added in this version' : reviewChanged && !responseChanged ? 'Review updated' : changed ? 'Modified in this version' : 'Unchanged'}
                         </span>
                       </div>
                       <p className="text-xs text-neutral-700 dark:text-neutral-300 leading-relaxed">
                         {clause.proposalResponseText}
                       </p>
-                      {changed && comparedClause && (
+                      {clause.review && <div className="rounded-xl border border-[#168B7A]/30 p-3 text-xs leading-relaxed">
+                        <p className="font-semibold">{clause.review.outcome === 'approved' ? 'Human approval recorded' : 'Changes requested'} · {clause.review.reviewer}</p>
+                        <p className="mt-1 text-neutral-500">{clause.review.reviewedAt}</p>
+                        <p className="mt-1">{clause.review.note}</p>
+                      </div>}
+                      {responseChanged && comparedClause && (
                         <div className="pt-2 border-t border-neutral-200 dark:border-neutral-800 text-[11px] text-neutral-500">
                           <span className="font-mono font-semibold mr-1.5">
                             Prior ({compareTarget?.versionNumber}):
