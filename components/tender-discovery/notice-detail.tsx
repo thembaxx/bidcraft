@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { ArrowRight, ArrowUpRight, BookmarkSimple, CalendarBlank, CheckCircle, FileText, WarningCircle, X } from '@phosphor-icons/react';
 import { Dialog } from '@/components/ui/dialog';
+import Link from 'next/link';
 import { downloadTenderReminder } from '@/lib/discovery/calendar';
 import { formatTenderDate } from '@/lib/discovery/model';
 import { isTenderDetail } from '@/lib/discovery/storage';
@@ -67,6 +68,6 @@ export function NoticeDetail({ notice, saved, feedback, onSave, onImport, onClos
       {detail && detail.documents.length === 0 && <p>No document links are available in this source record. Check the official listing using reference {current.reference}.</p>}
       {!detail && <p className="discovery-small">Document links will appear when the official notice is available.</p>}
     </section>
-    <details className="discovery-source-details"><summary><CheckCircle size={17} aria-hidden="true" /> Source & freshness</summary><p>Published by the buyer on National Treasury’s eTender portal. Source status and briefing information do not establish your business’s eligibility.</p>{detail && <p>Last checked {formatTenderDate(detail.checkedAt, true)} SAST.{status === 'error' ? ' Saved copy; current availability is unconfirmed.' : ''}</p>}<p><a href={current.sourceUrl} target="_blank" rel="noopener noreferrer">Open official listing <ArrowUpRight size={13} aria-hidden="true" /></a> and search reference <strong>{current.reference}</strong>.</p>{detail?.ocdsUrl && <p><a href={detail.ocdsUrl} target="_blank" rel="noopener noreferrer">View matching open-data record ↗</a></p>}<p><a href="https://data.etenders.gov.za/Home/LearnMore" target="_blank" rel="noopener noreferrer">Treasury’s publication policy ↗</a> permits reuse with source attribution. Coverage is incomplete; confirm deadlines and amendments before submitting.</p></details>
+    <details className="discovery-source-details"><summary><CheckCircle size={17} aria-hidden="true" /> Source & freshness</summary><p>Published by the buyer on National Treasury’s eTender portal. Source status and briefing information do not establish your business’s eligibility.</p>{detail && <p>Last checked {formatTenderDate(detail.checkedAt, true)} SAST.{status === 'error' ? ' Saved copy; current availability is unconfirmed.' : ''}</p>}<p><a href={current.sourceUrl} target="_blank" rel="noopener noreferrer">Open official listing <ArrowUpRight size={13} aria-hidden="true" /></a> and search reference <strong>{current.reference}</strong>.</p>{detail?.ocdsUrl && <p><a href={detail.ocdsUrl} target="_blank" rel="noopener noreferrer">View matching open-data record ↗</a></p>}<p><a href="https://data.etenders.gov.za/Home/LearnMore" target="_blank" rel="noopener noreferrer">Treasury’s publication policy ↗</a> permits reuse with source attribution. Coverage is incomplete; confirm deadlines and amendments before submitting. <Link href="/data-sources">How Bidcraft uses tender data</Link>.</p></details>
   </Dialog>;
 }
