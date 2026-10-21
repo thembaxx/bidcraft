@@ -39,6 +39,6 @@ test('legal links are globally visible and procurement disclaimers remain explic
 test('AI policy warns clearly about free-tier processing and human verification', async ({ page }) => {
   await page.goto('/ai-disclosure');
   await expect(page.getByText(/may involve human review/)).toBeVisible();
-  await expect(page.getByText(/does not verify SARS, CSD/)).toBeVisible();
+  await expect(page.getByText(/do not verify SARS, CSD/)).toBeVisible();
   await expect(page.getByRole('link', { name: 'Read the Google Gemini API terms' })).toHaveAttribute('href', 'https://ai.google.dev/gemini-api/terms');
 });
