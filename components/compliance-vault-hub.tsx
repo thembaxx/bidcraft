@@ -18,6 +18,7 @@ import {
   TenderClause,
   VaultDocument,
 } from '@/lib/types';
+import { SouthAfricanBidGuide } from '@/components/south-african-bid-guide';
 
 interface ComplianceVaultHubProps {
   clauseCount: number;
@@ -53,7 +54,7 @@ export function ComplianceVaultHub({
   lastOcrExtractedText,
 }: ComplianceVaultHubProps) {
   const [searchQuery, setSearchQuery] = useState(
-    'ISO 27001 sovereign telemetry encryption and £25M public liability performance bond'
+    'ISO 27001 POPIA and R25 million public liability performance guarantee'
   );
   const [ocrNotes, setOcrNotes] = useState('');
   const [uploadError, setUploadError] = useState<string | null>(null);
@@ -95,6 +96,7 @@ export function ComplianceVaultHub({
 
   return (
     <div className="space-y-6">
+      <SouthAfricanBidGuide />
       {/* Section 1: AI Compliance Discrepancy & Auto-Remediation Engine */}
       <div className="rounded-3xl bg-white dark:bg-[#161918] border border-neutral-200/80 dark:border-neutral-800 p-5">
         <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-neutral-100 dark:border-neutral-800">

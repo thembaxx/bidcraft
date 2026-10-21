@@ -4,11 +4,11 @@
 
 ## Product
 - [Workspace](/): Create tender workspaces, compare requirements and proposal responses, review compliance flags, save snapshots, and export Markdown proposals.
-- [About and guidance](/about): Workflow, local storage, offline behavior, sample data, and the limits of AI review.
+- [About and guidance](/about): Workflow, local storage, offline behaviour, sample data, and the limits of AI review.
 - [Extended product context](/llms-full.txt): Supported workflows and factual boundaries for AI readers.
 
 ## Bid Anatomy
-- The Bid Anatomy workspace tab visualizes actual clause, evidence, and human review state using an interactive SVG inspection bench.
+- The Bid Anatomy workspace tab visualises actual clause, evidence, and human review state using an interactive SVG inspection bench.
 - Human approvals are local browser records, separate from AI alignment and confidence. Missing responses, unavailable evidence, and unresolved flags block approval.
 - Editing response text or evidence links clears the previous review. Review decisions create version snapshots.
 
@@ -21,8 +21,8 @@
 - [Social preview](/brand/social-card.png)
 
 ## Accuracy and data
-- Included tenders, proposal wording, and corporate evidence are demonstration data, not verified claims about the user’s organization.
-- Proposals and version history persist in local browser storage. There is no account-based or cross-device synchronization in this version.
+- Included tenders, proposal wording, and corporate evidence are demonstration data, not verified claims about the user’s organisation.
+- Proposals and version history persist in local browser storage. There is no account-based or cross-device synchronisation in this version.
 - AI drafting, OCR, and audits require server-side Gemini configuration and an online connection. AI failure must not be described as a successful audit or extraction.
 - Local text similarity search is available without an AI key. Similarity scores are retrieval aids, not proof of compliance.
 - Generated drafts and compliance reviews require human validation against original tender documents and current corporate evidence.
@@ -34,3 +34,9 @@
 - Users can save notices in this browser and create a blank bid workspace with source attribution, ZAR and SAST metadata. Re-import opens an existing bid rather than overwriting it.
 - Saved notices and recent successful search pages are browser-local copies without cross-device sync or downloaded attachments. Failed source refreshes must not be described as fresh, successful searches.
 - Tender discovery does not require a paid tender API or Gemini configuration. AI drafting, audits and OCR still require the server-side Gemini key.
+
+## South African market defaults
+- The primary market is South Africa. The interface uses South African English (en-ZA), rand (ZAR), and South African Standard Time (SAST, UTC+02:00). Source currencies and saved proposal content are preserved. VAT is not added automatically.
+- Starter workspaces are clearly labelled fictional South African demonstrations. Existing drafts are not rewritten; older users can add the new examples without replacing their work.
+- [South African bidding guide](/about#sa-bidding-guide) links to official CSD, SARS and the dtic guidance. CSD, tax status, B-BBEE evidence, preference goals, bid forms, CIDB and COIDA requirements depend on the actual bid documents. Bidcraft does not verify registrations or calculate preference points.
+- AI features process supplied documents through the server and Gemini. Users must assess their POPIA obligations; the app makes no guarantee of POPIA compliance or South-African-only processing.

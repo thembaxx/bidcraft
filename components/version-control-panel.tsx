@@ -11,6 +11,7 @@ import {
   Scan,
 } from '@phosphor-icons/react';
 import { ProposalVersion, TenderClause } from '@/lib/types';
+import { formatSouthAfricanDate } from '@/lib/locale';
 
 interface VersionControlPanelProps {
   versions: ProposalVersion[];
@@ -143,7 +144,7 @@ export function VersionControlPanel({
                     )}
                     <span>{ver.author}</span>
                   </span>
-                  <span className="font-mono tabular-nums">{ver.timestamp}</span>
+                  <span className="font-mono tabular-nums">{formatSouthAfricanDate(ver.timestamp, true)} SAST</span>
                 </div>
               </div>
             );

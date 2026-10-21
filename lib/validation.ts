@@ -34,6 +34,7 @@ function isVersion(value: unknown): value is ProposalVersion {
 
 export function isTender(value: unknown): value is TenderProject {
   return isRecord(value) && strings(value, ['id', 'title', 'Authority', 'rfpNumber', 'budget', 'deadline', 'grade', 'statusLabel', 'ownerName', 'ownerRole', 'AvatarUrl', 'purchaseTimeframe', 'procurementType', 'executiveSummary']) &&
+    (value.isDemo === undefined || typeof value.isDemo === 'boolean') &&
     (value.source === undefined || (isRecord(value.source) && strings(value.source, ['provider', 'noticeId', 'url', 'importedAt', 'province']) &&
       /^https:\/\/(?:www\.etenders\.gov\.za|ocds-api\.etenders\.gov\.za)\//.test(value.source.url as string) && Number.isFinite(Date.parse(value.source.importedAt as string)))) &&
     ['qualify', 'develop', 'propose', 'close'].includes(value.stage as string) && isScore(value.leadScore) &&

@@ -18,3 +18,5 @@ Typography: Urbanist for the interface, JetBrains Mono for references and scores
 Assets in `public/brand`: original generated PNG, optimized WebP, 32/180/192/512-pixel PNG icons, and a 1200×630 social card. `public/icon.svg` is the small-size companion mark.
 
 Motion is brief and functional: spring tab indicator, soft view transitions, accessible feedback, modal entry, and gentle 3D movement. Honor `prefers-reduced-motion`; never make a task depend on animation. The scene's pause control stops its continuous movement.
+
+Primary audience: South African bid teams. Use South African English, rand (ZAR), SAST, and local procurement terminology. Keep fictional demonstrations clearly distinct from source-backed opportunities.

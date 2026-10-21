@@ -1,5 +1,6 @@
 import type { TenderProject } from '@/lib/types';
 import { isRecord } from '@/lib/validation';
+import { formatSouthAfricanDate } from '@/lib/locale';
 import { DEFAULT_FILTERS, DISCOVERY_HOME, type DiscoveryFilters, type DiscoveryIndex, type DiscoveryResponse, type TenderNotice } from './types';
 
 export function parseFilters(params: URLSearchParams): DiscoveryFilters {
@@ -40,8 +41,7 @@ export function sourceDate(value: unknown): string | null {
 }
 
 export function formatTenderDate(value: string | null, withTime = false): string {
-  if (!value || !Number.isFinite(Date.parse(value))) return 'Not published';
-  return new Intl.DateTimeFormat('en-ZA', { timeZone: 'Africa/Johannesburg', day: 'numeric', month: 'short', year: 'numeric', ...(withTime ? { hour: '2-digit', minute: '2-digit', hourCycle: 'h23' as const } : {}) }).format(new Date(value));
+  return formatSouthAfricanDate(value, withTime);
 }
 
 export function noticeKind(title: string, type: string): TenderNotice['noticeKind'] {
