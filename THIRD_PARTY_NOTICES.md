@@ -23,3 +23,8 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+Anatomy drawing kit — MIT © 2026 Ryan
+https://github.com/wheresryan22/anatomy
+
+The unmodified drawing kit files in `vendor/anatomy` are pinned to commit `1482e8469b0a9e0d8cc18ea2740a01423d29ae80`. The complete MIT notice is included in `vendor/anatomy/LICENSE`. Bidcraft's inspection bench is original geometry authored with this kit, using generated SVG paths and scoped brand styles.

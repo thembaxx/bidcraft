@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
   Columns,
   Stack,
@@ -16,6 +16,7 @@ import { TenderClause, VaultDocument } from '@/lib/types';
 
 interface DocumentComparisonToolProps {
   clauses: TenderClause[];
+  initialClauseId?: string;
   vaultDocs: VaultDocument[];
   onUpdateClause: (clauseId: string, newText: string, summaryNote: string, triggerType: 'Manual Edit' | 'AI Auto-Draft') => void;
   onDraftClauseWithAI: (clause: TenderClause, mode: string) => Promise<void>;
@@ -48,6 +49,7 @@ function computeWordDiff(original: string, proposal: string) {
 
 export function DocumentComparisonTool({
   clauses,
+  initialClauseId,
   vaultDocs,
   onUpdateClause,
   onDraftClauseWithAI,
@@ -55,13 +57,13 @@ export function DocumentComparisonTool({
 }: DocumentComparisonToolProps) {
   const [viewFormat, setViewFormat] = useState<'side-by-side' | 'overlay'>('side-by-side');
   const [highlightMode, setHighlightMode] = useState<'all' | 'non-compliant' | 'metrics'>('all');
-  const [selectedClauseId, setSelectedClauseId] = useState<string>(clauses[0]?.id || '');
+  const [selectedClauseId, setSelectedClauseId] = useState<string>(initialClauseId || clauses[0]?.id || '');
   const [editingClauseId, setEditingClauseId] = useState<string | null>(null);
   const [editDraftText, setEditDraftText] = useState<string>('');
 
   const filteredClauses = useMemo(() => {
     if (highlightMode === 'non-compliant') {
-      return clauses.filter((c) => c.complianceStatus !== 'compliant');
+      return clauses.filter((c) => (c.complianceStatus !== 'compliant' || c.review?.outcome === 'changes-requested'));
     }
     return clauses;
   }, [clauses, highlightMode]);
@@ -70,6 +72,12 @@ export function DocumentComparisonTool({
     () => filteredClauses.find((c) => c.id === selectedClauseId) || filteredClauses[0],
     [filteredClauses, selectedClauseId]
   );
+
+  useEffect(() => {
+    if (!initialClauseId) return;
+    const frame = requestAnimationFrame(() => document.getElementById(`clause-card-${initialClauseId}`)?.scrollIntoView({ block: 'center' }));
+    return () => cancelAnimationFrame(frame);
+  }, [initialClauseId]);
 
   const startManualEdit = (clause: TenderClause) => {
     setEditingClauseId(clause.id);
@@ -148,7 +156,7 @@ export function DocumentComparisonTool({
                   : 'text-neutral-600 dark:text-neutral-400'
               }`}
             >
-              Needs Review ({clauses.filter((c) => c.complianceStatus !== 'compliant').length})
+              Needs Review ({clauses.filter((c) => (c.complianceStatus !== 'compliant' || c.review?.outcome === 'changes-requested')).length})
             </button>
             <button
               onClick={() =>

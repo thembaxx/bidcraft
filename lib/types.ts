@@ -1,5 +1,12 @@
 export type PipelineStage = 'qualify' | 'develop' | 'propose' | 'close';
 
+export interface ClauseReview {
+  outcome: 'approved' | 'changes-requested';
+  reviewedAt: string;
+  reviewer: string;
+  note: string;
+}
+
 export interface TenderClause {
   id: string;
   code: string;
@@ -13,6 +20,7 @@ export interface TenderClause {
   confidenceScore: number;
   matchedVaultDocIds: string[];
   aiNote: string;
+  review?: ClauseReview;
 }
 
 export interface ProposalVersion {
@@ -20,7 +28,7 @@ export interface ProposalVersion {
   versionNumber: string;
   timestamp: string;
   author: string;
-  triggerType: 'AI Auto-Draft' | 'Manual Edit' | 'AI Compliance Fix' | 'AI Compliance Audit' | 'OCR Clause Sync';
+  triggerType: 'AI Auto-Draft' | 'Manual Edit' | 'AI Compliance Fix' | 'AI Compliance Audit' | 'OCR Clause Sync' | 'Human Review';
   summary: string;
   complianceScoreSnapshot: number;
   clausesSnapshot: TenderClause[];

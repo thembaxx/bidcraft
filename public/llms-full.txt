@@ -11,6 +11,11 @@ Bidcraft is an AI-assisted tender and RFP proposal workspace. Its purpose is to 
 6. Save and compare immutable proposal snapshots. Restoring a version creates a new snapshot and preserves revision history.
 7. Export the proposal as Markdown. The app does not submit bids to procurement portals.
 
+## Bid Anatomy and human review
+The Bid Anatomy tab shows an SVG inspection bench connected to the selected tender. Pins retract only for recorded human approvals; the gauge measures reviewed mandatory clauses. Larger tenders use six-station pages. Users can inspect original requirements, draft responses, open flags, and full linked evidence records. They can manage evidence links, open the matching comparison clause, approve a reviewed response, or request changes with a note.
+
+Reviews use a local timestamp and the label Local reviewer, not an authenticated identity. Missing responses, unavailable evidence, non-compliant responses, and unresolved flags prevent approval. Editing proposal text, replacing a draft with an AI result or fix, and changing evidence links invalidate the previous review. Human Review snapshots preserve the decision, and version restoration restores it. A recorded approval does not guarantee legal eligibility.
+
 ## Storage and availability
 Tender content and snapshots are stored in localStorage in the current browser. There is no cloud database, user account system, cross-device sync, or collaborative editing in this release. Clearing browser data removes local work. Export important drafts.
 

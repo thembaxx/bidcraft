@@ -7,6 +7,11 @@
 - [About and guidance](/about): Workflow, local storage, offline behavior, sample data, and the limits of AI review.
 - [Extended product context](/llms-full.txt): Supported workflows and factual boundaries for AI readers.
 
+## Bid Anatomy
+- The Bid Anatomy workspace tab visualizes actual clause, evidence, and human review state using an interactive SVG inspection bench.
+- Human approvals are local browser records, separate from AI alignment and confidence. Missing responses, unavailable evidence, and unresolved flags block approval.
+- Editing response text or evidence links clears the previous review. Review decisions create version snapshots.
+
 ## Brand
 - Name: Bidcraft (one word; capital B in prose, lowercase wordmark).
 - Tagline: Make every bid count.
