@@ -31,10 +31,11 @@ export const EasyButton = forwardRef<HTMLButtonElement, EasyButtonProps>(functio
   const reducedMotion = useReducedMotion();
   return <motion.button {...rest} ref={ref} type={type} disabled={disabled || loading} aria-busy={loading}
     whileTap={reducedMotion || disabled || loading ? undefined : { scale: 0.97 }}
+    whileHover={reducedMotion || disabled || loading ? undefined : { y: -1 }}
     transition={{ type: 'spring', stiffness: 420, damping: 30 }}
-    className={cn('inline-flex min-h-11 items-center justify-center gap-2 rounded-full px-5 py-2 text-xs font-bold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#168B7A] disabled:cursor-not-allowed disabled:opacity-50', variants[variant], className)}>
+    className={cn('group inline-flex min-h-11 items-center justify-center gap-2 rounded-full px-5 py-2 text-xs font-bold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#168B7A] disabled:cursor-not-allowed disabled:opacity-50', variants[variant], className)}>
     {loading ? <CircleNotch size={17} className={reducedMotion ? '' : 'animate-spin'} aria-hidden="true" /> : leadingIcon}
     <span>{loading && loadingText ? loadingText : children}</span>
-    {!loading && trailingIcon}
+    {!loading && trailingIcon && <motion.span aria-hidden="true" className="inline-flex shrink-0 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:translate-x-0.5">{trailingIcon}</motion.span>}
   </motion.button>;
 });

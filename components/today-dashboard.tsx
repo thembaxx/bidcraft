@@ -9,6 +9,7 @@ import { TENDER_STORAGE_KEY, type SavedTender } from '@/lib/discovery/types';
 import { isTender } from '@/lib/validation';
 import { AnimatedNumber } from '@/components/ui/animated-number';
 import { StatusBadge } from '@/components/ui/status-badge';
+import { ScrollReveal } from '@/components/ui/scroll-reveal';
 
 type TodaySnapshot = { saved: SavedTender[]; activeBids: number };
 const EMPTY: TodaySnapshot = { saved: [], activeBids: 0 };
@@ -60,18 +61,18 @@ export function TodayDashboard() {
       <h1 className="text-4xl font-semibold tracking-[-0.055em] sm:text-5xl">A clearer way <span className="font-serif font-normal italic text-[#168B7A] dark:text-[#9BDBBE]">forward.</span></h1>
       <p className="max-w-lg text-sm leading-7 text-neutral-600 dark:text-neutral-400">Your saved opportunities, important dates and work in progress — without the noise.</p>
     </motion.section>
-    <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
+    <ScrollReveal className="grid grid-cols-2 gap-3 md:grid-cols-3" delay={0.05}>
       {[
         { label: 'Saved opportunities', value: snapshot.saved.length, icon: MagnifyingGlass },
         { label: 'My active bids', value: snapshot.activeBids, icon: Briefcase },
         { label: 'Due within 7 days', value: urgent.length, icon: Clock },
-      ].map(({ label, value, icon: Icon }) => <div key={label} className="rounded-3xl border border-neutral-200/80 bg-white/75 p-4 dark:border-neutral-800 dark:bg-[#161918] sm:p-6">
+      ].map(({ label, value, icon: Icon }) => <div key={label} className="motion-surface rounded-3xl border border-neutral-200/80 bg-white/75 p-4 dark:border-neutral-800 dark:bg-[#161918] sm:p-6">
         <Icon size={20} weight="regular" className="mb-3 text-[#168B7A] dark:text-[#9BDBBE]" aria-hidden="true"/>
         <p className="text-3xl font-semibold tabular-nums tracking-tight">{ready ? <AnimatedNumber value={value} label={label} /> : '—'}</p>
         <p className="mt-1 text-xs text-neutral-500 dark:text-neutral-400">{label}</p>
       </div>)}
-    </div>
-    <div className="grid gap-5 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
+    </ScrollReveal>
+    <ScrollReveal className="grid gap-5 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]" delay={0.1}>
       <section aria-labelledby="attention-title" className="rounded-3xl border border-neutral-200/80 bg-white p-5 dark:border-neutral-800 dark:bg-[#161918] sm:p-7">
         <div className="mb-5 flex items-center gap-2"><Clock size={20} className="text-[#168B7A] dark:text-[#9BDBBE]" aria-hidden="true"/><h2 id="attention-title" className="text-lg font-bold tracking-tight">Needs your attention</h2></div>
         {!ready ? <p className="text-sm text-neutral-500" role="status">Checking your saved bids…</p> : next ? <div className="space-y-4">
@@ -93,18 +94,18 @@ export function TodayDashboard() {
       </section>
       <section aria-labelledby="next-title" className="space-y-3">
         <h2 id="next-title" className="text-lg font-bold tracking-tight">Your next steps</h2>
-        <Link href="/tenders" className="group flex min-h-24 items-center gap-4 rounded-3xl border border-neutral-200/80 bg-white p-5 transition-colors hover:border-[#168B7A]/60 dark:border-neutral-800 dark:bg-[#161918]">
+        <Link href="/tenders" className="motion-surface motion-arrow group flex min-h-24 items-center gap-4 rounded-3xl border border-neutral-200/80 bg-white p-5 transition-colors hover:border-[#168B7A]/60 dark:border-neutral-800 dark:bg-[#161918]">
           <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-[#DDFB82] text-[#101714]"><MagnifyingGlass size={21}/></span>
           <span className="flex-1"><span className="block text-sm font-bold">Discover opportunities</span><span className="mt-1 block text-xs leading-5 text-neutral-500 dark:text-neutral-400">Search official South African tender notices.</span></span>
           <ArrowUpRight size={17} className="shrink-0 transition-transform group-hover:-translate-y-1 group-hover:translate-x-1"/>
         </Link>
-        <Link href="/#workspace" className="group flex min-h-24 items-center gap-4 rounded-3xl border border-neutral-200/80 bg-white p-5 transition-colors hover:border-[#168B7A]/60 dark:border-neutral-800 dark:bg-[#161918]">
+        <Link href="/#workspace" className="motion-surface motion-arrow group flex min-h-24 items-center gap-4 rounded-3xl border border-neutral-200/80 bg-white p-5 transition-colors hover:border-[#168B7A]/60 dark:border-neutral-800 dark:bg-[#161918]">
           <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-[#E8F2EC] text-[#168B7A] dark:bg-[#20332B] dark:text-[#9BDBBE]"><FileText size={21}/></span>
           <span className="flex-1"><span className="block text-sm font-bold">Continue preparing a bid</span><span className="mt-1 block text-xs leading-5 text-neutral-500 dark:text-neutral-400">Your clauses, evidence, compliance and proposal history.</span></span>
           <ArrowUpRight size={17} className="shrink-0 transition-transform group-hover:-translate-y-1 group-hover:translate-x-1"/>
         </Link>
       </section>
-    </div>
+    </ScrollReveal>
     <div className="flex items-start gap-2 rounded-2xl bg-[#EAEDE8] p-4 text-xs leading-6 text-neutral-600 dark:bg-[#17211B] dark:text-neutral-300">
       <Info size={18} className="mt-0.5 shrink-0 text-[#168B7A]" aria-hidden="true"/>
       <p>Saved tenders and bids currently live in this browser. Today highlights dates from saved records; it does not send background email or push alerts. {expired ? expired + ' saved deadline(s) have passed. ' : ''}Always verify changes against the official notice.</p>
