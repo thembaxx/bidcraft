@@ -3,6 +3,8 @@
 import { useEffect, useState } from 'react';
 import { ArrowRight, ArrowUpRight, BookmarkSimple, CalendarBlank, CheckCircle, FileText, WarningCircle, X } from '@phosphor-icons/react';
 import { Dialog } from '@/components/ui/dialog';
+import { useRouter } from 'next/navigation';
+import { rememberRealityEntry } from '@/lib/suitability/storage';
 import Link from 'next/link';
 import { downloadTenderReminder } from '@/lib/discovery/calendar';
 import { formatTenderDate } from '@/lib/discovery/model';
@@ -13,6 +15,7 @@ export function NoticeDetail({ notice, saved, feedback, onSave, onImport, onClos
   notice: TenderNotice; saved?: SavedTender; onSave: (notice: TenderNotice, detail?: TenderDetail) => void;
   onImport: (notice: TenderNotice) => void; onClose: () => void; feedback?: string;
 }) {
+  const router = useRouter();
   const [detail, setDetail] = useState<TenderDetail | undefined>(saved?.detail);
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading');
   const [retry, setRetry] = useState(0);
@@ -37,8 +40,8 @@ export function NoticeDetail({ notice, saved, feedback, onSave, onImport, onClos
     <p className="discovery-reference">{current.reference}</p>
     <h2 id="discovery-detail-title">{current.title}</h2>
     <p className="discovery-detail-buyer">{current.buyer || 'Buyer not published'}</p>
-    <div className="discovery-detail-actions"><button type="button" className="discovery-primary" onClick={() => onImport(current)}>Create bid workspace <ArrowRight size={18} aria-hidden="true" /></button><button type="button" className="discovery-secondary" aria-pressed={Boolean(saved)} onClick={() => onSave(current, detail)}><BookmarkSimple size={17} weight={saved ? 'fill' : 'regular'} aria-hidden="true" />{saved ? 'Saved tender' : 'Save tender'}</button></div>
-    <p className="discovery-small">Your proposal starts blank, with the official reference attached.</p>
+    <div className="discovery-detail-actions"><button type="button" className="discovery-primary" onClick={() => { rememberRealityEntry(current, detail); router.push("/tenders/check/" + current.id); }}>Check suitability <ArrowRight size={18} aria-hidden="true" /></button><button type="button" className="discovery-secondary" onClick={() => onImport(current)}>Create bid workspace</button><button type="button" className="discovery-secondary" aria-pressed={Boolean(saved)} onClick={() => onSave(current, detail)}><BookmarkSimple size={17} weight={saved ? 'fill' : 'regular'} aria-hidden="true" />{saved ? 'Saved tender' : 'Save tender'}</button></div>
+    <p className="discovery-small">Check requirements before pursuing this opportunity. Assessments remain browser-local and do not certify eligibility.</p>
     <div className="discovery-eligibility-note" role="note"><WarningCircle size={18} aria-hidden="true"/><p><strong>Check before you bid.</strong> A matching tender is not proof of eligibility. Review every mandatory condition and supporting document{missedBriefing ? ' — the listed compulsory briefing date has passed.' : '.'}</p></div>
     {current.closesAt && Date.parse(current.closesAt) > openedAt && <button type="button" className="discovery-calendar-action" onClick={() => downloadTenderReminder(current)}><CalendarBlank size={17} aria-hidden="true"/> Download a calendar reminder <ArrowUpRight size={14} aria-hidden="true"/></button>}
     {feedback && <p role="status" className="discovery-alert">{feedback}</p>}
