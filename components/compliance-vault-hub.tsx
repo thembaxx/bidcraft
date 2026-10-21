@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Link from 'next/link';
 import {
   ShieldWarning,
   CheckCircle,
@@ -8,6 +9,7 @@ import {
   MagnifyingGlass,
   Scan,
   UploadSimple,
+  WarningCircle,
   Sparkle,
   Wrench,
   FileText,
@@ -97,16 +99,17 @@ export function ComplianceVaultHub({
   return (
     <div className="space-y-6">
       <SouthAfricanBidGuide />
+      <div role="note" className="flex items-start gap-2 rounded-2xl border border-amber-400/35 bg-amber-50 p-4 text-xs leading-6 text-amber-950 dark:bg-[#2D2518] dark:text-amber-100"><WarningCircle size={18} className="mt-1 shrink-0" aria-hidden="true" /><p><strong>Before using AI:</strong> Selected clauses, evidence and uploaded pages may be sent to Google Gemini. Unpaid-tier terms can permit data use and human review. Avoid personal or confidential documents unless your organisation has verified the processing arrangements. Results are suggestions, not certified compliance. <Link href="/ai-disclosure" className="font-bold underline underline-offset-2">AI & data details</Link></p></div>
       {/* Section 1: AI Compliance Discrepancy & Auto-Remediation Engine */}
       <div className="rounded-3xl bg-white dark:bg-[#161918] border border-neutral-200/80 dark:border-neutral-800 p-5">
         <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-neutral-100 dark:border-neutral-800">
           <div>
             <h3 className="text-base font-bold text-[#0D0F0E] dark:text-white flex items-center gap-2">
               <ShieldWarning size={20} weight="bold" className="text-[#168B7A]" />
-              <span>AI Compliance Verification & Discrepancy Remediation</span>
+              <span>AI review & suggested improvements</span>
             </h3>
             <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-0.5">
-              Cross-references mandatory tender thresholds against your company’s audited financials, insurance schedules, and past winning bids.
+              AI compares your supplied clauses against available evidence; it cannot authenticate financials, registrations, certifications or eligibility.
             </p>
           </div>
 
@@ -174,7 +177,7 @@ export function ComplianceVaultHub({
                       className="min-h-[36px] px-3.5 py-1.5 rounded-full bg-[#DDFB82] text-[#0D0F0E] hover:bg-[#e3f776] text-xs font-bold flex items-center gap-1.5 whitespace-nowrap shrink-0 cursor-pointer"
                     >
                       <Wrench size={14} weight="bold" />
-                      <span>Inject Compliant Vault Evidence</span>
+                      <span>Apply suggested wording</span>
                     </button>
                   )}
                 </div>
@@ -194,7 +197,7 @@ export function ComplianceVaultHub({
                   </div>
                   <div className="p-3 rounded-xl bg-[#168B7A]/10 dark:bg-[#168B7A]/15 border border-[#168B7A]/30">
                     <span className="font-semibold text-[#168B7A] dark:text-[#DDFB82] block mb-1">
-                      AI Verified Remediation (Backed by Vault):
+                      AI-suggested wording (review required):
                     </span>
                     <p className="text-[#0D0F0E] dark:text-neutral-100">
                       {disc.recommendedFix}
