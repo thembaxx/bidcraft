@@ -12,7 +12,7 @@ test('all policies render, are discoverable and do not invent operator details',
   await page.goto('/privacy');
   const footer = page.getByRole('navigation', { name: 'Policies' }).last();
   await expect(footer.getByRole('link', { name: 'Privacy' })).toBeVisible();
-  await expect(page.getByText(/browser's localStorage/)).toBeVisible();
+  await expect(page.getByText(/browser.s localStorage/)).toBeVisible();
   await expect(page.getByText(/unpaid services/)).toBeVisible();
   for (const { path, title } of policies) {
     const response = await page.goto(path);
