@@ -47,6 +47,7 @@ export interface RealityCheck {
   reviewed: Record<string, boolean>;
   manualRequirements: RecordedRequirement[];
   completedActions: string[];
+  sourceSnapshot?: TenderDetail;
 }
 export interface Decision {
   state: ResultState;
