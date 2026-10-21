@@ -20,6 +20,7 @@ import {
 } from '@/lib/types';
 
 interface ComplianceVaultHubProps {
+  clauseCount: number;
   discrepancies: ComplianceDiscrepancy[];
   vaultDocs: VaultDocument[];
   onApplyComplianceFix: (discrepancy: ComplianceDiscrepancy) => void;
@@ -38,6 +39,7 @@ interface ComplianceVaultHubProps {
 }
 
 export function ComplianceVaultHub({
+  clauseCount,
   discrepancies,
   vaultDocs,
   onApplyComplianceFix,
@@ -53,9 +55,8 @@ export function ComplianceVaultHub({
   const [searchQuery, setSearchQuery] = useState(
     'ISO 27001 sovereign telemetry encryption and £25M public liability performance bond'
   );
-  const [ocrNotes, setOcrNotes] = useState(
-    'MANDATORY ADDENDUM CLAUSE SEC-8.9: Supplier must provide 24/7 UK-based Security Operations Center (SOC) incident response within 15 minutes and hold Cyber Essentials Plus certification.'
-  );
+  const [ocrNotes, setOcrNotes] = useState('');
+  const [uploadError, setUploadError] = useState<string | null>(null);
 
   const handleVectorSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -65,17 +66,24 @@ export function ComplianceVaultHub({
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+    e.target.value = '';
     if (!file) return;
+    setUploadError(null);
+    if (isOcrRunning) return;
+    if (!['image/jpeg', 'image/png', 'image/webp', 'application/pdf'].includes(file.type) || file.size > 5 * 1024 * 1024) {
+      setUploadError('Choose a JPEG, PNG, WebP, or PDF file up to 5 MB.');
+      return;
+    }
     const reader = new FileReader();
     reader.onload = () => {
       const resultStr = reader.result as string;
       const base64Data = resultStr.split(',')[1];
       onOcrIngest({
         base64Data,
-        mimeType: file.type || 'image/jpeg',
-        rawText: ocrNotes,
+        mimeType: file.type,
       });
     };
+    reader.onerror = () => setUploadError('The file could not be read. Please choose it again.');
     reader.readAsDataURL(file);
   };
 
@@ -92,7 +100,7 @@ export function ComplianceVaultHub({
         <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-neutral-100 dark:border-neutral-800">
           <div>
             <h3 className="text-base font-bold text-[#0D0F0E] dark:text-white flex items-center gap-2">
-              <ShieldWarning size={20} weight="bold" className="text-[#309F92]" />
+              <ShieldWarning size={20} weight="bold" className="text-[#168B7A]" />
               <span>AI Compliance Verification & Discrepancy Remediation</span>
             </h3>
             <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-0.5">
@@ -103,7 +111,7 @@ export function ComplianceVaultHub({
           <button
             onClick={onRunAudit}
             disabled={isAuditing}
-            className="min-h-[40px] px-4 py-2 rounded-full bg-[#0D0F0E] text-white dark:bg-[#EDFF8C] dark:text-[#0D0F0E] text-xs font-bold flex items-center gap-2 whitespace-nowrap shrink-0 cursor-pointer"
+            className="min-h-[40px] px-4 py-2 rounded-full bg-[#0D0F0E] text-white dark:bg-[#DDFB82] dark:text-[#0D0F0E] text-xs font-bold flex items-center gap-2 whitespace-nowrap shrink-0 cursor-pointer"
           >
             <Sparkle size={15} weight="fill" />
             <span>{isAuditing ? 'Running Deep Compliance Check...' : 'Re-Scan Proposal Compliance'}</span>
@@ -113,12 +121,12 @@ export function ComplianceVaultHub({
         <div className="mt-4 space-y-3">
           {discrepancies.length === 0 ? (
             <div className="p-6 rounded-2xl bg-[#F8FAF9] dark:bg-[#111716] text-center space-y-2">
-              <CheckCircle size={28} weight="bold" className="text-[#309F92] mx-auto" />
+              <CheckCircle size={28} weight="bold" className="text-[#168B7A] mx-auto" />
               <p className="text-sm font-bold text-[#0D0F0E] dark:text-white">
-                Zero Unresolved Compliance Discrepancies
+                No recorded compliance flags
               </p>
               <p className="text-xs text-neutral-500">
-                All mandatory RFP clauses are aligned with verified Corporate Vault records.
+                {clauseCount ? 'No issues are recorded. Run an audit after changing your proposal.' : 'Import tender clauses to start reviewing compliance.'}
               </p>
             </div>
           ) : (
@@ -127,7 +135,7 @@ export function ComplianceVaultHub({
                 key={disc.id}
                 className={`rounded-2xl p-4 border transition-colors ${
                   disc.resolved
-                    ? 'bg-[#F8FAF9] dark:bg-[#111716] border-[#309F92]/40'
+                    ? 'bg-[#F8FAF9] dark:bg-[#111716] border-[#168B7A]/40'
                     : 'bg-[#F8F9F8] dark:bg-[#111413] border-amber-500/40'
                 }`}
               >
@@ -140,7 +148,7 @@ export function ComplianceVaultHub({
                     <span
                       className={`font-bold ${
                         disc.resolved
-                          ? 'text-[#309F92]'
+                          ? 'text-[#168B7A]'
                           : disc.severity === 'critical'
                           ? 'text-rose-600 dark:text-rose-400'
                           : 'text-amber-600 dark:text-amber-400'
@@ -158,10 +166,10 @@ export function ComplianceVaultHub({
                     </span>
                   </div>
 
-                  {!disc.resolved && (
+                  {!disc.resolved && disc.severity !== 'verified' && disc.recommendedFix.trim() && (
                     <button
                       onClick={() => onApplyComplianceFix(disc)}
-                      className="min-h-[36px] px-3.5 py-1.5 rounded-full bg-[#EDFF8C] text-[#0D0F0E] hover:bg-[#e3f776] text-xs font-bold flex items-center gap-1.5 whitespace-nowrap shrink-0 cursor-pointer"
+                      className="min-h-[36px] px-3.5 py-1.5 rounded-full bg-[#DDFB82] text-[#0D0F0E] hover:bg-[#e3f776] text-xs font-bold flex items-center gap-1.5 whitespace-nowrap shrink-0 cursor-pointer"
                     >
                       <Wrench size={14} weight="bold" />
                       <span>Inject Compliant Vault Evidence</span>
@@ -182,8 +190,8 @@ export function ComplianceVaultHub({
                       {disc.currentProposalText}
                     </p>
                   </div>
-                  <div className="p-3 rounded-xl bg-[#309F92]/10 dark:bg-[#309F92]/15 border border-[#309F92]/30">
-                    <span className="font-semibold text-[#309F92] dark:text-[#EDFF8C] block mb-1">
+                  <div className="p-3 rounded-xl bg-[#168B7A]/10 dark:bg-[#168B7A]/15 border border-[#168B7A]/30">
+                    <span className="font-semibold text-[#168B7A] dark:text-[#DDFB82] block mb-1">
                       AI Verified Remediation (Backed by Vault):
                     </span>
                     <p className="text-[#0D0F0E] dark:text-neutral-100">
@@ -202,29 +210,30 @@ export function ComplianceVaultHub({
         <div className="lg:col-span-5 rounded-3xl bg-white dark:bg-[#161918] border border-neutral-200/80 dark:border-neutral-800 p-5 flex flex-col justify-between">
           <div>
             <div className="flex items-center gap-2 text-base font-bold text-[#0D0F0E] dark:text-white">
-              <Scan size={20} weight="bold" className="text-[#309F92]" />
+              <Scan size={20} weight="bold" className="text-[#168B7A]" />
               <h4>Vision OCR Scanned Tender Ingestion</h4>
             </div>
             <p className="mt-1 text-xs text-neutral-500 dark:text-neutral-400 leading-relaxed">
-              Upload a scanned tender page (JPEG/PNG) or paste raw addendum text. Gemini Vision OCR extracts mandatory clauses, cross-references the vector vault, and appends a compliant response directly into your proposal.
+              Upload a JPEG, PNG, WebP, or PDF up to 5 MB, or paste tender text. Extract requirements and draft responses against the evidence library, then review the results.
             </p>
 
             <div className="mt-4 space-y-3">
               <label className="block">
                 <span className="text-xs font-semibold text-neutral-600 dark:text-neutral-300">
-                  Simulated Scanned Addendum / OCR Text Input:
+                  Tender requirements / addendum text:
                 </span>
                 <textarea
                   value={ocrNotes}
+                  placeholder="Paste the actual tender requirements or addendum text…"
                   onChange={(e) => setOcrNotes(e.target.value)}
                   rows={3}
-                  className="mt-1.5 w-full rounded-2xl bg-[#F1F1F1] dark:bg-[#0D0F0E] border border-neutral-200 dark:border-neutral-800 p-3 text-xs text-[#0D0F0E] dark:text-white focus:outline-hidden focus:border-[#309F92]"
+                  className="mt-1.5 w-full rounded-2xl bg-[#F8F6EF] dark:bg-[#0D0F0E] border border-neutral-200 dark:border-neutral-800 p-3 text-xs text-[#0D0F0E] dark:text-white focus:outline-hidden focus:border-[#168B7A]"
                 />
               </label>
 
               {lastOcrExtractedText && (
-                <div className="p-3 rounded-2xl bg-[#F8FAF9] dark:bg-[#111716] border border-[#309F92]/30 text-xs space-y-1">
-                  <span className="font-mono font-bold text-[#309F92] dark:text-[#EDFF8C]">
+                <div className="p-3 rounded-2xl bg-[#F8FAF9] dark:bg-[#111716] border border-[#168B7A]/30 text-xs space-y-1">
+                  <span className="font-mono font-bold text-[#168B7A] dark:text-[#DDFB82]">
                     Latest OCR Extraction Added to Proposal:
                   </span>
                   <p className="text-neutral-700 dark:text-neutral-300 line-clamp-3">
@@ -238,23 +247,25 @@ export function ComplianceVaultHub({
           <div className="mt-4 pt-3 border-t border-neutral-100 dark:border-neutral-800 flex flex-wrap items-center gap-2">
             <button
               onClick={handleScanSample}
-              disabled={isOcrRunning}
-              className="min-h-[40px] px-4 py-2 rounded-full bg-[#EDFF8C] text-[#0D0F0E] hover:bg-[#e1f578] text-xs font-bold flex items-center gap-1.5 cursor-pointer"
+              disabled={isOcrRunning || !ocrNotes.trim()}
+              className="min-h-[40px] px-4 py-2 rounded-full bg-[#DDFB82] text-[#0D0F0E] hover:bg-[#e1f578] text-xs font-bold flex items-center gap-1.5 cursor-pointer"
             >
               <Scan size={15} weight="bold" />
               <span>{isOcrRunning ? 'Extracting & Drafting...' : 'Run OCR & Auto-Draft Clause'}</span>
             </button>
 
-            <label className="min-h-[40px] px-4 py-2 rounded-full bg-[#F1F1F1] dark:bg-[#0D0F0E] text-[#0D0F0E] dark:text-white hover:bg-neutral-200 dark:hover:bg-neutral-800 text-xs font-semibold flex items-center gap-1.5 cursor-pointer">
+            <label className="min-h-[40px] px-4 py-2 rounded-full bg-[#F8F6EF] dark:bg-[#0D0F0E] text-[#0D0F0E] dark:text-white hover:bg-neutral-200 dark:hover:bg-neutral-800 text-xs font-semibold flex items-center gap-1.5 cursor-pointer">
               <UploadSimple size={15} weight="bold" />
               <span>Upload Scanned Page</span>
               <input
                 type="file"
-                accept="image/*"
+                accept="image/jpeg,image/png,image/webp,application/pdf"
+                disabled={isOcrRunning}
                 onChange={handleFileUpload}
                 className="hidden"
               />
             </label>
+            {uploadError && <p role="alert" className="w-full text-xs text-rose-600">{uploadError}</p>}
           </div>
         </div>
 
@@ -263,13 +274,13 @@ export function ComplianceVaultHub({
           <div>
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div className="flex items-center gap-2 text-base font-bold text-[#0D0F0E] dark:text-white">
-                <Database size={20} weight="bold" className="text-[#309F92]" />
+                <Database size={20} weight="bold" className="text-[#168B7A]" />
                 <h4>Corporate Vector Knowledge Base (Embeddings Retrieval)</h4>
               </div>
-              <span className="text-xs font-mono text-[#309F92] dark:text-[#EDFF8C]">
+              <span className="text-xs font-mono text-[#168B7A] dark:text-[#DDFB82]">
                 {usedLiveEmbedding
-                  ? 'gemini-embedding-2-preview · Cosine Ranked'
-                  : 'Vector Cosine Index · 5 Verified Records'}
+                  ? 'Live embedding similarity'
+                  : `Local text similarity · ${vaultDocs.length} records`}
               </span>
             </div>
 
@@ -284,13 +295,13 @@ export function ComplianceVaultHub({
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Query past bids, ISO certificates, audited turnover, bonding..."
-                  className="w-full min-h-[40px] pl-9 pr-4 py-2 rounded-full bg-[#F1F1F1] dark:bg-[#0D0F0E] border border-neutral-200 dark:border-neutral-800 text-xs text-[#0D0F0E] dark:text-white focus:outline-hidden focus:border-[#309F92]"
+                  className="w-full min-h-[40px] pl-9 pr-4 py-2 rounded-full bg-[#F8F6EF] dark:bg-[#0D0F0E] border border-neutral-200 dark:border-neutral-800 text-xs text-[#0D0F0E] dark:text-white focus:outline-hidden focus:border-[#168B7A]"
                 />
               </div>
               <button
                 type="submit"
                 disabled={isSearchingVectors}
-                className="min-h-[40px] px-4 py-2 rounded-full bg-[#0D0F0E] text-white dark:bg-[#EDFF8C] dark:text-[#0D0F0E] text-xs font-semibold flex items-center gap-1.5 whitespace-nowrap shrink-0 cursor-pointer"
+                className="min-h-[40px] px-4 py-2 rounded-full bg-[#0D0F0E] text-white dark:bg-[#DDFB82] dark:text-[#0D0F0E] text-xs font-semibold flex items-center gap-1.5 whitespace-nowrap shrink-0 cursor-pointer"
               >
                 <span>{isSearchingVectors ? 'Embedding...' : 'Vector Search'}</span>
                 <ArrowRight size={14} weight="bold" />
@@ -299,9 +310,7 @@ export function ComplianceVaultHub({
 
             <div className="mt-4 space-y-2.5 max-h-[320px] overflow-y-auto pr-1">
               {vaultDocs.map((doc) => {
-                const simPct = doc.similarityScore
-                  ? Math.round(doc.similarityScore * 100)
-                  : 88;
+                const simPct = doc.similarityScore === undefined ? null : Math.round(doc.similarityScore * 100);
                 return (
                   <div
                     key={doc.id}
@@ -309,15 +318,15 @@ export function ComplianceVaultHub({
                   >
                     <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
                       <div className="flex items-center gap-2">
-                        <FileText size={14} className="text-[#309F92]" />
+                        <FileText size={14} className="text-[#168B7A]" />
                         <span className="font-mono font-bold text-[#0D0F0E] dark:text-white">
                           {doc.referenceCode}
                         </span>
                         <span>·</span>
                         <span className="text-neutral-500">{doc.category}</span>
                       </div>
-                      <span className="font-mono font-bold tabular-nums text-[#309F92] dark:text-[#EDFF8C]">
-                        Cosine Similarity: {simPct}%
+                      <span className="font-mono font-bold tabular-nums text-[#168B7A] dark:text-[#DDFB82]">
+                        {simPct === null ? 'Not searched' : `Similarity: ${simPct}%`}
                       </span>
                     </div>
                     <h5 className="text-xs font-bold text-[#0D0F0E] dark:text-white">

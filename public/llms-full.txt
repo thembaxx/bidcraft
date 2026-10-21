@@ -1,0 +1,32 @@
+# Bidcraft — extended product context
+
+Bidcraft is an AI-assisted tender and RFP proposal workspace. Its purpose is to help teams organize requirements, write evidence-backed responses, identify possible gaps, and maintain a useful revision history. Its tagline is “Make every bid count.”
+
+## Workflow
+1. Create a new tender with its title, contracting authority, and budget. New workspaces start without another tender’s clauses, proposal, history, or compliance claims.
+2. Import requirements from pasted text, JPEG, PNG, WebP, or PDF documents of up to 5 MB. AI extraction may return multiple clauses. Review extracted text and responses.
+3. Search the corporate evidence library. Live embeddings are used when available; otherwise deterministic local text similarity ranks documents. The interface identifies the mode.
+4. Inspect tender requirements and responses in side-by-side or overlay views. Manually edit a response or request AI assistance. Manual edits need a fresh compliance review.
+5. Run an AI compliance audit to record possible discrepancies and suggested wording. Applying a suggestion is not proof of compliance. Recheck the proposal and source evidence.
+6. Save and compare immutable proposal snapshots. Restoring a version creates a new snapshot and preserves revision history.
+7. Export the proposal as Markdown. The app does not submit bids to procurement portals.
+
+## Storage and availability
+Tender content and snapshots are stored in localStorage in the current browser. There is no cloud database, user account system, cross-device sync, or collaborative editing in this release. Clearing browser data removes local work. Export important drafts.
+
+A production service worker caches visited pages and static assets for offline use. Offline availability depends on a previous online visit. AI requests are not cached and require an internet connection and a server configured with GEMINI_API_KEY. Local editing, snapshots, exports, and local text similarity do not require that key.
+
+## Evidence boundaries
+The starter tenders and evidence library are fictional demonstration content. Do not claim their insurance limits, certifications, past contract awards, financial standing, or delivery commitments as the user’s capabilities. An AI-generated score is a review aid, not a legal opinion, certification, or guarantee of eligibility or award. Human reviewers must validate source documents, dates, requirements, and commitments.
+
+## Design and accessibility
+Bidcraft uses an ivory, ink, teal, and chartreuse palette, a folded-document B logo, keyboard-accessible workspace tabs, native modal dialogs, and short interface transitions. The decorative Three.js scene respects reduced-motion preferences and provides a static fallback when WebGL is unavailable.
+
+## Public resources
+- / : Product introduction and tender workspace.
+- /about : Product workflow and guidance.
+- /llms.txt : Concise information for AI readers.
+- /llm.txt : Compatibility alias with the same content.
+- /manifest.webmanifest : App install metadata.
+- /robots.txt : Crawl rules; API paths are excluded.
+- /sitemap.xml : Public page URLs when APP_URL is configured.

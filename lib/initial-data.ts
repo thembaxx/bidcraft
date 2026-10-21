@@ -1,5 +1,5 @@
 import { TenderProject, VaultDocument } from './types';
-import { deterministicEmbedding } from './gemini';
+import { deterministicEmbedding } from './search';
 
 const RAW_VAULT_DOCS: Omit<VaultDocument, 'embedding'>[] = [
   {
@@ -10,7 +10,7 @@ const RAW_VAULT_DOCS: Omit<VaultDocument, 'embedding'>[] = [
     referenceCode: 'CERT-SEC-27001-UK',
     excerpt: 'Certified zero-trust cloud infrastructure, AES-256 encryption at rest, TLS 1.3 in transit, and 24/7 sovereign SOC monitoring.',
     fullText:
-      'Quora Infrastructure Systems Ltd holds active ISO/IEC 27001:2022 Certification (Cert No. BSI-884920) valid through December 2028. All municipal and government telemetry data is encrypted with FIPS 140-3 validated AES-256 modules at rest and TLS 1.3 in transit. Data residency is strictly enforced within UK & EU sovereign data centers with zero third-party sub-processor transfer.',
+      'Bidcraft Infrastructure Systems Ltd holds active ISO/IEC 27001:2022 Certification (Cert No. BSI-884920) valid through December 2028. All municipal and government telemetry data is encrypted with FIPS 140-3 validated AES-256 modules at rest and TLS 1.3 in transit. Data residency is strictly enforced within UK & EU sovereign data centers with zero third-party sub-processor transfer.',
   },
   {
     id: 'vault-past-bid-bristol',
@@ -70,7 +70,7 @@ const CLAUSES_TENDER_1 = [
       'The Contractor MUST maintain valid ISO/IEC 27001:2022 certification and guarantee that all telemetry, ANPR, and grid load data remains exclusively within UK sovereign data centers encrypted with FIPS 140-3 AES-256.',
     proposalSectionTitle: 'Section 4.1 — Sovereign Cloud & Cryptographic Architecture',
     proposalResponseText:
-      'Quora Infrastructure Systems maintains full ISO/IEC 27001:2022 certification (Ref: BSI-884920). All grid and charger telemetry is encrypted at rest using FIPS 140-3 validated AES-256 modules and transmitted over mutually authenticated TLS 1.3 channels. Primary and disaster-recovery clusters reside strictly within UK sovereign facilities (London & Manchester Tier-IV).',
+      'Bidcraft Infrastructure Systems maintains full ISO/IEC 27001:2022 certification (Ref: BSI-884920). All grid and charger telemetry is encrypted at rest using FIPS 140-3 validated AES-256 modules and transmitted over mutually authenticated TLS 1.3 channels. Primary and disaster-recovery clusters reside strictly within UK sovereign facilities (London & Manchester Tier-IV).',
     complianceStatus: 'compliant' as const,
     confidenceScore: 98,
     matchedVaultDocIds: ['vault-iso-27001'],
@@ -145,7 +145,7 @@ export const INITIAL_TENDERS: TenderProject[] = [
     purchaseTimeframe: 'Award scheduled Q1 2027',
     procurementType: 'UK Open Procedure (PCR 2015)',
     executiveSummary:
-      'Quora Infrastructure Systems submits this compliant technical and commercial proposal for the Greater Manchester Autonomous Grid & EV Infrastructure programme (Ref: TFGM-PROC-2026-884). Leveraging our proven deployment of 1,450 OCPP 2.0.1 smart charging nodes in Bristol (99.96% availability) and ISO/IEC 27001:2022 certified UK sovereign cloud control plane, we deliver zero-risk turnkey execution within the £4.25M capital envelope.',
+      'Bidcraft Infrastructure Systems submits this compliant technical and commercial proposal for the Greater Manchester Autonomous Grid & EV Infrastructure programme (Ref: TFGM-PROC-2026-884). Leveraging our proven deployment of 1,450 OCPP 2.0.1 smart charging nodes in Bristol (99.96% availability) and ISO/IEC 27001:2022 certified UK sovereign cloud control plane, we deliver zero-risk turnkey execution within the £4.25M capital envelope.',
     clauses: CLAUSES_TENDER_1,
     discrepancies: [
       {
@@ -157,7 +157,7 @@ export const INITIAL_TENDERS: TenderProject[] = [
         currentProposalText: 'States £15,000,000 Public Liability and proposes a letter of comfort instead of a 10% surety bond.',
         vaultEvidenceCited: 'LEG-INS-2026-LLOYDS (Lloyd’s Syndicate 2987 Policy: £25M Public Liability, £15M Indemnity & 15% Bond Facility)',
         recommendedFix:
-          'Quora Infrastructure Systems evidences full statutory compliance underwritten by Lloyd’s Syndicate 2987 (Policy #LL-994021-26), providing £25,000,000 Public & Product Liability (exceeding the £20M mandate) and £15,000,000 Professional Indemnity cover. Furthermore, we confirm an unconditional 10% On-Demand Performance Bond issued within 7 days of contract award.',
+          'Bidcraft Infrastructure Systems evidences full statutory compliance underwritten by Lloyd’s Syndicate 2987 (Policy #LL-994021-26), providing £25,000,000 Public & Product Liability (exceeding the £20M mandate) and £15,000,000 Professional Indemnity cover. Furthermore, we confirm an unconditional 10% On-Demand Performance Bond issued within 7 days of contract award.',
         resolved: false,
       },
       {
@@ -183,14 +183,14 @@ export const INITIAL_TENDERS: TenderProject[] = [
         summary: 'Refined OCPP 2.0.1 SLA metrics with Bristol City Council reference telemetry.',
         complianceScoreSnapshot: 90,
         executiveSummarySnapshot:
-          'Quora Infrastructure Systems submits this compliant technical and commercial proposal for the Greater Manchester Autonomous Grid & EV Infrastructure programme (Ref: TFGM-PROC-2026-884). Leveraging our proven deployment of 1,450 OCPP 2.0.1 smart charging nodes in Bristol (99.96% availability) and ISO/IEC 27001:2022 certified UK sovereign cloud control plane, we deliver zero-risk turnkey execution within the £4.25M capital envelope.',
+          'Bidcraft Infrastructure Systems submits this compliant technical and commercial proposal for the Greater Manchester Autonomous Grid & EV Infrastructure programme (Ref: TFGM-PROC-2026-884). Leveraging our proven deployment of 1,450 OCPP 2.0.1 smart charging nodes in Bristol (99.96% availability) and ISO/IEC 27001:2022 certified UK sovereign cloud control plane, we deliver zero-risk turnkey execution within the £4.25M capital envelope.',
         clausesSnapshot: CLAUSES_TENDER_1,
       },
       {
         id: 'ver-2',
         versionNumber: 'v1.2',
         timestamp: '2026-10-20 18:40',
-        author: 'Quora Vector Engine',
+        author: 'Bidcraft AI',
         triggerType: 'OCR Clause Sync',
         summary: 'Ingested Addendum #2 scanned PDF via Vision OCR; mapped ISO 27001 sovereign residency clause.',
         complianceScoreSnapshot: 84,
@@ -211,7 +211,7 @@ export const INITIAL_TENDERS: TenderProject[] = [
         id: 'ver-1',
         versionNumber: 'v1.0',
         timestamp: '2026-10-19 11:05',
-        author: 'Quora Vector Engine',
+        author: 'Bidcraft AI',
         triggerType: 'AI Auto-Draft',
         summary: 'First zero-shot proposal draft synthesized from 5 corporate vault documents.',
         complianceScoreSnapshot: 72,
