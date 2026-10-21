@@ -26,7 +26,8 @@ test('assessment rules distinguish missing sources, self-report, blockers and re
   const yes = { ...base, packReviewed: true, answers: { briefing: 'yes' as const } };
   expect(evaluateRealityCheck(notice, detail, yes, true).state).toBe('needs_confirmation');
   const reviewed = { ...yes, reviewed: { briefing: true } };
-  expect(evaluateRealityCheck(notice, detail, reviewed, true).state).toBe('potential_fit');
+  // A checked briefing is not a substitute for the complete tender pack.
+  expect(evaluateRealityCheck(notice, detail, reviewed, true).state).toBe('insufficient_source_information');
   expect(evaluateRealityCheck(notice, { ...detail, documents: [] }, reviewed, true).state).toBe('insufficient_source_information');
   expect(evaluateRealityCheck(notice, { ...detail, deadlineConflict: true }, reviewed, true).state).toBe('insufficient_source_information');
   const stale = { ...reviewed, sourceFingerprint: sourceFingerprint(detail) };
@@ -71,6 +72,17 @@ test('mobile reality checker supports self-report, source warning and actionable
   await page.getByText('Attend the compulsory briefing').click();
   await page.getByLabel('Answer for Attend the compulsory briefing').selectOption('yes');
   await page.getByRole('checkbox', { name: /I personally checked supporting evidence/ }).check();
+  await page.getByRole('button', { name: 'Update Reality Check' }).click();
+  await expect(page.getByRole('heading', { name: 'Insufficient source information' })).toBeVisible();
+  await page.getByRole('button', { name: 'Requirements', exact: true }).click();
+  await page.getByRole('textbox', { name: 'Requirement title' }).fill('Signed supplier declaration');
+  await page.getByRole('textbox', { name: 'Exact source excerpt' }).fill('A signed supplier declaration must be provided with the tender.');
+  await page.getByRole('textbox', { name: 'Official eTender document or listing URL' }).fill(tenderDocument.url);
+  await page.getByRole('button', { name: 'Add sourced requirement' }).click();
+  await page.getByText('Signed supplier declaration', { exact: true }).click();
+  await page.getByLabel('Answer for Signed supplier declaration').selectOption('yes');
+  await page.getByRole('checkbox', { name: /I personally checked supporting evidence/ }).last().check();
+  await page.getByRole('checkbox', { name: /I personally reviewed the original tender pack/ }).check();
   await page.getByRole('button', { name: 'Update Reality Check' }).click();
   await expect(page.getByRole('heading', { name: 'Potential fit' })).toBeVisible();
   await page.getByRole('button', { name: 'Action plan', exact: true }).click();
