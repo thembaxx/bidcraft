@@ -38,7 +38,7 @@ jobs:
           const fs = require('fs');
           const pkg = JSON.parse(fs.readFileSync('package.json','utf8'));
           const next = require('next/package.json').version;
-          const eslintNext = require('eslint-config-next/package.json').version;
+          const eslintNext = JSON.parse(fs.readFileSync('node_modules/eslint-config-next/package.json','utf8')).version;
           const react = require('react/package.json').version;
           const reactDom = require('react-dom/package.json').version;
           if (next !== eslintNext) throw Error('Next and eslint-config-next mismatch: '+next+' vs '+eslintNext);
