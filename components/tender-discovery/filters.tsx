@@ -3,6 +3,7 @@
 import { useState, type FormEvent, type ReactNode } from 'react';
 import { MagnifyingGlass, SlidersHorizontal, ArrowRight, X } from '@phosphor-icons/react';
 import type { DiscoveryFacets, DiscoveryFilters } from '@/lib/discovery/types';
+import { EasyButton } from '@/components/ui/easy-button';
 
 const provinces = ['Eastern Cape', 'Free State', 'Gauteng', 'KwaZulu-Natal', 'Limpopo', 'Mpumalanga', 'National', 'North West', 'Northern Cape', 'Western Cape'];
 
@@ -18,7 +19,7 @@ export function DiscoverySearch({ filters, facets, busy, onApply, onReset, child
   return <form onSubmit={submit} className="discovery-search-form" aria-label="Search South African tenders">
     <div className="discovery-search-bar">
       <label className="discovery-query"><MagnifyingGlass size={22} aria-hidden="true" /><span className="sr-only">Search tenders</span><input type="search" name="q" defaultValue={filters.q} maxLength={180} placeholder="What does your business do? Try solar, cleaning, IT…" /></label>
-      <button type="submit" className="discovery-primary">Search <ArrowRight size={18} aria-hidden="true" /></button>
+      <EasyButton type="submit" className="discovery-primary" trailingIcon={<ArrowRight size={18} aria-hidden="true" />}>Search</EasyButton>
     </div>
     <div className="discovery-layout">
       <aside className="discovery-filters" data-expanded={expanded} aria-label="Tender filters">
@@ -34,7 +35,7 @@ export function DiscoverySearch({ filters, facets, busy, onApply, onReset, child
             <label>Briefing session<select aria-label="Briefing session" name="briefing" defaultValue={filters.briefing}><option value="any">Any briefing requirement</option><option value="required">Compulsory briefing</option><option value="optional">Optional briefing</option><option value="none">No briefing listed</option><option value="unknown">Requirement not published</option></select></label>
             <label className="discovery-checkbox"><input type="checkbox" name="notices" value="all" defaultChecked={filters.notices === 'all'} /><span>Include information requests and result notices</span></label>
           </details>
-          <button type="submit" className="discovery-primary discovery-apply">Apply filters <ArrowRight size={17} aria-hidden="true" /></button>
+          <EasyButton type="submit" className="discovery-primary discovery-apply" trailingIcon={<ArrowRight size={17} aria-hidden="true" />}>Apply filters</EasyButton>
           <button type="button" className="discovery-reset" onClick={onReset}>Clear all filters</button>
           <p className="discovery-filter-note">From National Treasury’s advertised notices. Coverage depends on what buyers publish.</p>
         </div>

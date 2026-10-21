@@ -21,6 +21,7 @@ import {
   VaultDocument,
 } from '@/lib/types';
 import { SouthAfricanBidGuide } from '@/components/south-african-bid-guide';
+import { EasyButton } from '@/components/ui/easy-button';
 
 interface ComplianceVaultHubProps {
   clauseCount: number;
@@ -113,14 +114,11 @@ export function ComplianceVaultHub({
             </p>
           </div>
 
-          <button
-            onClick={onRunAudit}
-            disabled={isAuditing}
-            className="min-h-[40px] px-4 py-2 rounded-full bg-[#0D0F0E] text-white dark:bg-[#DDFB82] dark:text-[#0D0F0E] text-xs font-bold flex items-center gap-2 whitespace-nowrap shrink-0 cursor-pointer"
-          >
-            <Sparkle size={15} weight="fill" />
-            <span>{isAuditing ? 'Running Deep Compliance Check...' : 'Re-Scan Proposal Compliance'}</span>
-          </button>
+          <EasyButton variant="secondary" loading={isAuditing} loadingText="Running Deep Compliance Check..."
+            onClick={onRunAudit} leadingIcon={<Sparkle size={15} weight="fill" />}
+            className="min-h-11 whitespace-nowrap shrink-0">
+            Re-Scan Proposal Compliance
+          </EasyButton>
         </div>
 
         <div className="mt-4 space-y-3">

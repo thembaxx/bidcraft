@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import { BrandWordmark } from '@/components/brand-logo';
 import { getSiteUrl } from '@/lib/site';
 import { SouthAfricanBidGuide } from '@/components/south-african-bid-guide';
+import { AboutFaq } from '@/components/about-faq';
 
 export const metadata: Metadata = {
   title: 'A more considered way to bid',
@@ -25,13 +26,7 @@ export default function About() {
       <div className="mt-16 grid gap-x-12 gap-y-10 sm:grid-cols-2">{steps.map(([number, title, description]) => <section key={number} className="border-t border-neutral-300 pt-5"><p className="font-mono text-xs text-[#168B7A]">{number}</p><h2 className="mb-3 mt-4 text-xl font-bold tracking-tight">{title}</h2><p className="text-sm leading-7 text-neutral-500">{description}</p></section>)}</div>
       <section className="mt-16 rounded-3xl bg-white p-7 dark:bg-[#161918]">
         <h2 className="text-2xl font-bold tracking-tight">A few useful things to know.</h2>
-        <div className="mt-6 space-y-5 text-sm leading-7">
-          <div><h3 className="font-bold">Where are my proposals stored?</h3><p className="text-neutral-500">Tender work is saved in this browser’s local storage. It does not sync across devices. Export important drafts; clearing site data removes local work.</p></div>
-          <div><h3 className="font-bold">What can I do offline?</h3><p className="text-neutral-500">After visiting online, the installed app can cache the workspace. Local edits, snapshots, exports, and local text search work without an AI connection. AI drafting, audits, and OCR need server configuration and a connection.</p></div>
-          <div><h3 className="font-bold">Are the example records real company evidence?</h3><p className="text-neutral-500">The South African example tenders and evidence are fictional demonstration content, separate from the live notices in tender discovery. They do not establish your organisation’s certifications, insurance, or capabilities.</p></div>
-          <div><h3 className="font-bold">How is personal information handled?</h3><p className="text-neutral-500">Using AI sends selected clauses, documents and evidence to the app server and Google Gemini. Google’s unpaid API tier can use requests to improve products and involve human reviewers; the operator must verify actual billing and processing terms. Avoid confidential or personal records unless you have appropriate rights and safeguards. Browser-local work has no account access controls. See the privacy and AI disclosures. <a className="font-semibold text-[#12695C] underline dark:text-[#9BDBBE]" href="https://inforegulator.org.za/" target="_blank" rel="noopener noreferrer">Information Regulator guidance</a></p></div>
-          <div><h3 className="font-bold">Does a compliance score guarantee eligibility?</h3><p className="text-neutral-500">Scores and generated wording are review aids. Validate all claims, contractual commitments, and eligibility requirements with the source documents and your bid team.</p></div>
-        </div>
+        <div className="mt-6"><AboutFaq /></div>
       </section>
       <section id="sa-bidding-guide" className="mt-10 scroll-mt-8"><h2 className="mb-4 text-2xl font-bold tracking-tight">Prepare for a South African bid.</h2><SouthAfricanBidGuide /></section>
       <nav aria-label="Legal and data notices" className="mt-10 flex flex-wrap gap-4 text-sm font-semibold text-[#12695C] dark:text-[#9BDBBE]"><Link href="/privacy">Privacy notice</Link><Link href="/terms">Terms of use</Link><Link href="/data-sources">Data sources</Link><Link href="/ai-disclosure">AI limitations</Link></nav>

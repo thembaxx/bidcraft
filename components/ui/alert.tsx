@@ -3,12 +3,12 @@
 
 import * as React from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { CircleAlert, CircleCheck, Info, TriangleAlert, X, type LucideIcon } from "lucide-react";
+import { WarningCircle, CheckCircle, Info, Warning, X, type Icon } from "@phosphor-icons/react";
 import { cn } from "../../lib/utils";
 
 export type AlertTone = "neutral" | "info" | "success" | "warning" | "danger";
 
-const tones: Record<AlertTone, { box: string; icon: string; Icon: LucideIcon }> = {
+const tones: Record<AlertTone, { box: string; icon: string; Icon: Icon }> = {
   neutral: {
     box: "border-neutral-200 bg-neutral-50/70 dark:border-neutral-800 dark:bg-neutral-900/60",
     icon: "text-neutral-500 dark:text-neutral-400",
@@ -22,17 +22,17 @@ const tones: Record<AlertTone, { box: string; icon: string; Icon: LucideIcon }> 
   success: {
     box: "border-emerald-200 bg-emerald-50/70 dark:border-emerald-500/30 dark:bg-emerald-500/12",
     icon: "text-emerald-600 dark:text-emerald-400",
-    Icon: CircleCheck,
+    Icon: CheckCircle,
   },
   warning: {
     box: "border-amber-200 bg-amber-50/70 dark:border-amber-500/30 dark:bg-amber-500/12",
     icon: "text-amber-600 dark:text-amber-400",
-    Icon: TriangleAlert,
+    Icon: Warning,
   },
   danger: {
     box: "border-red-200 bg-red-50/70 dark:border-red-500/30 dark:bg-red-500/12",
     icon: "text-red-600 dark:text-red-400",
-    Icon: CircleAlert,
+    Icon: WarningCircle,
   },
 };
 

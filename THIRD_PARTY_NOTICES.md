@@ -32,3 +32,15 @@ The unmodified drawing kit files in `vendor/anatomy` are pinned to commit `1482e
 ## South African procurement data
 
 Tender discovery republishes data supplied through National Treasury's eTender portal and OCDS API. The [publication policy](https://data.etenders.gov.za/Home/LearnMore) permits commercial and non-commercial reuse and republication with a link to the original source. The [OCDS API schema](https://ocds-api.etenders.gov.za/swagger/v1/swagger.json) identifies the Open Data Commons Public Domain Dedication and Licence (PDDL). Source links and provider attribution are retained. This data is not a complete or guaranteed-current record of South African procurement.
+
+
+## EasyUI component integrations (2026-10-21)
+
+The following components are adapted from the MIT-licensed [EasyUI source](https://github.com/Surajmaurya1/easyui) by Suraj Maurya, under the MIT copyright notice above:
+
+- [Animated Number](https://easyui.site/components/animated-number) — used for Today KPI values; adjusted for en-ZA locale and accessible output.
+- [Badge](https://easyui.site/components/badge) — used for tender status, deadline and briefing indicators; toned to Bidcraft and reduced-motion-aware.
+- [Button](https://easyui.site/components/button) — used for tender search/apply and AI audit with loading/tap states.
+- [FAQ](https://easyui.site/components/faq) — used for About and feature-limitation disclosures with search and accessible accordion controls.
+
+Existing EasyUI Animated Tabs and Alert remain in use. Alert now uses Phosphor icons, like all new adaptations. We intentionally avoid copying EasyUI's default dark styling or adding unnecessary animation dependencies: components retain Bidcraft's Urbanist type, paper/teal/ink/chartreuse palette and the existing `motion/react` package. More dramatic EasyUI components (loading page transitions, hover-only menus, animated input gimmicks) are deliberately excluded from critical deadline and legal interfaces. The adaptations retain license attribution, are source-owned, and should be tested when upstream implementations change.

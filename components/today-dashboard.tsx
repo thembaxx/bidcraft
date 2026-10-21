@@ -7,6 +7,8 @@ import { motion, useReducedMotion } from 'motion/react';
 import { readSavedOpportunities } from '@/lib/discovery/storage';
 import { TENDER_STORAGE_KEY, type SavedTender } from '@/lib/discovery/types';
 import { isTender } from '@/lib/validation';
+import { AnimatedNumber } from '@/components/ui/animated-number';
+import { StatusBadge } from '@/components/ui/status-badge';
 
 type TodaySnapshot = { saved: SavedTender[]; activeBids: number };
 const EMPTY: TodaySnapshot = { saved: [], activeBids: 0 };
@@ -65,7 +67,7 @@ export function TodayDashboard() {
         { label: 'Due within 7 days', value: urgent.length, icon: Clock },
       ].map(({ label, value, icon: Icon }) => <div key={label} className="rounded-3xl border border-neutral-200/80 bg-white/75 p-4 dark:border-neutral-800 dark:bg-[#161918] sm:p-6">
         <Icon size={20} weight="regular" className="mb-3 text-[#168B7A] dark:text-[#9BDBBE]" aria-hidden="true"/>
-        <p className="text-3xl font-semibold tabular-nums tracking-tight">{ready ? value : '—'}</p>
+        <p className="text-3xl font-semibold tabular-nums tracking-tight">{ready ? <AnimatedNumber value={value} label={label} /> : '—'}</p>
         <p className="mt-1 text-xs text-neutral-500 dark:text-neutral-400">{label}</p>
       </div>)}
     </div>
@@ -74,7 +76,7 @@ export function TodayDashboard() {
         <div className="mb-5 flex items-center gap-2"><Clock size={20} className="text-[#168B7A] dark:text-[#9BDBBE]" aria-hidden="true"/><h2 id="attention-title" className="text-lg font-bold tracking-tight">Needs your attention</h2></div>
         {!ready ? <p className="text-sm text-neutral-500" role="status">Checking your saved bids…</p> : next ? <div className="space-y-4">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="rounded-full bg-[#FFF3D9] px-3 py-1 text-[11px] font-bold text-[#805218] dark:bg-[#3C2D18] dark:text-[#F2CA80]">{daysRemaining(next.notice.closesAt!, now)} days remaining</span>
+            <StatusBadge tone="warning" dot pulse={daysRemaining(next.notice.closesAt!, now) <= 2}>{daysRemaining(next.notice.closesAt!, now)} days remaining</StatusBadge>
             {next.notice.briefing === 'required' && <span className="inline-flex items-center gap-1 text-xs text-amber-700 dark:text-amber-300"><WarningCircle size={15}/> Compulsory briefing: verify attendance</span>}
           </div>
           <h3 className="text-xl font-semibold leading-snug tracking-tight">{next.notice.title}</h3>
