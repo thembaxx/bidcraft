@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
-import { ArrowLeft, ArrowRight, ArrowSquareOut, ArrowsClockwise, CalendarBlank, CaretDown, CheckCircle, ClipboardText, FileSearch, FileText, Info, Plus, ShieldWarning, WarningCircle, X } from '@phosphor-icons/react';
+import { ArrowLeft, ArrowRight, ArrowSquareOut, ArrowsClockwise, CaretDown, CheckCircle, ClipboardText, FileSearch, FileText, Info, Plus, ShieldWarning, WarningCircle, X } from '@phosphor-icons/react';
 import { importNoticeToWorkspace, isTenderDetail } from '@/lib/discovery/storage';
 import { formatTenderDate } from '@/lib/discovery/model';
 import type { TenderDetail, TenderNotice } from '@/lib/discovery/types';
@@ -45,10 +45,17 @@ export function TenderRealityCheck({ id }: { id: string }) {
   const [newKind, setNewKind] = useState<RequirementKind>('mandatory');
 
   useEffect(() => {
-    const entry = readRealityEntry(id);
-    const previous = readRealityCheck(id);
-    setNotice(entry.notice); setDetail(entry.detail || previous.sourceSnapshot || null);
-    setCheck(previous); setProfile(readSupplierProfile()); setReady(true);
+    // Browser storage is not available to the server render. Hydrate in a cancellable
+    // microtask instead of triggering a synchronous state cascade in the effect.
+    let cancelled = false;
+    queueMicrotask(() => {
+      if (cancelled) return;
+      const entry = readRealityEntry(id);
+      const previous = readRealityCheck(id);
+      setNotice(entry.notice); setDetail(entry.detail || previous.sourceSnapshot || null);
+      setCheck(previous); setProfile(readSupplierProfile()); setReady(true);
+    });
+    return () => { cancelled = true; };
   }, [id]);
   useEffect(() => {
     if (!ready) return;
