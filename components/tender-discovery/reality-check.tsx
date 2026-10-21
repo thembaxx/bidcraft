@@ -8,7 +8,7 @@ import { ArrowLeft, ArrowRight, ArrowSquareOut, ArrowsClockwise, CaretDown, Chec
 import { importNoticeToWorkspace, isTenderDetail } from '@/lib/discovery/storage';
 import { formatTenderDate } from '@/lib/discovery/model';
 import type { TenderDetail, TenderNotice } from '@/lib/discovery/types';
-import { EMPTY_PROFILE, emptyCheck, evaluateRealityCheck, officialRequirementLink, resultLabel, sourceChanges, sourceFingerprint, type Answer, type RecordedRequirement, type RequirementKind, type RealityCheck, type SupplierProfile } from '@/lib/suitability/model';
+import { EMPTY_PROFILE, emptyCheck, evaluateRealityCheck, officialRequirementLink, resultLabel, sourceChanges, sourceFingerprint, supplierContext, type Answer, type RecordedRequirement, type RequirementKind, type RealityCheck, type SupplierProfile } from '@/lib/suitability/model';
 import { readRealityCheck, readRealityEntry, readSupplierProfile, writeRealityCheck, writeSupplierProfile } from '@/lib/suitability/storage';
 
 const provinces = ['Eastern Cape','Free State','Gauteng','KwaZulu-Natal','Limpopo','Mpumalanga','North West','Northern Cape','Western Cape','National'];
@@ -188,6 +188,11 @@ export function TenderRealityCheck({ id }: { id: string }) {
               <div><p className="text-sm font-semibold">{c.label}</p><p className="text-xs leading-6 text-neutral-500 dark:text-neutral-400">{c.state.replaceAll('_',' ')} · {c.source === 'notice_metadata' ? 'Treasury listing' : 'User-recorded source, not independently verified'}</p></div>
             </div>) : <p className="text-sm leading-7 text-neutral-500">No mandatory requirements have been established from the document pack. The tender title alone cannot determine suitability.</p>}
             <button type="button" className={secondary} onClick={() => setScreen('requirements')}>Review each requirement <ArrowRight size={16}/></button>
+          </section>
+          <section className={card + ' space-y-2'}>
+            <div className="flex flex-wrap items-center justify-between gap-2"><h2 className="text-sm font-bold">Your business context</h2><button type="button" className="min-h-11 text-xs font-bold text-[#12695C] dark:text-[#9BDBBE]" onClick={() => setScreen('profile')}>Edit profile</button></div>
+            <p className="text-xs leading-6 text-neutral-500 dark:text-neutral-400">Advisory prompts from your saved, self-reported profile; these do not independently establish eligibility.</p>
+            <ul className="list-disc space-y-1 pl-4 text-xs leading-6 text-neutral-600 dark:text-neutral-300">{supplierContext(notice, profile).map(x => <li key={x}>{x}</li>)}</ul>
           </section>
           <section className={card + ' space-y-2'}>
             <h2 className="text-sm font-bold">Important limitations</h2>
