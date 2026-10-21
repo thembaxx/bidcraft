@@ -247,3 +247,10 @@
 @media (prefers-reduced-motion: reduce) {
   .discovery-search-bar, .discovery-notice h3 svg, .discovery-chips button, .discovery-icon-button { transition: none; }
 }
+
+/* Tender Reality Check entry has a clear primary action without squeezing mobile buttons. */
+@media (max-width: 680px) {
+  .discovery-detail-actions > button:first-child { flex: 1 1 100%; }
+  .discovery-detail-actions > button:not(:first-child) { flex: 1 1 calc(50% - 6px); }
+  .discovery-detail-actions { position: static; }
+}
