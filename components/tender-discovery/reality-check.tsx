@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
-import { ArrowLeft, ArrowRight, ArrowSquareOut, ArrowsClockwise, CaretDown, CheckCircle, ClipboardText, FileSearch, FileText, Info, Plus, ShieldWarning, WarningCircle, X } from '@phosphor-icons/react';
+import { ArrowLeft, ArrowRight, ArrowSquareOut, ArrowsClockwise, CaretDown, CheckCircle, ClipboardText, FileText, Info, Plus, ShieldWarning, WarningCircle, X } from '@phosphor-icons/react';
 import { importNoticeToWorkspace, isTenderDetail } from '@/lib/discovery/storage';
 import { formatTenderDate } from '@/lib/discovery/model';
 import type { TenderDetail, TenderNotice } from '@/lib/discovery/types';
@@ -260,7 +260,7 @@ export function TenderRealityCheck({ id }: { id: string }) {
         </>}
       </motion.div>
     </AnimatePresence>
-    {screen !== 'profile' && <button type="button" className="inline-flex min-h-11 items-center gap-2 text-xs font-semibold text-[#12695C] dark:text-[#9BDBBE]" onClick={() => setScreen('profile')}><FileSearch size={16}/> Edit reusable business profile</button>}
+    {screen !== 'profile' && <button type="button" className="inline-flex min-h-11 items-center gap-2 text-xs font-semibold text-[#12695C] dark:text-[#9BDBBE]" onClick={() => setScreen('profile')}><FileText size={16}/> Edit reusable business profile</button>}
     {message && <div role="status" className="rounded-xl bg-[#E8F1E9] p-3 text-xs text-[#12695C] dark:bg-[#24342A] dark:text-[#9BDBBE]">{message}<button type="button" aria-label="Dismiss message" className="ml-4 min-h-11 font-semibold" onClick={() => setMessage('')}>Dismiss</button></div>}
     <footer className="space-y-2 border-t border-neutral-200 pt-5 text-xs leading-6 text-neutral-600 dark:border-neutral-800 dark:text-neutral-400">
       <p>Bidcraft does not verify CSD, SARS or cidb status, certify eligibility, submit bids or send guaranteed notifications. Your profile and work are stored only in this browser. Manual inputs and sources require independent review.</p>
