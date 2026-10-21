@@ -33,7 +33,7 @@ export function ComplianceScoreGauge({
               onClick={onRunAudit}
               disabled={isAuditing}
               title="Run AI Compliance Audit"
-              className="min-h-[36px] min-w-[36px] rounded-full border border-neutral-200 dark:border-neutral-800 flex items-center justify-center text-neutral-600 dark:text-neutral-300 hover:bg-[#EDFF8C] hover:text-[#0D0F0E] transition-colors cursor-pointer"
+              className="min-h-[36px] min-w-[36px] rounded-full border border-neutral-200 dark:border-neutral-800 flex items-center justify-center text-neutral-600 dark:text-neutral-300 hover:bg-[#DDFB82] hover:text-[#0D0F0E] transition-colors cursor-pointer"
             >
               <DotsThree size={18} weight="bold" />
             </button>
@@ -41,7 +41,7 @@ export function ComplianceScoreGauge({
               onClick={onRunAudit}
               disabled={isAuditing}
               title="Re-evaluate with Gemini"
-              className="min-h-[36px] min-w-[36px] rounded-full border border-neutral-200 dark:border-neutral-800 flex items-center justify-center text-neutral-600 dark:text-neutral-300 hover:bg-[#EDFF8C] hover:text-[#0D0F0E] transition-colors cursor-pointer"
+              className="min-h-[36px] min-w-[36px] rounded-full border border-neutral-200 dark:border-neutral-800 flex items-center justify-center text-neutral-600 dark:text-neutral-300 hover:bg-[#DDFB82] hover:text-[#0D0F0E] transition-colors cursor-pointer"
             >
               <ArrowUpRight size={16} weight="bold" />
             </button>
@@ -49,7 +49,7 @@ export function ComplianceScoreGauge({
         </div>
 
         {/* Stadium Tick-Ring Inspired directly by IMG_5846_9eff926d.jpeg */}
-        <div className="mt-4 relative rounded-full border-[6px] border-dashed border-[#309F92]/80 dark:border-[#309F92] bg-[#F8FAF9] dark:bg-[#111413] px-6 py-5 flex items-center justify-center gap-4">
+        <div className="mt-4 relative rounded-full border-[6px] border-dashed border-[#168B7A]/80 dark:border-[#168B7A] bg-[#F8FAF9] dark:bg-[#111413] px-6 py-5 flex items-center justify-center gap-4">
           <span className="text-5xl font-bold tracking-tight text-[#0D0F0E] dark:text-white tabular-nums">
             {tender.leadScore}
           </span>
@@ -57,7 +57,7 @@ export function ComplianceScoreGauge({
             <span className="text-xs font-semibold text-neutral-600 dark:text-neutral-300">
               {tender.grade}
             </span>
-            <span className="mt-1 inline-flex items-center gap-1 rounded-full bg-[#EDFF8C] px-2.5 py-0.5 text-[11px] font-bold text-[#0D0F0E]">
+            <span className="mt-1 inline-flex items-center gap-1 rounded-full bg-[#DDFB82] px-2.5 py-0.5 text-[11px] font-bold text-[#0D0F0E]">
               → {tender.statusLabel}
             </span>
           </div>
@@ -71,7 +71,7 @@ export function ComplianceScoreGauge({
               <div
                 key={idx}
                 className={`h-1.5 rounded-xs transition-colors ${
-                  filled ? 'bg-[#309F92]' : 'bg-neutral-200 dark:bg-neutral-800'
+                  filled ? 'bg-[#168B7A]' : 'bg-neutral-200 dark:bg-neutral-800'
                 }`}
               />
             );
@@ -81,7 +81,7 @@ export function ComplianceScoreGauge({
         {/* Bullet Insights List matching IMG_5846_9eff926d.jpeg */}
         <ul className="mt-5 space-y-3 text-xs">
           <li className="flex items-start gap-2.5">
-            <span className="mt-0.5 h-5 w-5 rounded-full bg-[#309F92]/15 text-[#309F92] flex items-center justify-center shrink-0">
+            <span className="mt-0.5 h-5 w-5 rounded-full bg-[#168B7A]/15 text-[#168B7A] flex items-center justify-center shrink-0">
               <CheckCircle size={13} weight="bold" />
             </span>
             <span className="text-neutral-600 dark:text-neutral-300">
@@ -92,7 +92,7 @@ export function ComplianceScoreGauge({
             </span>
           </li>
           <li className="flex items-start gap-2.5">
-            <span className="mt-0.5 h-5 w-5 rounded-full bg-[#309F92]/15 text-[#309F92] flex items-center justify-center shrink-0">
+            <span className="mt-0.5 h-5 w-5 rounded-full bg-[#168B7A]/15 text-[#168B7A] flex items-center justify-center shrink-0">
               <ShieldCheck size={13} weight="bold" />
             </span>
             <span className="text-neutral-600 dark:text-neutral-300">
@@ -103,7 +103,7 @@ export function ComplianceScoreGauge({
             </span>
           </li>
           <li className="flex items-start gap-2.5">
-            <span className="mt-0.5 h-5 w-5 rounded-full bg-[#309F92]/15 text-[#309F92] flex items-center justify-center shrink-0">
+            <span className="mt-0.5 h-5 w-5 rounded-full bg-[#168B7A]/15 text-[#168B7A] flex items-center justify-center shrink-0">
               <WarningCircle size={13} weight="bold" />
             </span>
             <span className="text-neutral-600 dark:text-neutral-300">
@@ -115,7 +115,7 @@ export function ComplianceScoreGauge({
             </span>
           </li>
           <li className="flex items-start gap-2.5">
-            <span className="mt-0.5 h-5 w-5 rounded-full bg-[#309F92]/15 text-[#309F92] flex items-center justify-center shrink-0">
+            <span className="mt-0.5 h-5 w-5 rounded-full bg-[#168B7A]/15 text-[#168B7A] flex items-center justify-center shrink-0">
               <CheckCircle size={13} weight="bold" />
             </span>
             <span className="text-neutral-600 dark:text-neutral-300">
@@ -131,7 +131,7 @@ export function ComplianceScoreGauge({
       <button
         onClick={onRunAudit}
         disabled={isAuditing}
-        className="mt-5 w-full min-h-[44px] rounded-2xl bg-[#0D0F0E] text-white dark:bg-[#EDFF8C] dark:text-[#0D0F0E] hover:opacity-90 transition-opacity text-xs font-bold flex items-center justify-center gap-2 cursor-pointer"
+        className="mt-5 w-full min-h-[44px] rounded-2xl bg-[#0D0F0E] text-white dark:bg-[#DDFB82] dark:text-[#0D0F0E] hover:opacity-90 transition-opacity text-xs font-bold flex items-center justify-center gap-2 cursor-pointer"
       >
         <ShieldCheck size={16} weight="bold" />
         <span>{isAuditing ? 'Auditing Against Vector Vault...' : 'Run Full AI Compliance Audit'}</span>

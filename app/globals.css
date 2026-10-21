@@ -5,7 +5,7 @@
 
 @theme {
   --font-sans: var(--font-urbanist), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-mono), ui-monospace, SFMono-Regular, monospace;
+  --font-mono: var(--font-jetbrains), ui-monospace, SFMono-Regular, monospace;
 }
 
 html,
@@ -16,4 +16,25 @@ body {
 
 .tabular-nums {
   font-variant-numeric: tabular-nums;
+}
+
+:root { --brand-ink: #101714; --brand-paper: #F8F6EF; --brand-teal: #168B7A; --brand-lime: #DDFB82; }
+html { scroll-behavior: smooth; }
+body { overflow-wrap: break-word; }
+button, a, input, textarea { -webkit-tap-highlight-color: transparent; }
+button, a { touch-action: manipulation; }
+button { cursor: pointer; }
+button:disabled { cursor: wait; opacity: .5; }
+:focus-visible { outline: 2px solid #168B7A; outline-offset: 4px; }
+.skip-link { position: fixed; z-index: 100; left: 1rem; top: -5rem; padding: .8rem 1.2rem; background: #DDFB82; color: #101714; border-radius: 1rem; }
+.skip-link:focus { top: 1rem; }
+.brand-mark { transition: transform .35s cubic-bezier(.2,.8,.2,1); }
+a:hover .brand-mark { transform: rotate(-5deg) scale(1.04); }
+.brand-cta { transition: transform .25s, box-shadow .25s; }
+.brand-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 22px #168B7A20; }
+.brand-dialog[open] { animation: dialog-enter .2s ease-out; }
+@keyframes dialog-enter { from { opacity: 0; transform: translateY(12px) scale(.98); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
 }

@@ -1,20 +1,24 @@
-# Quora Bid Architect — Vertical AI Tender & RFP Studio
+# Bidcraft
 
-> Quora Bid Architect is a Vertical AI SaaS platform built with Next.js 15, TypeScript, Tailwind CSS, Three.js, and Google Gemini (`gemini-3.8-flash` & `gemini-embedding-2-preview`). It empowers small and medium enterprises (SMEs) and bid engineering teams to ingest complex government and corporate tender documents (RFPs), cross-reference mandatory requirements against a vector-indexed corporate memory vault, audit statutory compliance, track full proposal version history, and auto-draft winning proposals.
+> Make every bid count. Bidcraft is a browser-based AI tender and proposal workspace that brings requirements, evidence, compliance review, and version history together.
 
-## Core Capabilities
+## Product
+- [Workspace](/): Create tender workspaces, compare requirements and proposal responses, review compliance flags, save snapshots, and export Markdown proposals.
+- [About and guidance](/about): Workflow, local storage, offline behavior, sample data, and the limits of AI review.
+- [Extended product context](/llms-full.txt): Supported workflows and factual boundaries for AI readers.
 
-- **Interactive Tender vs. Proposal Comparison Studio**: Side-by-side (50/50) and Unified Overlay diff inspection between original RFP mandatory clauses and AI-drafted proposal commitments, featuring live token-level SLA and metric highlighting.
-- **Proposal Version Control & Immutable Audit Trail**: Snapshot history capturing AI auto-drafts, Vision OCR clause syncs, and manual legal edits with side-by-side version comparison and one-click restoration.
-- **AI Compliance Checking & Auto-Remediation**: Automated verification of statutory thresholds (e.g., Public Liability minimums, Performance Bonds, PPN 06/21 Net Zero Carbon Reduction Plans, ISO/IEC 27001:2022 sovereignty) against corporate vault evidence.
-- **Vision OCR Scanned Addendum Ingestion**: Extracts structured mandatory clauses from scanned tender pages or raw text addenda and synthesizes compliant responses.
-- **Vector Embeddings Knowledge Base**: Semantic cosine similarity retrieval across past winning bids, audited financial statements, and statutory insurance certificates.
-- **3D Spatial Vector Architecture (Three.js)**: Interactive 3D Geodesic Vector Vault & Compliance Core visualizer with PBR metallic/glass materials, studio environment lighting, and collapsible camera controls.
-- **Progressive Web App (PWA) & Offline Continuity**: Standalone installable manifest, service worker asset caching (`/sw.js`), seamless light/dark adaptive browser theming, and local storage persistence.
+## Brand
+- Name: Bidcraft (one word; capital B in prose, lowercase wordmark).
+- Tagline: Make every bid count.
+- Logo: A folded-document B in ivory and chartreuse, with teal inner surfaces on a dark rounded tile.
+- [Original logo](/brand/bidcraft-icon-original.png)
+- [Optimized logo](/brand/bidcraft-icon.webp)
+- [Social preview](/brand/social-card.png)
 
-## Architecture & API Endpoints
-
-- `POST /api/tender-ai`: Server-side Gemini AI proxy handling `compliance_audit`, `draft_clause`, `ocr_extract`, and `vector_search` actions.
-- `GET /manifest.webmanifest`: Web App Manifest for standalone desktop and mobile installation.
-- `GET /llms.txt` & `GET /llm.txt`: Machine-readable specification for AI agents and LLM crawlers.
-- `GET /robots.txt` & `GET /sitemap.xml`: Search engine indexing and canonical route discovery.
+## Accuracy and data
+- Included tenders, proposal wording, and corporate evidence are demonstration data, not verified claims about the user’s organization.
+- Proposals and version history persist in local browser storage. There is no account-based or cross-device synchronization in this version.
+- AI drafting, OCR, and audits require server-side Gemini configuration and an online connection. AI failure must not be described as a successful audit or extraction.
+- Local text similarity search is available without an AI key. Similarity scores are retrieval aids, not proof of compliance.
+- Generated drafts and compliance reviews require human validation against original tender documents and current corporate evidence.
+- Public product information does not disclose any user’s locally saved tender data.

@@ -67,8 +67,8 @@ export function DocumentComparisonTool({
   }, [clauses, highlightMode]);
 
   const activeClause = useMemo(
-    () => clauses.find((c) => c.id === selectedClauseId) || clauses[0],
-    [clauses, selectedClauseId]
+    () => filteredClauses.find((c) => c.id === selectedClauseId) || filteredClauses[0],
+    [filteredClauses, selectedClauseId]
   );
 
   const startManualEdit = (clause: TenderClause) => {
@@ -103,7 +103,7 @@ export function DocumentComparisonTool({
 
         <div className="flex flex-wrap items-center gap-2">
           {/* View Mode Segmented Switch */}
-          <div className="flex items-center gap-1 p-1 rounded-full bg-[#F1F1F1] dark:bg-[#0D0F0E]">
+          <div className="flex flex-wrap items-center gap-1 p-1 rounded-full bg-[#F8F6EF] dark:bg-[#0D0F0E]">
             <button
               onClick={() => setViewFormat('side-by-side')}
               className={`min-h-[36px] px-3.5 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1.5 transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
@@ -112,7 +112,7 @@ export function DocumentComparisonTool({
                   : 'text-neutral-600 dark:text-neutral-400 hover:text-[#0D0F0E] dark:hover:text-white'
               }`}
             >
-              <Columns size={15} weight="bold" className="text-[#309F92]" />
+              <Columns size={15} weight="bold" className="text-[#168B7A]" />
               <span>50/50 Side-by-Side</span>
             </button>
             <button
@@ -123,18 +123,18 @@ export function DocumentComparisonTool({
                   : 'text-neutral-600 dark:text-neutral-400 hover:text-[#0D0F0E] dark:hover:text-white'
               }`}
             >
-              <Stack size={15} weight="bold" className="text-[#309F92]" />
+              <Stack size={15} weight="bold" className="text-[#168B7A]" />
               <span>Unified Overlay Diff</span>
             </button>
           </div>
 
           {/* Filter / Highlight Mode */}
-          <div className="flex items-center gap-1 p-1 rounded-full bg-[#F1F1F1] dark:bg-[#0D0F0E]">
+          <div className="flex flex-wrap items-center gap-1 p-1 rounded-full bg-[#F8F6EF] dark:bg-[#0D0F0E]">
             <button
               onClick={() => setHighlightMode('all')}
               className={`min-h-[36px] px-3 py-1.5 rounded-full text-xs font-semibold transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
                 highlightMode === 'all'
-                  ? 'bg-[#0D0F0E] text-white dark:bg-[#EDFF8C] dark:text-[#0D0F0E]'
+                  ? 'bg-[#0D0F0E] text-white dark:bg-[#DDFB82] dark:text-[#0D0F0E]'
                   : 'text-neutral-600 dark:text-neutral-400'
               }`}
             >
@@ -144,7 +144,7 @@ export function DocumentComparisonTool({
               onClick={() => setHighlightMode('non-compliant')}
               className={`min-h-[36px] px-3 py-1.5 rounded-full text-xs font-semibold transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
                 highlightMode === 'non-compliant'
-                  ? 'bg-[#0D0F0E] text-white dark:bg-[#EDFF8C] dark:text-[#0D0F0E]'
+                  ? 'bg-[#0D0F0E] text-white dark:bg-[#DDFB82] dark:text-[#0D0F0E]'
                   : 'text-neutral-600 dark:text-neutral-400'
               }`}
             >
@@ -156,7 +156,7 @@ export function DocumentComparisonTool({
               }
               className={`min-h-[36px] px-3 py-1.5 rounded-full text-xs font-semibold transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
                 highlightMode === 'metrics'
-                  ? 'bg-[#EDFF8C] text-[#0D0F0E]'
+                  ? 'bg-[#DDFB82] text-[#0D0F0E]'
                   : 'text-neutral-600 dark:text-neutral-400'
               }`}
             >
@@ -173,11 +173,11 @@ export function DocumentComparisonTool({
           return (
             <button
               key={clause.id}
-              onClick={() => setSelectedClauseId(clause.id)}
+              onClick={() => { setSelectedClauseId(clause.id); document.getElementById(`clause-card-${clause.id}`)?.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth', block: 'center' }); }}
               className={`min-h-[42px] px-4 py-2 rounded-2xl text-xs font-semibold flex items-center gap-2 transition-colors whitespace-nowrap shrink-0 cursor-pointer border ${
                 isSelected
-                  ? 'bg-[#0D0F0E] text-white dark:bg-[#EDFF8C] dark:text-[#0D0F0E] border-transparent'
-                  : 'bg-white dark:bg-[#161918] text-neutral-700 dark:text-neutral-300 border-neutral-200 dark:border-neutral-800 hover:border-[#309F92]'
+                  ? 'bg-[#0D0F0E] text-white dark:bg-[#DDFB82] dark:text-[#0D0F0E] border-transparent'
+                  : 'bg-white dark:bg-[#161918] text-neutral-700 dark:text-neutral-300 border-neutral-200 dark:border-neutral-800 hover:border-[#168B7A]'
               }`}
             >
               <span className="font-mono font-bold">{clause.code}</span>
@@ -187,8 +187,8 @@ export function DocumentComparisonTool({
                 className={`ml-1 text-[11px] font-mono tabular-nums ${
                   clause.complianceStatus === 'compliant'
                     ? isSelected
-                      ? 'text-[#EDFF8C] dark:text-[#0D0F0E]'
-                      : 'text-[#309F92]'
+                      ? 'text-[#DDFB82] dark:text-[#0D0F0E]'
+                      : 'text-[#168B7A]'
                     : 'text-amber-500'
                 }`}
               >
@@ -199,6 +199,7 @@ export function DocumentComparisonTool({
         })}
       </div>
 
+      {filteredClauses.length === 0 && <p role="status" className="rounded-2xl bg-white p-8 text-center text-sm text-neutral-500 dark:bg-[#161918]">{clauses.length ? 'No clauses need review in this view.' : 'Import tender requirements from Compliance & vault to start comparing.'}</p>}
       {/* Comparison Matrix Content */}
       <div className="space-y-4">
         {filteredClauses.map((clause) => {
@@ -213,7 +214,7 @@ export function DocumentComparisonTool({
               id={`clause-card-${clause.id}`}
               className={`rounded-3xl bg-white dark:bg-[#161918] border transition-colors p-5 ${
                 activeClause?.id === clause.id
-                  ? 'border-[#309F92] dark:border-[#EDFF8C]/70'
+                  ? 'border-[#168B7A] dark:border-[#DDFB82]/70'
                   : 'border-neutral-200/80 dark:border-neutral-800'
               }`}
             >
@@ -231,7 +232,7 @@ export function DocumentComparisonTool({
                   <span
                     className={`font-semibold ${
                       clause.complianceStatus === 'compliant'
-                        ? 'text-[#309F92]'
+                        ? 'text-[#168B7A]'
                         : clause.complianceStatus === 'partial'
                         ? 'text-amber-600 dark:text-amber-400'
                         : 'text-rose-600 dark:text-rose-400'
@@ -250,11 +251,11 @@ export function DocumentComparisonTool({
                 </div>
 
                 {/* Action Pills */}
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2">
                   <button
                     onClick={() => onDraftClauseWithAI(clause, 'strict-compliance')}
-                    disabled={isDrafting}
-                    className="min-h-[36px] px-3 py-1.5 rounded-full bg-[#EDFF8C] text-[#0D0F0E] hover:bg-[#e1f578] text-xs font-semibold flex items-center gap-1.5 whitespace-nowrap shrink-0 cursor-pointer"
+                    disabled={Boolean(draftingClauseId)}
+                    className="min-h-[36px] px-3 py-1.5 rounded-full bg-[#DDFB82] text-[#0D0F0E] hover:bg-[#e1f578] text-xs font-semibold flex items-center gap-1.5 whitespace-nowrap shrink-0 cursor-pointer"
                   >
                     <Lightning size={14} weight="fill" />
                     <span>{isDrafting ? 'Synthesizing...' : 'AI Auto-Align Clause'}</span>
@@ -262,7 +263,7 @@ export function DocumentComparisonTool({
                   {!isEditing ? (
                     <button
                       onClick={() => startManualEdit(clause)}
-                      className="min-h-[36px] px-3 py-1.5 rounded-full bg-[#F1F1F1] dark:bg-[#0D0F0E] text-[#0D0F0E] dark:text-white hover:bg-neutral-200 dark:hover:bg-neutral-800 text-xs font-semibold flex items-center gap-1.5 whitespace-nowrap shrink-0 cursor-pointer"
+                      className="min-h-[36px] px-3 py-1.5 rounded-full bg-[#F8F6EF] dark:bg-[#0D0F0E] text-[#0D0F0E] dark:text-white hover:bg-neutral-200 dark:hover:bg-neutral-800 text-xs font-semibold flex items-center gap-1.5 whitespace-nowrap shrink-0 cursor-pointer"
                     >
                       <PencilSimple size={14} />
                       <span>Manual Edit</span>
@@ -270,7 +271,7 @@ export function DocumentComparisonTool({
                   ) : (
                     <button
                       onClick={() => saveManualEdit(clause)}
-                      className="min-h-[36px] px-3.5 py-1.5 rounded-full bg-[#309F92] text-white text-xs font-semibold flex items-center gap-1.5 whitespace-nowrap shrink-0 cursor-pointer"
+                      className="min-h-[36px] px-3.5 py-1.5 rounded-full bg-[#168B7A] text-white text-xs font-semibold flex items-center gap-1.5 whitespace-nowrap shrink-0 cursor-pointer"
                     >
                       <Check size={14} weight="bold" />
                       <span>Commit Version</span>
@@ -301,12 +302,12 @@ export function DocumentComparisonTool({
                     </div>
 
                     <div className="mt-4 pt-3 border-t border-neutral-200/60 dark:border-neutral-800 flex flex-wrap items-center gap-2 text-xs text-neutral-500">
-                      <BookOpen size={14} className="text-[#309F92]" />
+                      <BookOpen size={14} className="text-[#168B7A]" />
                       <span>Cross-Referenced Vault Evidence:</span>
                       {matchedDocs.map((doc) => (
                         <span
                           key={doc.id}
-                          className="font-mono font-semibold text-[#0D0F0E] dark:text-[#EDFF8C]"
+                          className="font-mono font-semibold text-[#0D0F0E] dark:text-[#DDFB82]"
                         >
                           [{doc.referenceCode}]
                         </span>
@@ -315,10 +316,10 @@ export function DocumentComparisonTool({
                   </div>
 
                   {/* Right Column: Drafted Proposal Response with Diff Highlighting */}
-                  <div className="rounded-2xl bg-[#F8FAF9] dark:bg-[#111716] border border-[#309F92]/30 dark:border-[#309F92]/40 p-4 flex flex-col justify-between">
+                  <div className="rounded-2xl bg-[#F8FAF9] dark:bg-[#111716] border border-[#168B7A]/30 dark:border-[#168B7A]/40 p-4 flex flex-col justify-between">
                     <div>
                       <div className="flex items-center justify-between text-xs text-neutral-500 dark:text-neutral-400 mb-2">
-                        <span className="font-semibold text-[#309F92] dark:text-[#EDFF8C]">
+                        <span className="font-semibold text-[#168B7A] dark:text-[#DDFB82]">
                           {clause.proposalSectionTitle} (AI Proposal Response)
                         </span>
                         <span className="font-mono">Live Diff Active</span>
@@ -327,10 +328,11 @@ export function DocumentComparisonTool({
                       {isEditing ? (
                         <div className="space-y-2">
                           <textarea
+                            aria-label={`Edit response for ${clause.code}`}
                             value={editDraftText}
                             onChange={(e) => setEditDraftText(e.target.value)}
                             rows={4}
-                            className="w-full rounded-xl bg-white dark:bg-[#0D0F0E] border border-[#309F92] p-3 text-sm text-[#0D0F0E] dark:text-white focus:outline-hidden"
+                            className="w-full rounded-xl bg-white dark:bg-[#0D0F0E] border border-[#168B7A] p-3 text-sm text-[#0D0F0E] dark:text-white focus:outline-hidden"
                           />
                           <div className="flex justify-end gap-2">
                             <button
@@ -341,7 +343,7 @@ export function DocumentComparisonTool({
                             </button>
                             <button
                               onClick={() => saveManualEdit(clause)}
-                              className="px-4 py-1.5 rounded-full bg-[#0D0F0E] text-white dark:bg-[#EDFF8C] dark:text-[#0D0F0E] text-xs font-semibold"
+                              className="px-4 py-1.5 rounded-full bg-[#0D0F0E] text-white dark:bg-[#DDFB82] dark:text-[#0D0F0E] text-xs font-semibold"
                             >
                               Save & Create Version Snapshot
                             </button>
@@ -354,7 +356,7 @@ export function DocumentComparisonTool({
                               return (
                                 <mark
                                   key={item.key}
-                                  className="bg-[#EDFF8C] text-[#0D0F0E] px-1 rounded-xs font-mono font-semibold"
+                                  className="bg-[#DDFB82] text-[#0D0F0E] px-1 rounded-xs font-mono font-semibold"
                                 >
                                   {item.token}
                                 </mark>
@@ -364,7 +366,7 @@ export function DocumentComparisonTool({
                               return (
                                 <span
                                   key={item.key}
-                                  className="underline decoration-[#309F92] decoration-2 underline-offset-4 font-medium"
+                                  className="underline decoration-[#168B7A] decoration-2 underline-offset-4 font-medium"
                                 >
                                   {item.token}
                                 </span>
@@ -376,9 +378,9 @@ export function DocumentComparisonTool({
                       )}
                     </div>
 
-                    <div className="mt-4 pt-3 border-t border-[#309F92]/20 flex items-center justify-between gap-2 text-xs">
+                    <div className="mt-4 pt-3 border-t border-[#168B7A]/20 flex items-center justify-between gap-2 text-xs">
                       <span className="text-neutral-600 dark:text-neutral-300 flex items-center gap-1.5">
-                        <Sparkle size={14} weight="fill" className="text-[#309F92]" />
+                        <Sparkle size={14} weight="fill" className="text-[#168B7A]" />
                         <span>{clause.aiNote}</span>
                       </span>
                     </div>
@@ -388,7 +390,7 @@ export function DocumentComparisonTool({
                 /* Unified Overlay Format */
                 <div className="mt-4 rounded-2xl bg-[#F8F9F8] dark:bg-[#111413] border border-neutral-200 dark:border-neutral-800 p-4 space-y-3">
                   <div className="text-xs text-neutral-500 dark:text-neutral-400 flex items-center gap-2">
-                    <Eye size={14} className="text-[#309F92]" />
+                    <Eye size={14} className="text-[#168B7A]" />
                     <span>Unified Clause Overlay — Source Requirement (Top) vs. Proposal Commitment (Bottom)</span>
                   </div>
                   <div className="p-3 rounded-xl bg-rose-500/10 dark:bg-rose-500/15 text-xs text-neutral-700 dark:text-neutral-200 font-mono leading-relaxed">
@@ -400,11 +402,12 @@ export function DocumentComparisonTool({
                   <div className="flex items-center justify-center text-neutral-400">
                     <CaretRight size={16} className="rotate-90" />
                   </div>
-                  <div className="p-3 rounded-xl bg-[#309F92]/15 dark:bg-[#EDFF8C]/15 text-xs text-[#0D0F0E] dark:text-white font-mono leading-relaxed">
-                    <span className="font-bold text-[#309F92] dark:text-[#EDFF8C] mr-2">
+                  <div className="p-3 rounded-xl bg-[#168B7A]/15 dark:bg-[#DDFB82]/15 text-xs text-[#0D0F0E] dark:text-white font-mono leading-relaxed">
+                    <span className="font-bold text-[#168B7A] dark:text-[#DDFB82] mr-2">
                       [PROPOSAL COMMIT]
                     </span>
-                    {clause.proposalResponseText}
+                    {isEditing ? <textarea aria-label={`Edit response for ${clause.code}`} value={editDraftText} onChange={(event) => setEditDraftText(event.target.value)} rows={5} className="mt-3 w-full rounded-xl border border-[#168B7A] bg-white p-3 text-sm text-[#0D0F0E] dark:bg-[#0D0F0E] dark:text-white" /> : clause.proposalResponseText}
+                    {isEditing && <button type="button" onClick={() => setEditingClauseId(null)} className="mt-2 block text-xs underline">Cancel edit</button>}
                   </div>
                 </div>
               )}

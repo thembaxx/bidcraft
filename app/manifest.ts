@@ -1,42 +1,13 @@
 import type { MetadataRoute } from 'next';
-
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    id: '/',
-    name: 'Quora Bid Architect — AI Tender & RFP Studio',
-    short_name: 'Quora Bid',
-    description: 'Vertical AI Tender & RFP Architect with vector-indexed corporate vault, compliance cross-referencing, and automated proposal drafting.',
-    start_url: '/',
-    scope: '/',
-    display: 'standalone',
-    background_color: '#F1F1F1',
-    theme_color: '#F1F1F1',
-    orientation: 'any',
+    id: '/', name: 'Bidcraft — AI Tender & Proposal Workspace', short_name: 'Bidcraft',
+    description: 'Make every bid count. Evidence, compliance, and proposal drafts in one workspace.',
+    start_url: '/#workspace', scope: '/', display: 'standalone', background_color: '#F8F6EF', theme_color: '#101714',
     icons: [
-      {
-        src: '/icon.svg',
-        sizes: 'any',
-        type: 'image/svg+xml',
-        purpose: 'any',
-      },
-      {
-        src: '/api/pwa-icon?size=192',
-        sizes: '192x192',
-        type: 'image/svg+xml',
-        purpose: 'any',
-      },
-      {
-        src: '/api/pwa-icon?size=512',
-        sizes: '512x512',
-        type: 'image/svg+xml',
-        purpose: 'any',
-      },
-      {
-        src: '/api/pwa-icon?size=512&maskable=true',
-        sizes: '512x512',
-        type: 'image/svg+xml',
-        purpose: 'maskable',
-      },
+      { src: '/brand/icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
+      { src: '/brand/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
+      { src: '/brand/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
     ],
   };
 }

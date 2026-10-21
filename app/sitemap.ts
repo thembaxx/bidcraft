@@ -1,19 +1,7 @@
 import type { MetadataRoute } from 'next';
-
+import { getSiteUrl } from '@/lib/site';
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = process.env.APP_URL || 'https://quora-bid-architect.app';
-  return [
-    {
-      url: baseUrl,
-      lastModified: new Date(),
-      changeFrequency: 'daily',
-      priority: 1,
-    },
-    {
-      url: `${baseUrl}/llm.txt`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.8,
-    },
-  ];
+  const url = getSiteUrl();
+  if (!url) return [];
+  return ['', '/about'].map((path) => ({ url: new URL(path, url).href, changeFrequency: 'monthly', priority: path ? 0.7 : 1 }));
 }

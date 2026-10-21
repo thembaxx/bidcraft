@@ -1,10 +1,24 @@
-# Quora Bid Architect — Vertical AI Tender & RFP Studio
+# Bidcraft
 
-> Quora Bid Architect is a Vertical AI SaaS platform built with Next.js 15, TypeScript, Tailwind CSS, Three.js, and Google Gemini (`gemini-3.8-flash` & `gemini-embedding-2-preview`). It empowers small and medium enterprises (SMEs) and bid engineering teams to ingest complex government and corporate tender documents (RFPs), cross-reference mandatory requirements against a vector-indexed corporate memory vault, audit statutory compliance, track full proposal version history, and auto-draft winning proposals.
+> Make every bid count. Bidcraft is a browser-based AI tender and proposal workspace that brings requirements, evidence, compliance review, and version history together.
 
-## Key Modules
+## Product
+- [Workspace](/): Create tender workspaces, compare requirements and proposal responses, review compliance flags, save snapshots, and export Markdown proposals.
+- [About and guidance](/about): Workflow, local storage, offline behavior, sample data, and the limits of AI review.
+- [Extended product context](/llms-full.txt): Supported workflows and factual boundaries for AI readers.
 
-1. **Workspace Overview & Bid Pipeline**: Opportunity Sales & Bid Process tracker (Qualify -> Develop -> Propose -> Close), Bid Compliance Score gauge, and Interactive 3D Vector Core.
-2. **Document Comparison Tool**: 50/50 Side-by-Side and Unified Overlay diff studio comparing original RFP clauses against AI-generated proposal responses.
-3. **Version Control System**: Immutable revision snapshots with diff inspection and one-click version restoration.
-4. **AI Compliance & Vector Vault**: Automated discrepancy detection, Vision OCR scanned tender ingestion, and vector similarity search.
+## Brand
+- Name: Bidcraft (one word; capital B in prose, lowercase wordmark).
+- Tagline: Make every bid count.
+- Logo: A folded-document B in ivory and chartreuse, with teal inner surfaces on a dark rounded tile.
+- [Original logo](/brand/bidcraft-icon-original.png)
+- [Optimized logo](/brand/bidcraft-icon.webp)
+- [Social preview](/brand/social-card.png)
+
+## Accuracy and data
+- Included tenders, proposal wording, and corporate evidence are demonstration data, not verified claims about the user’s organization.
+- Proposals and version history persist in local browser storage. There is no account-based or cross-device synchronization in this version.
+- AI drafting, OCR, and audits require server-side Gemini configuration and an online connection. AI failure must not be described as a successful audit or extraction.
+- Local text similarity search is available without an AI key. Similarity scores are retrieval aids, not proof of compliance.
+- Generated drafts and compliance reviews require human validation against original tender documents and current corporate evidence.
+- Public product information does not disclose any user’s locally saved tender data.

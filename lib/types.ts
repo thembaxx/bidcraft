@@ -20,11 +20,12 @@ export interface ProposalVersion {
   versionNumber: string;
   timestamp: string;
   author: string;
-  triggerType: 'AI Auto-Draft' | 'Manual Edit' | 'AI Compliance Fix' | 'OCR Clause Sync';
+  triggerType: 'AI Auto-Draft' | 'Manual Edit' | 'AI Compliance Fix' | 'AI Compliance Audit' | 'OCR Clause Sync';
   summary: string;
   complianceScoreSnapshot: number;
   clausesSnapshot: TenderClause[];
   executiveSummarySnapshot: string;
+  discrepanciesSnapshot?: ComplianceDiscrepancy[];
 }
 
 export interface VaultDocument {

@@ -53,7 +53,7 @@ export function VersionControlPanel({
       <div className="rounded-3xl bg-white dark:bg-[#161918] border border-neutral-200/80 dark:border-neutral-800 p-5 flex flex-wrap items-center justify-between gap-4">
         <div>
           <h3 className="text-base font-bold text-[#0D0F0E] dark:text-white flex items-center gap-2">
-            <ClockCounterClockwise size={20} weight="bold" className="text-[#309F92]" />
+            <ClockCounterClockwise size={20} weight="bold" className="text-[#168B7A]" />
             <span>Proposal Version Control & Immutable Audit Trail</span>
           </h3>
           <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-0.5">
@@ -67,11 +67,11 @@ export function VersionControlPanel({
             value={checkpointNote}
             onChange={(e) => setCheckpointNote(e.target.value)}
             placeholder="Tag a new snapshot (e.g. Pre-Legal Signoff)..."
-            className="min-h-[40px] px-4 py-2 rounded-full bg-[#F1F1F1] dark:bg-[#0D0F0E] border border-neutral-200 dark:border-neutral-800 text-xs text-[#0D0F0E] dark:text-white w-full sm:w-64 focus:outline-hidden focus:border-[#309F92]"
+            className="min-h-[40px] px-4 py-2 rounded-full bg-[#F8F6EF] dark:bg-[#0D0F0E] border border-neutral-200 dark:border-neutral-800 text-xs text-[#0D0F0E] dark:text-white w-full sm:w-64 focus:outline-hidden focus:border-[#168B7A]"
           />
           <button
             type="submit"
-            className="min-h-[40px] px-4 py-2 rounded-full bg-[#0D0F0E] text-white dark:bg-[#EDFF8C] dark:text-[#0D0F0E] text-xs font-semibold whitespace-nowrap shrink-0 cursor-pointer"
+            className="min-h-[40px] px-4 py-2 rounded-full bg-[#0D0F0E] text-white dark:bg-[#DDFB82] dark:text-[#0D0F0E] text-xs font-semibold whitespace-nowrap shrink-0 cursor-pointer"
           >
             + Save Snapshot
           </button>
@@ -96,10 +96,12 @@ export function VersionControlPanel({
             return (
               <div
                 key={ver.id}
+                role="button" tabIndex={0} aria-pressed={isSelected}
+                onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); setSelectedVersionId(ver.id); } }}
                 onClick={() => setSelectedVersionId(ver.id)}
                 className={`rounded-2xl p-4 transition-colors cursor-pointer border ${
                   isSelected
-                    ? 'bg-[#EDFF8C]/35 dark:bg-[#EDFF8C]/15 border-[#309F92] dark:border-[#EDFF8C]'
+                    ? 'bg-[#DDFB82]/35 dark:bg-[#DDFB82]/15 border-[#168B7A] dark:border-[#DDFB82]'
                     : 'bg-[#F8F9F8] dark:bg-[#111413] border-transparent hover:border-neutral-300 dark:hover:border-neutral-700'
                 }`}
               >
@@ -109,7 +111,7 @@ export function VersionControlPanel({
                       {ver.versionNumber}
                     </span>
                     <span aria-hidden="true">·</span>
-                    <span className="font-semibold text-[#309F92] dark:text-[#EDFF8C]">
+                    <span className="font-semibold text-[#168B7A] dark:text-[#DDFB82]">
                       {ver.triggerType}
                     </span>
                     {isLatest && (
@@ -170,7 +172,7 @@ export function VersionControlPanel({
 
                 <button
                   onClick={() => onRestoreVersion(selectedVersion)}
-                  className="min-h-[42px] px-4 py-2 rounded-full bg-[#EDFF8C] text-[#0D0F0E] hover:bg-[#e2f678] text-xs font-bold flex items-center gap-2 whitespace-nowrap shrink-0 cursor-pointer"
+                  className="min-h-[42px] px-4 py-2 rounded-full bg-[#DDFB82] text-[#0D0F0E] hover:bg-[#e2f678] text-xs font-bold flex items-center gap-2 whitespace-nowrap shrink-0 cursor-pointer"
                 >
                   <ArrowCounterClockwise size={16} weight="bold" />
                   <span>Restore {selectedVersion.versionNumber} as Active Draft</span>
@@ -178,9 +180,9 @@ export function VersionControlPanel({
               </div>
 
               {/* Compare Selector Bar */}
-              <div className="flex flex-wrap items-center justify-between gap-2 p-3 rounded-2xl bg-[#F1F1F1] dark:bg-[#0D0F0E] text-xs">
+              <div className="flex flex-wrap items-center justify-between gap-2 p-3 rounded-2xl bg-[#F8F6EF] dark:bg-[#0D0F0E] text-xs">
                 <div className="flex items-center gap-2 font-semibold text-[#0D0F0E] dark:text-white">
-                  <GitDiff size={16} className="text-[#309F92]" />
+                  <GitDiff size={16} className="text-[#168B7A]" />
                   <span>Comparing {selectedVersion.versionNumber} against:</span>
                 </div>
                 <div className="flex items-center gap-1.5 flex-wrap">
@@ -190,7 +192,7 @@ export function VersionControlPanel({
                       onClick={() => setCompareTargetId(v.id)}
                       className={`px-3 py-1 rounded-full font-mono text-xs transition-colors cursor-pointer ${
                         compareTarget?.id === v.id
-                          ? 'bg-[#309F92] text-white font-bold'
+                          ? 'bg-[#168B7A] text-white font-bold'
                           : 'bg-white dark:bg-[#161918] text-neutral-600 dark:text-neutral-300'
                       }`}
                     >
@@ -207,12 +209,12 @@ export function VersionControlPanel({
                   {compareTarget?.versionNumber || 'Current'})
                 </h5>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  <div className="p-3.5 rounded-2xl bg-[#F8FAF9] dark:bg-[#111716] border border-[#309F92]/30 text-xs leading-relaxed">
-                    <div className="font-mono font-bold text-[#309F92] dark:text-[#EDFF8C] mb-1">
+                  <div className="p-3.5 rounded-2xl bg-[#F8FAF9] dark:bg-[#111716] border border-[#168B7A]/30 text-xs leading-relaxed">
+                    <div className="font-mono font-bold text-[#168B7A] dark:text-[#DDFB82] mb-1">
                       {selectedVersion.versionNumber} ({selectedVersion.triggerType})
                     </div>
                     <p className="text-[#0D0F0E] dark:text-neutral-200">
-                      {selectedVersion.executiveSummarySnapshot || currentExecutiveSummary}
+                      {selectedVersion.executiveSummarySnapshot}
                     </p>
                   </div>
                   <div className="p-3.5 rounded-2xl bg-[#F8F9F8] dark:bg-[#111413] border border-neutral-200 dark:border-neutral-800 text-xs leading-relaxed">
@@ -220,7 +222,7 @@ export function VersionControlPanel({
                       {compareTarget?.versionNumber} ({compareTarget?.triggerType})
                     </div>
                     <p className="text-neutral-600 dark:text-neutral-400">
-                      {compareTarget?.executiveSummarySnapshot || currentExecutiveSummary}
+                      {compareTarget?.executiveSummarySnapshot ?? currentExecutiveSummary}
                     </p>
                   </div>
                 </div>
@@ -231,10 +233,9 @@ export function VersionControlPanel({
                 <h5 className="text-xs font-bold text-neutral-500 dark:text-neutral-400">
                   Clause Snapshot Comparison
                 </h5>
-                {(selectedVersion.clausesSnapshot.length > 0
-                  ? selectedVersion.clausesSnapshot
-                  : currentClauses
-                ).map((clause) => {
+                {selectedVersion.clausesSnapshot.length === 0 && <p className="text-xs text-neutral-500">This snapshot contains no clauses.</p>}
+                {compareTarget?.clausesSnapshot.filter((clause) => !selectedVersion.clausesSnapshot.some((selected) => selected.code === clause.code)).map((clause) => <p key={clause.id} className="text-xs text-rose-600">{clause.code} — absent from this version</p>)}
+                {selectedVersion.clausesSnapshot.map((clause) => {
                   const comparedClause = compareTarget?.clausesSnapshot.find(
                     (c) => c.code === clause.code
                   );
@@ -254,10 +255,10 @@ export function VersionControlPanel({
                         </span>
                         <span
                           className={`font-mono text-[11px] font-bold ${
-                            changed ? 'text-[#309F92] dark:text-[#EDFF8C]' : 'text-neutral-400'
+                            changed ? 'text-[#168B7A] dark:text-[#DDFB82]' : 'text-neutral-400'
                           }`}
                         >
-                          {changed ? 'Modified in this version' : 'Unchanged'}
+                          {!comparedClause ? 'Added in this version' : changed ? 'Modified in this version' : 'Unchanged'}
                         </span>
                       </div>
                       <p className="text-xs text-neutral-700 dark:text-neutral-300 leading-relaxed">
