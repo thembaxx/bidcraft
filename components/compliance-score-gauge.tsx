@@ -109,7 +109,7 @@ export function ComplianceScoreGauge({
             <span className="text-neutral-600 dark:text-neutral-300">
               Clause alignment:{' '}
               <strong className="font-semibold text-[#0D0F0E] dark:text-white tabular-nums">
-                {compliantCount}/{tender.clauses.length} verified
+                {compliantCount}/{tender.clauses.length} marked aligned by AI
               </strong>{' '}
               ({openDiscrepancies} open flags)
             </span>
