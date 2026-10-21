@@ -136,9 +136,9 @@ export function evaluateRealityCheck(notice: TenderNotice | null, detail: Tender
   } else if (blockers > 0) {
     state = 'potential_blocker';
     reason = 'One or more of your answers conflict with a recorded mandatory condition. Check the original tender before proceeding.';
-  } else if (!check.packReviewed || mandatory.length === 0) {
+  } else if (!check.packReviewed || !mandatory.some(item => item.source === 'supplier_transcribed')) {
     state = 'insufficient_source_information';
-    reason = 'Review the original tender pack and record its mandatory requirements before treating this as a suitability assessment.';
+    reason = 'Review the original tender pack and record at least one mandatory requirement with an official document excerpt. A briefing flag alone cannot establish suitability.';
   } else if (mandatory.some(item => item.source === 'supplier_transcribed' && item.state === 'needs_source_confirmation')) {
     state = 'insufficient_source_information';
     reason = 'One or more recorded mandatory requirements lack an official citation.';
@@ -148,6 +148,27 @@ export function evaluateRealityCheck(notice: TenderNotice | null, detail: Tender
   }
   return { state, criteria, supported, unanswered, blockers, limitations, reason };
 }
+
+/** Advisory only: supplier self-report is not verified against official procurement criteria. */
+export function supplierContext(notice: TenderNotice | null, profile: SupplierProfile): string[] {
+  const notes: string[] = [];
+  if (!profile.services.trim()) notes.push('Describe the services you offer and compare them with the original scope of work.');
+  else notes.push('Your service capabilities are self-reported. Compare them with the tender scope and technical requirements.');
+  if (notice?.province && profile.provinces.length && !profile.provinces.includes(notice.province) && !profile.provinces.includes('National')) {
+    notes.push(profile.travel === 'no'
+      ? 'This tender is outside the province you selected, and you reported that you cannot travel. Review delivery and onsite obligations.'
+      : 'This tender is outside your selected province. Confirm that you can fulfil location and delivery obligations.');
+  }
+  if (profile.csd === 'not_registered' || profile.csd === 'in_progress')
+    notes.push('You reported that CSD registration is not complete. Check whether this tender requires it and confirm directly on CSD.');
+  if (profile.taxGoodStanding === 'no')
+    notes.push('You reported that SARS Tax Compliance Status is not in good standing. Check whether and when this tender requires it.');
+  if (profile.experience.trim()) notes.push('Your previous experience is self-described; check references, minimum project values and specific proof requested.');
+  if (profile.cidbClass.trim() || profile.cidbGrade.trim())
+    notes.push('Your cidb details are self-reported. Verify both the class and grade against the specific construction tender.');
+  return notes;
+}
+
 export function resultLabel(state: ResultState): string {
   return ({
     not_assessed: 'Not assessed', insufficient_source_information: 'Insufficient source information',
