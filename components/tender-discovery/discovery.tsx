@@ -95,7 +95,7 @@ function DiscoveryClient() {
     } catch (error) { setMessage(error instanceof Error ? error.message : 'This tender could not be saved.'); }
   };
   const createWorkspace = (notice: TenderNotice) => {
-    try { importNoticeToWorkspace(notice); window.location.assign('/#bid-studio'); }
+    try { importNoticeToWorkspace(notice); router.push('/#bid-studio'); }
     catch (error) { setMessage(error instanceof Error ? error.message : 'Browser storage is unavailable. Your workspace has not been changed.'); }
   };
   const selectedSaved = saved.find((item) => item.notice.id === selected?.id);

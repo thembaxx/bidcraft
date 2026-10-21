@@ -2,9 +2,7 @@ import type {NextConfig} from 'next';
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
-  eslint: {
-    ignoreDuringBuilds: false,
-  },
+  // Next 16 runs ESLint independently via the CI lint step.
   typescript: {
     ignoreBuildErrors: false,
   },
