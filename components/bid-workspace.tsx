@@ -37,6 +37,7 @@ import {
   WarningCircle,
   EnvelopeSimple,
   PhoneCall,
+  ArrowUpRight,
 } from '@phosphor-icons/react';
 import {
   INITIAL_TENDERS,
@@ -59,6 +60,7 @@ import { PWAInstallControl, OfflineBanner } from '@/components/pwa-controls';
 import { isRecord, isTender, isDraftResult, isAuditResult, isOcrResult } from '@/lib/validation';
 import { commitProposal, restoreProposal } from '@/lib/proposals';
 import { rankVaultDocuments } from '@/lib/search';
+import { formatRand, formatSouthAfricanDate } from '@/lib/locale';
 
 const STORAGE_KEY_TENDERS = 'quora_bid_architect_tenders_v1';
 const STORAGE_KEY_THEME = 'quora_bid_architect_theme_v1';
@@ -66,6 +68,7 @@ const STORAGE_KEY_THEME = 'quora_bid_architect_theme_v1';
 type ActiveTab = 'anatomy' | 'summary' | 'comparison' | 'compliance' | 'versions';
 
 const STORAGE_KEY_SELECTION = 'quora_bid_architect_selection_v1';
+const LEGACY_DEMO_IDS = new Set(['tender-uk-grid-2026', 'tender-nhs-diagnostic-2026', 'tender-port-rotterdam-2026']);
 const subscribeToHydration = () => () => {};
 
 function readSavedTenders(): TenderProject[] {
@@ -122,6 +125,8 @@ function BidWorkspace() {
   const [newTenderTitle, setNewTenderTitle] = useState('');
   const [newTenderAuthority, setNewTenderAuthority] = useState('');
   const [newTenderBudget, setNewTenderBudget] = useState('');
+  const [newTenderReference, setNewTenderReference] = useState('');
+  const [newTenderClosing, setNewTenderClosing] = useState('');
   const aiBusy = useRef(false);
   const tendersRef = useRef(tenders);
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -158,6 +163,8 @@ function BidWorkspace() {
   };
   const showAIError = (error: unknown) => notify(error instanceof Error ? error.message : 'AI is unavailable. Please try again.');
   const activeTender = useMemo(() => tenders.find((tender) => tender.id === selectedTenderId) || tenders[0], [tenders, selectedTenderId]);
+  const activeIsDemo = activeTender.isDemo || LEGACY_DEMO_IDS.has(activeTender.id);
+  const canAddLocalExamples = tenders.some((tender) => LEGACY_DEMO_IDS.has(tender.id)) && !tenders.some((tender) => INITIAL_TENDERS.some((example) => example.id === tender.id));
   const filteredTenders = useMemo(() => {
     const query = searchFilter.trim().toLowerCase();
     return tenders.filter((tender) => [tender.title, tender.Authority, tender.rfpNumber, tender.ownerName].some((text) => text.toLowerCase().includes(query)));
@@ -306,7 +313,7 @@ function BidWorkspace() {
     notify(`Moved tender to ${stage.toUpperCase()}.`);
   };
   const handleExportProposal = () => {
-    const md = `# ${activeTender.title}\n**Issuing Authority:** ${activeTender.Authority}\n**RFP Reference:** ${activeTender.rfpNumber}\n${activeTender.source ? `**Official source:** ${activeTender.source.provider} — ${activeTender.source.url}\n**Source notice ID:** ${activeTender.source.noticeId}\n` : ''}**Contract Budget:** ${activeTender.budget}\n**Compliance Score:** ${activeTender.leadScore}% (${activeTender.grade})\n**Active Version:** ${activeTender.versions[0]?.versionNumber || 'No snapshots'}\n\n## Executive Summary\n${activeTender.executiveSummary}\n\n## Proposal Responses\n${activeTender.clauses.map((clause) => `### [${clause.code}] ${clause.proposalSectionTitle}\n**Requirement:** ${clause.originalText}\n\n**Response (${clause.complianceStatus}; ${clause.confidenceScore}% confidence):**\n${clause.proposalResponseText}\n\n**Human review:** ${clause.review ? `${clause.review.outcome} by ${clause.review.reviewer} on ${clause.review.reviewedAt} — ${clause.review.note}` : 'Not recorded'}\n\n*AI note:* ${clause.aiNote}`).join('\n\n---\n\n')}`;
+    const md = `# ${activeTender.title}\n${activeIsDemo ? '> Demonstration workspace — fictional tender and company evidence.\n\n' : ''}**Issuing Authority:** ${activeTender.Authority}\n**Bid / Tender Reference:** ${activeTender.rfpNumber}\n${activeTender.source ? `**Official source:** ${activeTender.source.provider} — ${activeTender.source.url}\n**Source notice ID:** ${activeTender.source.noticeId}\n` : ''}**Contract Budget:** ${activeTender.budget}\n**Closing date:** ${activeTender.deadline}\n**Compliance Score:** ${activeTender.leadScore}% (${activeTender.grade})\n**Active Version:** ${activeTender.versions[0]?.versionNumber || 'No snapshots'}\n\n## Executive Summary\n${activeTender.executiveSummary}\n\n## Proposal Responses\n${activeTender.clauses.map((clause) => `### [${clause.code}] ${clause.proposalSectionTitle}\n**Requirement:** ${clause.originalText}\n\n**Response (${clause.complianceStatus}; ${clause.confidenceScore}% confidence):**\n${clause.proposalResponseText}\n\n**Human review:** ${clause.review ? `${clause.review.outcome} by ${clause.review.reviewer} on ${formatSouthAfricanDate(clause.review.reviewedAt, true)} SAST — ${clause.review.note}` : 'Not recorded'}\n\n*AI note:* ${clause.aiNote}`).join('\n\n---\n\n')}`;
     const url = URL.createObjectURL(new Blob([md], { type: 'text/markdown;charset=utf-8' }));
     const link = document.createElement('a');
     link.href = url;
@@ -320,10 +327,13 @@ function BidWorkspace() {
   const handleCreateNewTender = (event: React.FormEvent) => {
     event.preventDefault();
     if (!newTenderTitle.trim()) return;
+    const amount = newTenderBudget.trim();
+    const numericAmount = amount.replace(/\s/g, '').replace(',', '.');
     const created: TenderProject = {
       id: `tender-${crypto.randomUUID()}`, title: newTenderTitle.trim(), Authority: newTenderAuthority.trim() || 'Not specified',
-      rfpNumber: `RFP-${new Date().getFullYear()}-${crypto.randomUUID().slice(0, 8).toUpperCase()}`, budget: newTenderBudget.trim() || 'Not specified',
-      deadline: 'Not specified', activeDays: 0, stage: 'qualify', leadScore: 0, grade: 'Not audited', statusLabel: 'New Intake',
+      rfpNumber: newTenderReference.trim() || `BID-${new Date().getFullYear()}-${crypto.randomUUID().slice(0, 8).toUpperCase()}`,
+      budget: !amount ? 'Not specified (ZAR)' : /^\d+(?:\.\d{1,2})?$/.test(numericAmount) && Number.isFinite(Number(numericAmount)) ? formatRand(Number(numericAmount)) : amount,
+      deadline: newTenderClosing ? `${formatSouthAfricanDate(`${newTenderClosing}+02:00`, true)} SAST` : 'Not specified (SAST)', activeDays: 0, stage: 'qualify', leadScore: 0, grade: 'Not audited', statusLabel: 'New Intake',
       ownerName: 'Bid Team', ownerRole: 'Bid Architect', AvatarUrl: '', purchaseTimeframe: 'Not specified', procurementType: 'Not specified',
       executiveSummary: '', clauses: [], versions: [], discrepancies: [],
     };
@@ -333,6 +343,7 @@ function BidWorkspace() {
     setActiveTab('compliance');
     setShowNewTenderModal(false);
     setNewTenderTitle(''); setNewTenderAuthority(''); setNewTenderBudget('');
+    setNewTenderReference(''); setNewTenderClosing('');
     notify(`Created ${created.rfpNumber}. Import tender clauses to get started.`);
   };
 
@@ -457,8 +468,9 @@ function BidWorkspace() {
               Evidence library
             </div>
             <p className="text-[11px] text-neutral-500 dark:text-neutral-400 leading-relaxed">
-              Sample records are included. Verify all evidence and commitments before submission.
+              Fictional South African examples are included. Verify your own evidence before submission.
             </p>
+            <Link href="/about#sa-bidding-guide" className="mt-2 inline-flex min-h-11 items-center text-xs font-semibold text-[#12695C] dark:text-[#9BDBBE]">South African bidding guide →</Link>
           </div>
         </aside>
 
@@ -486,7 +498,8 @@ function BidWorkspace() {
             </div>
           </div>
 
-          <Link href="/tenders" className="flex min-h-11 items-center justify-between gap-3 rounded-xl border border-[#168B7A]/25 bg-[#168B7A]/5 px-3 py-2.5 text-xs font-semibold text-[#12695C] dark:text-[#9BDBBE]">Find South African tenders <span aria-hidden="true">↗</span></Link>
+          <Link href="/tenders" className="flex min-h-11 items-center justify-between gap-3 rounded-xl border border-[#168B7A]/25 bg-[#168B7A]/5 px-3 py-2.5 text-xs font-semibold text-[#12695C] dark:text-[#9BDBBE]">Find South African tenders <ArrowUpRight size={15} aria-hidden="true" /></Link>
+          {canAddLocalExamples && <div className="rounded-xl border border-neutral-200 p-3 text-xs leading-6 dark:border-neutral-800"><p>Your saved work is unchanged. South African example workspaces are now available.</p><button type="button" className="min-h-11 font-bold text-[#12695C] dark:text-[#9BDBBE]" onClick={() => { setTenders((current) => [...structuredClone(INITIAL_TENDERS).filter((example) => !current.some((tender) => tender.id === example.id)), ...current]); setSelectedTenderId(INITIAL_TENDERS[0].id); setActiveTab('summary'); }}>Add South African examples</button></div>}
 
           {/* Search Filter Input */}
           <div className="relative">
@@ -498,7 +511,7 @@ function BidWorkspace() {
               type="text"
               value={searchFilter}
               onChange={(e) => setSearchFilter(e.target.value)}
-              placeholder="Filter tenders by authority or RFP ID..."
+              placeholder="Filter by buyer or bid reference..."
               className="w-full min-h-[38px] pl-9 pr-3 py-1.5 rounded-full bg-[#F8F6EF] dark:bg-[#0D0F0E] border border-neutral-200 dark:border-neutral-800 text-xs text-[#0D0F0E] dark:text-white focus:outline-hidden focus:border-[#168B7A]"
             />
           </div>
@@ -681,7 +694,8 @@ function BidWorkspace() {
                 <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-[#0D0F0E] dark:text-white text-balance">
                   {activeTender.title}
                 </h2>
-                {activeTender.source && <><p className="pt-2 text-xs leading-6 text-neutral-500 dark:text-neutral-400">From {activeTender.source.provider}{activeTender.source.province ? ` · ${activeTender.source.province}` : ''}. <a className="font-semibold text-[#12695C] underline underline-offset-4 dark:text-[#9BDBBE]" href={activeTender.source.url} target="_blank" rel="noopener noreferrer">Official listing ↗</a> <Link className="ml-2 font-semibold text-[#12695C] dark:text-[#9BDBBE]" href={`/tenders?q=${encodeURIComponent(activeTender.rfpNumber)}`}>Check latest notice ↗</Link></p>{!activeTender.clauses.length && <p className="pt-2 text-xs leading-6 text-neutral-600 dark:text-neutral-300">Ready for the requirements. Review the official documents, then <button type="button" className="font-semibold text-[#12695C] underline underline-offset-4 dark:text-[#9BDBBE]" onClick={() => setActiveTab('compliance')}>import tender clauses →</button></p>}</>}
+                {activeIsDemo && <p className="pt-2 text-xs leading-6 text-neutral-600 dark:text-neutral-400"><span className="mr-2 rounded-full bg-[#DDFB82]/50 px-2 py-1 font-semibold text-[#12695C] dark:text-[#9BDBBE]">Demonstration workspace</span>Fictional tender and company evidence. Find live opportunities in tender discovery.</p>}
+                {activeTender.source && <><p className="pt-2 text-xs leading-6 text-neutral-500 dark:text-neutral-400">From {activeTender.source.provider}{activeTender.source.province ? ` · ${activeTender.source.province}` : ''}. <a className="font-semibold text-[#12695C] underline underline-offset-4 dark:text-[#9BDBBE]" href={activeTender.source.url} target="_blank" rel="noopener noreferrer">Official listing <ArrowUpRight className="inline" size={13} aria-hidden="true" /></a> <Link className="ml-2 font-semibold text-[#12695C] dark:text-[#9BDBBE]" href={`/tenders?q=${encodeURIComponent(activeTender.rfpNumber)}`}>Check latest notice <ArrowUpRight className="inline" size={13} aria-hidden="true" /></Link></p>{!activeTender.clauses.length && <p className="pt-2 text-xs leading-6 text-neutral-600 dark:text-neutral-300">Ready for the requirements. Review the official documents, then <button type="button" className="font-semibold text-[#12695C] underline underline-offset-4 dark:text-[#9BDBBE]" onClick={() => setActiveTab('compliance')}>import tender clauses →</button></p>}</>}
               </div>
 
               <div className="flex flex-wrap items-center gap-4 text-xs">
@@ -1024,7 +1038,7 @@ function BidWorkspace() {
               Ingest New Government or Corporate Tender
             </h3>
             <p className="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
-              Initialize a new RFP workspace pre-linked to your Corporate Vector Vault and compliance engine.
+              Start a South African bid with its reference, rand value and SAST closing time. Your proposal starts blank.
             </p>
             <form onSubmit={handleCreateNewTender} className="mt-4 space-y-3">
               <div>
@@ -1038,7 +1052,7 @@ function BidWorkspace() {
                   autoFocus
                   value={newTenderTitle}
                   onChange={(e) => setNewTenderTitle(e.target.value)}
-                  placeholder="e.g. Scottish Water Smart Telemetry & Edge AI Tender"
+                  placeholder="e.g. Municipal water telemetry and maintenance"
                   className="w-full min-h-[42px] px-3.5 py-2 rounded-2xl bg-[#F8F6EF] dark:bg-[#0D0F0E] border border-neutral-200 dark:border-neutral-800 text-xs text-[#0D0F0E] dark:text-white"
                 />
               </div>
@@ -1052,22 +1066,32 @@ function BidWorkspace() {
                   aria-label="Issuing authority"
                   value={newTenderAuthority}
                   onChange={(e) => setNewTenderAuthority(e.target.value)}
-                  placeholder="e.g. Crown Commercial Service / Scottish Water"
+                  placeholder="e.g. City of Tshwane / Department of Health"
                   className="w-full min-h-[42px] px-3.5 py-2 rounded-2xl bg-[#F8F6EF] dark:bg-[#0D0F0E] border border-neutral-200 dark:border-neutral-800 text-xs text-[#0D0F0E] dark:text-white"
                 />
               </div>
               <div>
                 <label htmlFor="tender-budget" className="text-xs font-semibold text-neutral-600 dark:text-neutral-300 block mb-1">
-                  Estimated Contract Value
+                  Estimated Contract Value · ZAR
                 </label>
                 <input
                   type="text"
                   id="tender-budget"
                   aria-label="Contract budget"
+                  placeholder="e.g. R850 000,00 excl. VAT"
                   value={newTenderBudget}
                   onChange={(e) => setNewTenderBudget(e.target.value)}
                   className="w-full min-h-[42px] px-3.5 py-2 rounded-2xl bg-[#F8F6EF] dark:bg-[#0D0F0E] border border-neutral-200 dark:border-neutral-800 text-xs font-mono text-[#0D0F0E] dark:text-white"
                 />
+                <p className="mt-1 text-xs text-neutral-500">Use rand (ZAR) and state whether VAT is included. VAT is not added automatically.</p>
+              </div>
+              <div>
+                <label htmlFor="tender-reference" className="mb-1 block text-xs font-semibold text-neutral-600 dark:text-neutral-300">Bid / tender reference (optional)</label>
+                <input type="text" id="tender-reference" value={newTenderReference} onChange={(event) => setNewTenderReference(event.target.value)} placeholder="Use the reference on the bid document" className="min-h-11 w-full rounded-2xl border border-neutral-200 bg-[#F8F6EF] px-3.5 py-2 text-xs dark:border-neutral-800 dark:bg-[#0D0F0E]" />
+              </div>
+              <div>
+                <label htmlFor="tender-closing" className="mb-1 block text-xs font-semibold text-neutral-600 dark:text-neutral-300">Closing date & time · SAST (optional)</label>
+                <input type="datetime-local" id="tender-closing" value={newTenderClosing} onChange={(event) => setNewTenderClosing(event.target.value)} className="min-h-11 w-full min-w-0 rounded-2xl border border-neutral-200 bg-[#F8F6EF] px-3.5 py-2 text-xs dark:border-neutral-800 dark:bg-[#0D0F0E]" />
               </div>
               <div className="pt-3 flex items-center justify-end gap-2">
                 <button

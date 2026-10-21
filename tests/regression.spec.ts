@@ -20,8 +20,8 @@ test('snapshots preserve empty content, flags, score and monotonic version numbe
 });
 
 test('local search ranks matching evidence without fabricated minimum scores', () => {
-  const ranked = rankVaultDocuments('financial turnover liquidity KPMG', INITIAL_VAULT_DOCS);
-  expect(ranked[0].id).toBe('vault-fin-audit-2025');
+  const ranked = rankVaultDocuments('financial turnover liquidity audited', INITIAL_VAULT_DOCS);
+  expect(ranked[0].id).toBe('vault-za-fin-audit-2025');
   expect(rankVaultDocuments('', INITIAL_VAULT_DOCS).every((item) => item.similarityScore === 0)).toBe(true);
 });
 
@@ -29,8 +29,8 @@ test('API rejects bad requests and local search works without an AI key', async 
   expect((await request.post('/api/tender-ai', { data: 'bad json', headers: { 'Content-Type': 'application/json' } })).status()).toBe(400);
   expect((await request.post('/api/tender-ai', { data: { action: 'unknown', payload: {} } })).status()).toBe(400);
   expect((await request.post('/api/tender-ai', { data: { action: 'draft_clause', payload: { clause: {}, vaultDocs: [] } } })).status()).toBe(400);
-  const response = await request.post('/api/tender-ai', { data: { action: 'vector_search', payload: { query: 'KPMG turnover liquidity', vaultDocs: INITIAL_VAULT_DOCS } } });
-  expect(response.ok()).toBe(true); expect((await response.json()).result.ranked[0].id).toBe('vault-fin-audit-2025');
+  const response = await request.post('/api/tender-ai', { data: { action: 'vector_search', payload: { query: 'audited turnover liquidity', vaultDocs: INITIAL_VAULT_DOCS } } });
+  expect(response.ok()).toBe(true); expect((await response.json()).result.ranked[0].id).toBe('vault-za-fin-audit-2025');
   expect((await request.get('/api/pwa-icon?size=oops')).status()).toBe(400);
 });
 
@@ -85,10 +85,12 @@ test('invalid saved data does not crash the workspace', async ({ page }) => {
 test('branding, SEO and LLM context are consistent and server rendered', async ({ request }) => {
   const html = await (await request.get('/')).text();
   expect(html).toContain('Make every'); expect(html).toContain('Bidcraft — AI Tender'); expect(html).not.toContain('quora-bid-architect.app');
+  expect(html).toContain('lang="en-ZA"'); expect(html).toContain('content="en_ZA"'); expect(html).toContain('Built for South African bid teams');
   expect((await (await request.get('/about')).text())).toContain('A more considered way to bid');
   expect(await (await request.get('/llm.txt')).text()).toBe(await (await request.get('/llms.txt')).text());
   const manifest = await (await request.get('/manifest.webmanifest')).json();
   expect(manifest.short_name).toBe('Bidcraft'); expect(manifest.icons[0].type).toBe('image/png');
+  expect(manifest.lang).toBe('en-ZA'); expect(manifest.name).toContain('South Africa');
   expect((await request.get('/brand/social-card.png')).headers()['content-type']).toContain('image/png');
 });
 

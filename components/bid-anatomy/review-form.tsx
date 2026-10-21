@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import type { ClauseReview, TenderClause } from '@/lib/types';
+import { formatSouthAfricanDate } from '@/lib/locale';
 
 export function ReviewForm({ clause, blocker, onReview }: {
   clause: TenderClause;
@@ -24,7 +25,7 @@ export function ReviewForm({ clause, blocker, onReview }: {
     <p>Saved in this browser as “Local reviewer”, with a proposal snapshot. AI alignment and human approval are separate records.</p>
     {clause.review && <div className="anatomy-last-review" role="status">
       <strong>{clause.review.outcome === 'approved' ? 'Human approval recorded' : 'Changes requested'}</strong>
-      <span>{new Date(clause.review.reviewedAt).toLocaleString()} · {clause.review.reviewer}</span>
+      <span>{formatSouthAfricanDate(clause.review.reviewedAt, true)} SAST · {clause.review.reviewer}</span>
       <p>{clause.review.note}</p>
     </div>}
     <label className="anatomy-field"><span>Review note</span><textarea value={note} onChange={(event) => { setNote(event.target.value); setError(''); }} rows={3} maxLength={4000} placeholder="What did you check, or what needs to change?" /></label>

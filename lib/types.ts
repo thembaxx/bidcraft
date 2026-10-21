@@ -61,6 +61,7 @@ export interface ComplianceDiscrepancy {
 }
 
 export interface TenderProject {
+  isDemo?: boolean;
   source?: {
     provider: string;
     noticeId: string;

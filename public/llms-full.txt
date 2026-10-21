@@ -1,6 +1,6 @@
 # Bidcraft — extended product context
 
-Bidcraft is an AI-assisted tender and RFP proposal workspace. Its purpose is to help teams organize requirements, write evidence-backed responses, identify possible gaps, and maintain a useful revision history. Its tagline is “Make every bid count.”
+Bidcraft is an AI-assisted tender and RFP proposal workspace. Its purpose is to help teams organise requirements, write evidence-backed responses, identify possible gaps, and maintain a useful revision history. Its tagline is “Make every bid count.”
 
 ## Workflow
 1. Create a new tender with its title, contracting authority, and budget. New workspaces start without another tender’s clauses, proposal, history, or compliance claims.
@@ -14,7 +14,7 @@ Bidcraft is an AI-assisted tender and RFP proposal workspace. Its purpose is to 
 ## Bid Anatomy and human review
 The Bid Anatomy tab shows an SVG inspection bench connected to the selected tender. Pins retract only for recorded human approvals; the gauge measures reviewed mandatory clauses. Larger tenders use six-station pages. Users can inspect original requirements, draft responses, open flags, and full linked evidence records. They can manage evidence links, open the matching comparison clause, approve a reviewed response, or request changes with a note.
 
-Reviews use a local timestamp and the label Local reviewer, not an authenticated identity. Missing responses, unavailable evidence, non-compliant responses, and unresolved flags prevent approval. Editing proposal text, replacing a draft with an AI result or fix, and changing evidence links invalidate the previous review. Human Review snapshots preserve the decision, and version restoration restores it. A recorded approval does not guarantee legal eligibility.
+Reviews are displayed in SAST and use an ISO timestamp and the label Local reviewer, not an authenticated identity. Missing responses, unavailable evidence, non-compliant responses, and unresolved flags prevent approval. Editing proposal text, replacing a draft with an AI result or fix, and changing evidence links invalidate the previous review. Human Review snapshots preserve the decision, and version restoration restores it. A recorded approval does not guarantee legal eligibility.
 
 ## Storage and availability
 Tender content and snapshots are stored in localStorage in the current browser. There is no cloud database, user account system, cross-device sync, or collaborative editing in this release. Clearing browser data removes local work. Export important drafts.
@@ -42,3 +42,9 @@ Bidcraft uses an ivory, ink, teal, and chartreuse palette, a folded-document B l
 - Users can save notices in this browser and create a blank bid workspace with source attribution, ZAR and SAST metadata. Re-import opens an existing bid rather than overwriting it.
 - Saved notices and recent successful search pages are browser-local copies without cross-device sync or downloaded attachments. Failed source refreshes must not be described as fresh, successful searches.
 - Tender discovery does not require a paid tender API or Gemini configuration. AI drafting, audits and OCR still require the server-side Gemini key.
+
+## South African market defaults
+- The primary market is South Africa. The interface uses South African English (en-ZA), rand (ZAR), and South African Standard Time (SAST, UTC+02:00). Source currencies and saved proposal content are preserved. VAT is not added automatically.
+- Starter workspaces are clearly labelled fictional South African demonstrations. Existing drafts are not rewritten; older users can add the new examples without replacing their work.
+- [South African bidding guide](/about#sa-bidding-guide) links to official CSD, SARS and the dtic guidance. CSD, tax status, B-BBEE evidence, preference goals, bid forms, CIDB and COIDA requirements depend on the actual bid documents. Bidcraft does not verify registrations or calculate preference points.
+- AI features process supplied documents through the server and Gemini. Users must assess their POPIA obligations; the app makes no guarantee of POPIA compliance or South-African-only processing.

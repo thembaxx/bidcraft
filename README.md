@@ -47,3 +47,13 @@ Saved opportunities, optional source-detail snapshots and the last three success
 Creating a bid preserves source provenance, uses ZAR and SAST, and starts with no drafted clauses or proposal text. Re-importing a source notice opens its existing workspace without replacing proposal work.
 
 Sources and reuse: [official listings](https://www.etenders.gov.za/Home/opportunities?id=1), [OCDS OpenAPI](https://ocds-api.etenders.gov.za/swagger/v1/swagger.json), [publication policy](https://data.etenders.gov.za/Home/LearnMore). Treasury allows commercial and non-commercial reuse with source attribution, but does not guarantee complete, current or accurate coverage. Live upstream checks are separate from deterministic browser tests in `tests/tender-discovery.spec.ts`.
+
+## South African market defaults
+
+Bidcraft targets South African bid teams: `en-ZA` language and metadata, rand (ZAR), and SAST (`Africa/Johannesburg`) for dates and review history. New bids accept an original bid reference and a SAST closing date/time. Numeric contract values are formatted in rand; explicitly supplied currency or VAT wording is preserved. VAT is never added automatically.
+
+The starter workspaces and evidence are fictional South African demonstrations. They have distinct IDs and explicit labels, including exported proposals. Existing saved bids are not migrated or rewritten. Users with the legacy examples can add the South African examples without replacing their drafts. Old snapshot times without an offset are displayed as SAST; ISO timestamps with an offset retain their actual instant.
+
+The collapsed bidding guide links to the official [CSD](https://secure.csd.gov.za/), [SARS TCS](https://www.sars.gov.za/individuals/manage-your-tax-compliance-status/) and [the dtic B-BBEE](https://www.thedtic.gov.za/financial-and-non-financial-support/b-bbee/) pages (checked 21 October 2026). It explains tender-specific supplier evidence, bid forms, briefings, VAT and submission requirements without treating them as universally mandatory or verifying supplier eligibility. AI prompts use the same South African context, preserve source currencies and terms, and distinguish demonstration evidence from real supplier capabilities.
+
+AI features send supplied clauses, uploaded pages and evidence to Gemini through the server. Users must assess their POPIA obligations; local storage does not provide account access controls, and the app does not claim POPIA compliance or South-African-only processing. See the [Information Regulator](https://inforegulator.org.za/) for official guidance.
