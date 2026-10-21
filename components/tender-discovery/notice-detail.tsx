@@ -15,6 +15,7 @@ export function NoticeDetail({ notice, saved, feedback, onSave, onImport, onClos
   const [detail, setDetail] = useState<TenderDetail | undefined>(saved?.detail);
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading');
   const [retry, setRetry] = useState(0);
+  const [openedAt] = useState(Date.now);
   useEffect(() => {
     const controller = new AbortController();
     void (async () => {
@@ -28,7 +29,7 @@ export function NoticeDetail({ notice, saved, feedback, onSave, onImport, onClos
     return () => controller.abort();
   }, [notice.id, retry]);
   const current = detail ?? notice;
-  const missedBriefing = current.briefing === 'required' && Boolean(current.briefingAt && Date.parse(current.briefingAt) < Date.now());
+  const missedBriefing = current.briefing === 'required' && Boolean(current.briefingAt && Date.parse(current.briefingAt) < openedAt);
   const briefing = { required: 'Compulsory briefing', optional: 'Optional briefing', none: 'No briefing listed', unknown: 'Not published' }[current.briefing];
   return <Dialog labelledBy="discovery-detail-title" onClose={onClose} className="discovery-detail-dialog">
     <div className="discovery-detail-top"><span className="discovery-source"><span aria-hidden="true" /> National Treasury eTender</span><button type="button" className="discovery-icon-button" aria-label="Close tender details" onClick={onClose}><X size={20} /></button></div>
@@ -38,7 +39,7 @@ export function NoticeDetail({ notice, saved, feedback, onSave, onImport, onClos
     <div className="discovery-detail-actions"><button type="button" className="discovery-primary" onClick={() => onImport(current)}>Create bid workspace <ArrowRight size={18} aria-hidden="true" /></button><button type="button" className="discovery-secondary" aria-pressed={Boolean(saved)} onClick={() => onSave(current, detail)}><BookmarkSimple size={17} weight={saved ? 'fill' : 'regular'} aria-hidden="true" />{saved ? 'Saved tender' : 'Save tender'}</button></div>
     <p className="discovery-small">Your proposal starts blank, with the official reference attached.</p>
     <div className="discovery-eligibility-note" role="note"><WarningCircle size={18} aria-hidden="true"/><p><strong>Check before you bid.</strong> A matching tender is not proof of eligibility. Review every mandatory condition and supporting document{missedBriefing ? ' — the listed compulsory briefing date has passed.' : '.'}</p></div>
-    {current.closesAt && Date.parse(current.closesAt) > Date.now() && <button type="button" className="discovery-calendar-action" onClick={() => downloadTenderReminder(current)}><CalendarBlank size={17} aria-hidden="true"/> Download a calendar reminder <ArrowUpRight size={14} aria-hidden="true"/></button>}
+    {current.closesAt && Date.parse(current.closesAt) > openedAt && <button type="button" className="discovery-calendar-action" onClick={() => downloadTenderReminder(current)}><CalendarBlank size={17} aria-hidden="true"/> Download a calendar reminder <ArrowUpRight size={14} aria-hidden="true"/></button>}
     {feedback && <p role="status" className="discovery-alert">{feedback}</p>}
     {status === 'loading' && <p role="status" className="discovery-inline-status">Checking the official notice and documents…</p>}
     {status === 'error' && <div className="discovery-alert" role="status"><p>{detail ? 'Showing your saved source details. The latest notice could not be checked.' : 'The latest source details could not be loaded. Your saved notice is still available.'}</p><button type="button" onClick={() => { setStatus('loading'); setRetry(retry + 1); }}>Try again</button></div>}
