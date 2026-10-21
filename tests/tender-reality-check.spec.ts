@@ -9,11 +9,11 @@ const notice: TenderNotice = {
   briefing: 'required', briefingAt: '2026-11-01T09:00:00+02:00',
   documentCount: 1, noticeKind: 'opportunity', sourceUrl: DISCOVERY_HOME,
 };
-const document = { id: 'doc-1', title: 'ICT Tender Pack.pdf', url: 'https://www.etenders.gov.za/home/Download?blobName=demo.pdf' };
+const tenderDocument = { id: 'doc-1', title: 'ICT Tender Pack.pdf', url: 'https://www.etenders.gov.za/home/Download?blobName=demo.pdf' };
 const detail: TenderDetail = {
   ...notice, description: notice.title, conditions: 'See the compulsory briefing and attached documents.',
   delivery: 'Mpumalanga', briefingVenue: 'Municipal hall', checkedAt: new Date().toISOString(),
-  documents: [document], ocid: null, ocdsUrl: null, ocdsChecked: false, deadlineConflict: false,
+  documents: [tenderDocument], ocid: null, ocdsUrl: null, ocdsChecked: false, deadlineConflict: false,
 };
 
 test('assessment rules distinguish missing sources, self-report, blockers and reviewed potential fit', () => {
@@ -31,7 +31,7 @@ test('assessment rules distinguish missing sources, self-report, blockers and re
   expect(evaluateRealityCheck(notice, { ...detail, deadlineConflict: true }, reviewed, true).state).toBe('insufficient_source_information');
   const stale = { ...reviewed, sourceFingerprint: sourceFingerprint(detail) };
   expect(evaluateRealityCheck(notice, { ...detail, closesAt: '2026-11-22T12:00:00+02:00' }, stale, true).state).toBe('insufficient_source_information');
-  expect(sourceChanges(detail, { ...detail, documents: [document, { id: 'doc-2', title: 'Addendum.pdf', url: document.url }] })).toContain('Linked document listing changed; review attachments');
+  expect(sourceChanges(detail, { ...detail, documents: [tenderDocument, { id: 'doc-2', title: 'Addendum.pdf', url: tenderDocument.url }] })).toContain('Linked document listing changed; review attachments');
 });
 
 test('unverified clauses cannot silently become eligibility passes; preferences never automatically block', () => {
