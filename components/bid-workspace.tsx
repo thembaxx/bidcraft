@@ -357,7 +357,7 @@ function BidWorkspace() {
   ];
 
   return (
-    <MotionConfig reducedMotion="user"><div id="workspace" className="scroll-mt-4 min-h-dvh flex flex-col bg-[#F8F6EF] dark:bg-[#0D0F0E] text-[#0D0F0E] dark:text-[#F5F7F6] pb-20 lg:pb-6">
+    <MotionConfig reducedMotion="user"><div id="workspace" className="scroll-mt-4 min-h-dvh flex flex-col bg-[#F8F6EF] dark:bg-[#0D0F0E] text-[#0D0F0E] dark:text-[#F5F7F6] pb-[calc(96px+env(safe-area-inset-bottom))] lg:pb-6">
       <OfflineBanner />
 
       <header className="sticky top-0 z-30 border-y border-neutral-200/80 bg-[#F8F6EF]/95 px-4 py-3 backdrop-blur-md dark:border-neutral-800 dark:bg-[#0D0F0E]/95 lg:px-8">
