@@ -626,6 +626,8 @@ function BidWorkspace() {
 
         {/* Pane 3 (Right Main Studio - 7 Cols on Desktop): Active Tender Architect Workspace */}
         <section id="bid-studio" tabIndex={-1} aria-label="Bid studio" className="min-w-0 scroll-mt-24 lg:col-span-7 space-y-4">
+          <p role="note" className="rounded-2xl border border-[#168B7A]/20 bg-[#168B7A]/5 px-4 py-3 text-[11px] leading-5 text-neutral-600 dark:text-neutral-300">AI drafting, reviews and OCR can transmit your clauses, evidence and uploaded files to Google Gemini. Outputs are not independently verified. Avoid sensitive information without appropriate safeguards. <Link href="/ai-disclosure" className="font-bold text-[#12695C] underline underline-offset-2 dark:text-[#9BDBBE]">How AI handles data</Link></p>
+
           <div className="flex items-end gap-2 rounded-2xl border border-neutral-200/75 bg-white/80 p-3 dark:border-neutral-800 dark:bg-[#161918] lg:hidden">
             <label htmlFor="mobile-bid-switcher" className="min-w-0 flex-1 text-[11px] font-bold text-neutral-500 dark:text-neutral-400">Current bid
               <select id="mobile-bid-switcher" value={activeTender.id} onChange={(event) => { setSelectedTenderId(event.target.value); setActiveTab('summary'); }} className="mt-1.5 block min-h-12 w-full min-w-0 rounded-xl border border-neutral-200 bg-[#F8F6EF] px-3 text-sm font-semibold text-[#101714] focus:border-[#168B7A] dark:border-neutral-700 dark:bg-[#0D0F0E] dark:text-white">
