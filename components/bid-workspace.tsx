@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion, MotionConfig, useReducedMotion } from 'motion/react';
 import { AnimatedTabs } from './ui/animated-tabs';
+import { MobileGlobalNav } from './mobile-global-nav';
 import { Alert } from './ui/alert';
 import { Dialog } from './ui/dialog';
 import { BrandLogoMark } from './brand-logo';
@@ -767,13 +768,38 @@ function BidWorkspace() {
               </div>
             </div>
 
-            <AnimatedTabs activeTab={activeTab} onChange={setActiveTab} tabs={[
+            <div className="hidden lg:block"><AnimatedTabs activeTab={activeTab} onChange={setActiveTab} tabs={[
               { id: 'summary', label: 'Overview' },
               { id: 'anatomy', label: 'Bid Anatomy' },
               { id: 'comparison', label: 'Clause comparison', badge: activeTender.clauses.length },
               { id: 'compliance', label: 'Compliance & vault', badge: activeTender.discrepancies.filter((flag) => !flag.resolved && flag.severity !== 'verified').length },
               { id: 'versions', label: 'History', badge: activeTender.versions.length },
-            ]} />
+            ]} /></div>
+            <div className="space-y-3 lg:hidden">
+              <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-neutral-500 dark:text-neutral-400">Your bid, step by step</p>
+              <div className="grid grid-cols-3 gap-1.5 rounded-2xl bg-[#F8F6EF] p-1.5 dark:bg-[#0D0F0E]" role="group" aria-label="Bid preparation steps">
+                {([
+                  { id: 'summary', label: 'Understand' },
+                  { id: 'compliance', label: 'Prepare' },
+                  { id: 'anatomy', label: 'Review' },
+                ] as const).map((step) => {
+                  const selected = activeTab === step.id;
+                  return <button key={step.id} type="button" aria-pressed={selected} onClick={() => setActiveTab(step.id)} className={`relative min-h-12 rounded-xl px-1.5 text-xs font-bold transition-colors ${selected ? 'text-[#101714]' : 'text-neutral-600 dark:text-neutral-300'}`}>
+                    {selected && <motion.span layoutId="bid-workflow-step" className="absolute inset-0 rounded-xl bg-[#DDFB82]" transition={reducedMotion ? { duration: 0 } : { type: 'spring', stiffness: 420, damping: 34 }} aria-hidden="true" />}
+                    <span className="relative z-10">{step.label}</span>
+                  </button>;
+                })}
+              </div>
+              <details className="group rounded-xl border border-neutral-200/75 bg-white/50 px-3 dark:border-neutral-800 dark:bg-[#161918]/50">
+                <summary className="flex min-h-11 cursor-pointer items-center justify-between text-xs font-semibold text-neutral-600 dark:text-neutral-300">
+                  More bid tools <span className="transition-transform group-open:rotate-180" aria-hidden="true">⌄</span>
+                </summary>
+                <div className="grid grid-cols-2 gap-2 pb-3">
+                  <button type="button" onClick={() => setActiveTab('comparison')} aria-pressed={activeTab === 'comparison'} className={`min-h-11 rounded-xl border px-2 text-xs font-semibold ${activeTab === 'comparison' ? 'border-[#168B7A] bg-[#168B7A]/10' : 'border-neutral-200 dark:border-neutral-700'}`}>Compare clauses</button>
+                  <button type="button" onClick={() => setActiveTab('versions')} aria-pressed={activeTab === 'versions'} className={`min-h-11 rounded-xl border px-2 text-xs font-semibold ${activeTab === 'versions' ? 'border-[#168B7A] bg-[#168B7A]/10' : 'border-neutral-200 dark:border-neutral-700'}`}>Version history</button>
+                </div>
+              </details>
+            </div>
           </div>
 
           {/* Tab Content Switching */}
@@ -970,66 +996,7 @@ function BidWorkspace() {
         </section>
       </main>
 
-      {/* Mobile & Tablet Touch-First Bottom Navigation Bar (<15% viewport height, >=44px hitboxes) */}
-      <nav
-        aria-label="Mobile workspace navigation"
-        className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-[#141716]/95 backdrop-blur-md border-t border-neutral-200 dark:border-neutral-800 px-2 py-1.5 grid grid-cols-5 gap-1"
-      >
-        <button
-          onClick={() => setActiveTab('summary')}
-          className={`min-h-[48px] rounded-2xl flex flex-col items-center justify-center transition-colors cursor-pointer ${
-            activeTab === 'summary'
-              ? 'bg-[#DDFB82] text-[#0D0F0E] font-bold'
-              : 'text-neutral-500 dark:text-neutral-400'
-          }`}
-        >
-          <House size={20} weight={activeTab === 'summary' ? 'fill' : 'regular'} />
-          <span className="text-[10px] mt-0.5">Summary</span>
-        </button>
-
-        <button onClick={() => setActiveTab('anatomy')} className={`min-h-[48px] rounded-2xl flex flex-col items-center justify-center transition-colors ${activeTab === 'anatomy' ? 'bg-[#DDFB82] text-[#0D0F0E] font-bold' : 'text-neutral-500 dark:text-neutral-400'}`}>
-          <MagnifyingGlass size={20} weight={activeTab === 'anatomy' ? 'bold' : 'regular'} /><span className="text-[10px] mt-0.5">Anatomy</span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab('comparison')}
-          className={`min-h-[48px] rounded-2xl flex flex-col items-center justify-center transition-colors cursor-pointer ${
-            activeTab === 'comparison'
-              ? 'bg-[#DDFB82] text-[#0D0F0E] font-bold'
-              : 'text-neutral-500 dark:text-neutral-400'
-          }`}
-        >
-          <Columns size={20} weight={activeTab === 'comparison' ? 'fill' : 'regular'} />
-          <span className="text-[10px] mt-0.5">50/50 Diff</span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab('compliance')}
-          className={`min-h-[48px] rounded-2xl flex flex-col items-center justify-center transition-colors cursor-pointer ${
-            activeTab === 'compliance'
-              ? 'bg-[#DDFB82] text-[#0D0F0E] font-bold'
-              : 'text-neutral-500 dark:text-neutral-400'
-          }`}
-        >
-          <Database size={20} weight={activeTab === 'compliance' ? 'fill' : 'regular'} />
-          <span className="text-[10px] mt-0.5">Vault & OCR</span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab('versions')}
-          className={`min-h-[48px] rounded-2xl flex flex-col items-center justify-center transition-colors cursor-pointer ${
-            activeTab === 'versions'
-              ? 'bg-[#DDFB82] text-[#0D0F0E] font-bold'
-              : 'text-neutral-500 dark:text-neutral-400'
-          }`}
-        >
-          <ClockCounterClockwise
-            size={20}
-            weight={activeTab === 'versions' ? 'fill' : 'regular'}
-          />
-          <span className="text-[10px] mt-0.5">Versions</span>
-        </button>
-      </nav>
+      <MobileGlobalNav />
 
       {/* Modal for Ingesting a New Tender RFP */}
       {showNewTenderModal && (
