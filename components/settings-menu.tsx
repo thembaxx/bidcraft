@@ -4,10 +4,11 @@ import Link from 'next/link';
 import { useEffect, useId, useRef, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import {
-  ArrowUpRight, BookOpenText, Check, Database, Desktop, GearSix,
+  ArrowUpRight, ArrowsClockwise, BookOpenText, Check, Database, Desktop, GearSix,
   Moon, ShieldCheck, Sun,
 } from '@phosphor-icons/react';
 import { PWAInstallControl, usePWAStatus } from '@/components/pwa-controls';
+import { ONBOARDING_REPLAY_EVENT } from '@/lib/onboarding';
 import { setThemePreference, useThemePreference, type ThemePreference } from '@/components/theme-preference';
 
 const themeOptions = [
@@ -113,6 +114,14 @@ export function SettingsMenu() {
             <section aria-label="App and installation">
               <p className="mb-2 text-[11px] font-bold uppercase tracking-[.12em] text-neutral-500 dark:text-neutral-400">Application</p>
               <PWAInstallControl variant="menu" status={pwaStatus} />
+              <button
+                type="button"
+                onClick={() => { setOpen(false); window.dispatchEvent(new Event(ONBOARDING_REPLAY_EVENT)); }}
+                className="mt-2 flex min-h-11 w-full items-center gap-3 rounded-xl border border-neutral-200 px-3 text-left text-xs font-semibold transition-colors hover:bg-[#E8ECE5] dark:border-neutral-700 dark:hover:bg-white/10"
+              >
+                <ArrowsClockwise size={18} className="shrink-0 text-[#168B7A] dark:text-[#9BDBBE]" aria-hidden="true" />
+                Replay onboarding
+              </button>
               <p className="mt-2 text-[11px] leading-5 text-neutral-500 dark:text-neutral-400">Saved bids stay in this browser. Live discovery and AI need a connection.</p>
             </section>
             <div className="my-4 h-px bg-neutral-200 dark:bg-neutral-700" />
