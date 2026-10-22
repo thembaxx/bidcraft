@@ -33,7 +33,7 @@ test.describe('new visitor onboarding', () => {
   test('offers an optional interactive illustration without blocking progress or reduced-motion users', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto('/today');
-    const dialog = page.getByRole('dialog', { name: 'What brings you here?' });
+    const dialog = page.locator('dialog[open]');
     await expect(dialog).toBeVisible();
     const sculpture = dialog.getByRole('button', { name: 'Turn the decorative bid documents' });
     await expect(sculpture).toBeVisible();
@@ -53,7 +53,7 @@ test.describe('new visitor onboarding', () => {
 
   test('finishes the optional keyword step using Enter', async ({ page }) => {
     await page.goto('/today');
-    const dialog = page.getByRole('dialog', { name: 'What brings you here?' });
+    const dialog = page.locator('dialog[open]');
     await dialog.getByRole('button', { name: /Find tenders/ }).click();
     await dialog.getByRole('button', { name: /Continue/ }).click();
     await dialog.getByRole('button', { name: /Continue/ }).click();
