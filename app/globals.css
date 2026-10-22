@@ -39,6 +39,17 @@ a:hover .brand-mark { transform: rotate(-5deg) scale(1.04); }
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
 }
 
+/* Onboarding opens with a short, physical entrance without shifting app layout. */
+@media (prefers-reduced-motion: no-preference) {
+  .onboarding-shell[open] {
+    animation: onboarding-arrive 420ms cubic-bezier(.22, 1, .36, 1) both;
+  }
+  @keyframes onboarding-arrive {
+    from { opacity: 0; transform: translateY(14px) scale(.985); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+}
+
 /* Space for shared app navigation only at mobile/tablet sizes. */
 @media (max-width: 1023px) {
   #workspace { scroll-margin-top: 5rem; }

@@ -30,6 +30,39 @@ test.describe('new visitor onboarding', () => {
     await expect(page.getByRole('heading', { name: 'What brings you here?' })).toHaveCount(0);
   });
 
+  test('offers an optional interactive illustration without blocking progress or reduced-motion users', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.goto('/today');
+    const dialog = page.locator('dialog[open]');
+    await expect(dialog).toBeVisible();
+    const sculpture = dialog.getByRole('button', { name: 'Turn the decorative bid documents' });
+    await expect(sculpture).toBeVisible();
+    await expect(sculpture).toHaveAttribute('data-scene-mode', 'fallback');
+    await expect(sculpture.locator('canvas')).toHaveCount(0);
+    await sculpture.click();
+    await expect(dialog.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '1');
+
+    await dialog.getByRole('button', { name: /Find tenders/ }).click();
+    await dialog.getByRole('button', { name: /Continue/ }).click();
+    await dialog.getByRole('button', { name: 'Gauteng', exact: true }).click();
+    await dialog.getByRole('button', { name: 'Previous question' }).click();
+    await expect(dialog.getByRole('button', { name: /Find tenders/ })).toHaveAttribute('aria-pressed', 'true');
+    await dialog.getByRole('button', { name: /Continue/ }).click();
+    await expect(dialog.getByRole('button', { name: 'Gauteng', exact: true })).toHaveAttribute('aria-pressed', 'true');
+  });
+
+  test('finishes the optional keyword step using Enter', async ({ page }) => {
+    await page.goto('/today');
+    const dialog = page.locator('dialog[open]');
+    await dialog.getByRole('button', { name: /Find tenders/ }).click();
+    await dialog.getByRole('button', { name: /Continue/ }).click();
+    await dialog.getByRole('button', { name: /Continue/ }).click();
+    await dialog.getByLabel('Service or product (optional)').fill('Website development');
+    await dialog.getByLabel('Service or product (optional)').press('Enter');
+    await expect(page).toHaveURL(/q=Website\+development/);
+    await expect(dialog).toHaveCount(0);
+  });
+
   test('can skip without losing access or seeing the tour again', async ({ page }) => {
     await page.goto('/today');
     await expect(page.getByRole('heading', { name: 'What brings you here?' })).toBeVisible();
