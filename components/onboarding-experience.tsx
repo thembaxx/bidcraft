@@ -121,7 +121,7 @@ export function OnboardingExperience() {
       aria-labelledby="bidcraft-onboarding-title"
       aria-describedby="bidcraft-onboarding-description"
       onCancel={(event) => { event.preventDefault(); skip(); }}
-      className="m-auto max-h-[calc(100dvh-1.25rem)] w-[calc(100%-1.25rem)] max-w-[760px] overflow-y-auto rounded-[28px] border border-neutral-200 bg-[#F8F6EF] p-0 text-[#101714] shadow-[0_26px_90px_#10171455] backdrop:bg-[#07120E]/75 backdrop:backdrop-blur-sm dark:border-neutral-700 dark:bg-[#111715] dark:text-[#F5F7F6] sm:rounded-[36px]"
+      className="onboarding-shell m-auto max-h-[calc(100dvh-1.25rem)] w-[calc(100%-1.25rem)] max-w-[760px] overflow-y-auto rounded-[28px] border border-neutral-200 bg-[#F8F6EF] p-0 text-[#101714] shadow-[0_26px_90px_#10171455] backdrop:bg-[#07120E]/75 backdrop:backdrop-blur-sm dark:border-neutral-700 dark:bg-[#111715] dark:text-[#F5F7F6] sm:rounded-[36px]"
     >
       <div className="grid min-h-[min(580px,calc(100dvh-1.25rem))] grid-cols-1 md:grid-cols-[minmax(0,1.1fr)_minmax(250px,0.9fr)]">
         <div className="flex min-w-0 flex-col px-5 pb-5 pt-5 sm:px-8 sm:pb-7 sm:pt-7">
@@ -145,9 +145,9 @@ export function OnboardingExperience() {
               <p id="bidcraft-onboarding-description" className="mt-2 max-w-sm text-sm leading-6 text-neutral-600 dark:text-neutral-300">{question.subtitle}</p>
 
               {step === 0 && <div className="mt-6 grid gap-2" role="group" aria-label="Your goal">
-                {goals.map(({ id, title, detail, Icon }) => {
+                {goals.map(({ id, title, detail, Icon }, index) => {
                   const selected = profile.goal === id;
-                  return <motion.button key={id} type="button" aria-pressed={selected} onClick={() => selectGoal(id)} whileHover={reducedMotion ? undefined : { y: -2 }} whileTap={reducedMotion ? undefined : { scale: 0.985 }} transition={{ type: 'spring', stiffness: 360, damping: 25 }} className={`group flex min-h-[68px] items-center gap-3 rounded-2xl border px-3.5 py-3 text-left transition-[border-color,background-color,transform] duration-200 active:scale-[0.99] ${selected ? 'border-[#168B7A] bg-[#E6F6E6] dark:border-[#DDFB82] dark:bg-[#24382C]' : 'border-neutral-200 bg-white/70 hover:border-[#168B7A]/60 dark:border-neutral-700 dark:bg-[#1B2320]'}`}>
+                  return <motion.button key={id} type="button" aria-pressed={selected} onClick={() => selectGoal(id)} initial={reducedMotion ? false : { opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} whileHover={reducedMotion ? undefined : { y: -2 }} whileTap={reducedMotion ? undefined : { scale: 0.985 }} transition={{ type: 'spring', stiffness: 360, damping: 25, delay: reducedMotion ? 0 : index * 0.055 }} className={`group flex min-h-[68px] items-center gap-3 rounded-2xl border px-3.5 py-3 text-left transition-[border-color,background-color,transform] duration-200 active:scale-[0.99] ${selected ? 'border-[#168B7A] bg-[#E6F6E6] dark:border-[#DDFB82] dark:bg-[#24382C]' : 'border-neutral-200 bg-white/70 hover:border-[#168B7A]/60 dark:border-neutral-700 dark:bg-[#1B2320]'}`}>
                     <span className={`grid size-10 shrink-0 place-items-center rounded-xl ${selected ? 'bg-[#DDFB82] text-[#101714]' : 'bg-[#EEF0E9] text-[#168B7A] dark:bg-[#2B3A32] dark:text-[#DDFB82]'}`}><Icon size={20} weight={selected ? 'fill' : 'regular'} aria-hidden="true"/></span>
                     <span className="min-w-0 flex-1"><span className="block text-sm font-bold">{title}</span><span className="mt-0.5 block text-xs leading-4 text-neutral-500 dark:text-neutral-400">{detail}</span></span>
                     {selected && <motion.span initial={reducedMotion ? false : { scale: 0.3, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: 'spring', stiffness: 470, damping: 24 }}><Check size={17} weight="bold" className="shrink-0 text-[#168B7A] dark:text-[#DDFB82]" aria-hidden="true"/></motion.span>}
@@ -156,9 +156,9 @@ export function OnboardingExperience() {
               </div>}
 
               {step === 1 && <div className="mt-6 grid grid-cols-2 gap-2" role="group" aria-label="Where you work">
-                {['', ...PROVINCES].map((province) => {
+                {['', ...PROVINCES].map((province, index) => {
                   const selected = profile.province === province;
-                  return <motion.button type="button" key={province || 'national'} whileTap={reducedMotion ? undefined : { scale: 0.96 }} transition={{ type: 'spring', stiffness: 420, damping: 26 }} onClick={() => setProfile((current) => ({ ...current, province }))} aria-pressed={selected} className={`flex min-h-11 items-center justify-between gap-1.5 rounded-xl border px-3 py-2 text-left text-[13px] font-semibold transition-colors ${!province ? 'col-span-2' : ''} ${selected ? 'border-[#168B7A] bg-[#DDFB82] text-[#101714]' : 'border-neutral-200 bg-white/65 text-neutral-700 hover:border-[#168B7A]/50 dark:border-neutral-700 dark:bg-[#1B2320] dark:text-neutral-200'}`}>
+                  return <motion.button type="button" key={province || 'national'} initial={reducedMotion ? false : { opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} whileTap={reducedMotion ? undefined : { scale: 0.96 }} transition={{ type: 'spring', stiffness: 420, damping: 26, delay: reducedMotion ? 0 : Math.min(index * 0.025, 0.2) }} onClick={() => setProfile((current) => ({ ...current, province }))} aria-pressed={selected} className={`flex min-h-11 items-center justify-between gap-1.5 rounded-xl border px-3 py-2 text-left text-[13px] font-semibold transition-colors ${!province ? 'col-span-2' : ''} ${selected ? 'border-[#168B7A] bg-[#DDFB82] text-[#101714]' : 'border-neutral-200 bg-white/65 text-neutral-700 hover:border-[#168B7A]/50 dark:border-neutral-700 dark:bg-[#1B2320] dark:text-neutral-200'}`}>
                     <span className="min-w-0">{province || 'Anywhere in South Africa'}</span>
                     {selected && <motion.span initial={reducedMotion ? false : { scale: 0.4 }} animate={{ scale: 1 }} transition={{ type: 'spring', stiffness: 420, damping: 25 }}><Check size={16} weight="bold" className="shrink-0" aria-hidden="true" /></motion.span>}
                   </motion.button>;
