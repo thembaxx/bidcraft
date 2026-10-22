@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { Urbanist, JetBrains_Mono } from 'next/font/google';
 import { getSiteUrl, site } from '@/lib/site';
+import { iosSplashLinks } from '@/lib/pwa-splash';
 import './globals.css';
 import { LegalFooter } from '@/components/legal/legal-footer';
 
@@ -32,6 +33,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   };
   return <html lang="en-ZA" className={`${urbanist.variable} ${mono.variable}`} suppressHydrationWarning>
     <head>
+      {iosSplashLinks.map(({ href, media }) => (
+        <link key={href} rel="apple-touch-startup-image" href={href} media={media} />
+      ))}
       <link rel="alternate" type="text/plain" href="/llms.txt" title="Bidcraft information for AI readers" />
       <link rel="alternate" type="text/plain" href="/llm.txt" title="Bidcraft LLM context" />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }} />
