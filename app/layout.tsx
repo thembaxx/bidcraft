@@ -5,6 +5,7 @@ import { iosSplashLinks } from '@/lib/pwa-splash';
 import './globals.css';
 import { LegalFooter } from '@/components/legal/legal-footer';
 import { AppClientSetup } from '@/components/theme-preference';
+import { OnboardingExperience } from '@/components/onboarding-experience';
 
 const urbanist = Urbanist({ subsets: ['latin'], weight: ['400', '500', '600', '700'], variable: '--font-urbanist', display: 'swap' });
 const mono = JetBrains_Mono({ subsets: ['latin'], weight: ['400', '500', '600'], variable: '--font-jetbrains', display: 'swap' });
@@ -44,6 +45,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     </head>
     <body className="min-h-dvh bg-[#F8F6EF] font-sans text-[#0D0F0E] antialiased selection:bg-[#DDFB82] selection:text-[#0D0F0E] dark:bg-[#0D0F0E] dark:text-[#F5F7F6]">
       <AppClientSetup />
+      <OnboardingExperience />
       <a href="#workspace" className="skip-link">Skip to workspace</a>
       {children}
       <LegalFooter />
