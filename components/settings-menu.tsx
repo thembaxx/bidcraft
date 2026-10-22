@@ -7,7 +7,7 @@ import {
   ArrowUpRight, BookOpenText, Check, Database, Desktop, GearSix,
   Moon, ShieldCheck, Sun,
 } from '@phosphor-icons/react';
-import { PWAInstallControl } from '@/components/pwa-controls';
+import { PWAInstallControl, usePWAStatus } from '@/components/pwa-controls';
 import { setThemePreference, useThemePreference, type ThemePreference } from '@/components/theme-preference';
 
 const themeOptions = [
@@ -27,6 +27,7 @@ const helpLinks = [
 export function SettingsMenu() {
   const [open, setOpen] = useState(false);
   const preference = useThemePreference();
+  const pwaStatus = usePWAStatus();
   const reducedMotion = useReducedMotion();
   const menuId = useId();
   const rootRef = useRef<HTMLDivElement>(null);
@@ -111,7 +112,7 @@ export function SettingsMenu() {
             <div className="my-4 h-px bg-neutral-200 dark:bg-neutral-700" />
             <section aria-label="App and installation">
               <p className="mb-2 text-[11px] font-bold uppercase tracking-[.12em] text-neutral-500 dark:text-neutral-400">Application</p>
-              <PWAInstallControl variant="menu" />
+              <PWAInstallControl variant="menu" status={pwaStatus} />
               <p className="mt-2 text-[11px] leading-5 text-neutral-500 dark:text-neutral-400">Saved bids stay in this browser. Live discovery and AI need a connection.</p>
             </section>
             <div className="my-4 h-px bg-neutral-200 dark:bg-neutral-700" />
