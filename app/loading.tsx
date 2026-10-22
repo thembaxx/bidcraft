@@ -1,20 +1,30 @@
+import Image from 'next/image';
+
 export default function Loading() {
   return (
-    <div className="min-h-dvh bg-[#F8F6EF] dark:bg-[#0D0F0E] text-[#0D0F0E] dark:text-[#F5F7F6] p-4 lg:p-8 space-y-5">
-      <div className="h-14 w-full rounded-3xl bg-white/80 dark:bg-[#161918] animate-pulse" />
-      <div className="max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-5">
-        <div className="hidden lg:block lg:col-span-2 h-[720px] rounded-3xl bg-[#E7E9E8] dark:bg-[#131615] animate-pulse" />
-        <div className="lg:col-span-3 h-[720px] rounded-3xl bg-white/75 dark:bg-[#141716] animate-pulse" />
-        <div className="lg:col-span-7 space-y-4">
-          <div className="h-16 rounded-3xl bg-[#DDFB82]/40 dark:bg-[#161918] animate-pulse" />
-          <div className="h-52 rounded-3xl bg-white dark:bg-[#161918] animate-pulse" />
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="h-80 rounded-3xl bg-white dark:bg-[#161918] animate-pulse" />
-            <div className="h-80 rounded-3xl bg-white dark:bg-[#161918] animate-pulse" />
-            <div className="h-80 rounded-3xl bg-white dark:bg-[#161918] animate-pulse" />
-          </div>
+    <div
+      role="status"
+      aria-live="polite"
+      aria-label="Loading Bidcraft"
+      className="flex min-h-dvh flex-col items-center justify-center bg-[#F8F6EF] px-6 text-[#101714] dark:bg-[#101714] dark:text-[#F8F6EF]"
+    >
+      <div className="flex flex-col items-center gap-5">
+        <Image
+          src="/brand/bidcraft-icon.webp"
+          alt=""
+          width={112}
+          height={112}
+          priority
+          className="h-24 w-24 rounded-[24%] shadow-[0_18px_45px_#10171424] motion-safe:animate-[pulse_2s_ease-in-out_infinite] sm:h-28 sm:w-28"
+        />
+        <div className="text-center">
+          <p className="text-3xl font-bold tracking-[-0.06em]">
+            bidcraft<span className="text-[#168B7A] dark:text-[#DDFB82]">.</span>
+          </p>
+          <p className="mt-1.5 text-sm font-medium text-[#52615A] dark:text-[#B9C7BF]">Make every bid count.</p>
         </div>
       </div>
+      <span className="sr-only">Preparing your workspace…</span>
     </div>
   );
 }
