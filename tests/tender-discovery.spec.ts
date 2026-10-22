@@ -155,8 +155,10 @@ test('mobile filters, dialog keyboard handling, dark theme and reduced motion fi
   await page.getByRole('button', { name: 'Apply filters', exact: true }).click();
   await expect(page.getByRole('article').first()).toContainText('Western Cape');
   await expect(page.getByLabel('Province', { exact: true })).toBeHidden();
-  await page.getByRole('button', { name: 'Toggle dark and light theme', exact: true }).click();
+  await page.getByRole('button', { name: 'Settings' }).click();
+  await page.getByRole('dialog', { name: 'Settings' }).getByRole('button', { name: 'Dark theme' }).click();
   await expect(page.locator('html')).toHaveClass(/dark/);
+  await page.keyboard.press('Escape');
   for (const width of [320, 768, 1024, 1440]) {
     await page.setViewportSize({ width, height: 1000 });
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);

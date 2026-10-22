@@ -1,18 +1,22 @@
 import BidWorkspace from '@/components/bid-workspace';
 import { BrandWordmark } from '@/components/brand-logo';
+import { SettingsMenu } from '@/components/settings-menu';
 import { BrandScene } from '@/components/brand-scene';
 import Link from 'next/link';
 import { ScrollReveal } from '@/components/ui/scroll-reveal';
 
 export default function Home() {
   return <>
-    <header className="mx-auto flex max-w-[1600px] items-center justify-between px-5 py-5 sm:px-8">
+    <header className="relative z-50 mx-auto flex max-w-[1600px] items-center justify-between gap-2 px-4 py-4 sm:px-8 sm:py-5">
       <BrandWordmark />
-      <nav aria-label="Main navigation" className="flex items-center gap-5 text-xs font-semibold">
-        <Link href="/today" className="hidden min-h-10 items-center text-neutral-500 transition-colors hover:text-[#168B7A] sm:inline-flex">Today</Link>
-        <Link href="/tenders" className="inline-flex min-h-10 items-center gap-3 rounded-full bg-[#101714] px-5 text-white transition-colors hover:bg-[#168B7A]">Find tenders <span aria-hidden="true">→</span></Link>
-        <a href="#workspace" className="hidden min-h-10 items-center text-neutral-600 sm:inline-flex">Your workspace</a>
-      </nav>
+      <div className="flex shrink-0 items-center gap-2 sm:gap-4">
+        <nav aria-label="Main navigation" className="flex items-center gap-3 text-xs font-semibold sm:gap-5">
+          <Link href="/today" className="hidden min-h-11 items-center text-neutral-500 transition-colors hover:text-[#168B7A] sm:inline-flex">Today</Link>
+          <Link href="/tenders" aria-label="Find tenders" className="inline-flex size-11 items-center justify-center rounded-full bg-[#101714] text-white transition-colors hover:bg-[#168B7A] sm:h-11 sm:w-auto sm:gap-3 sm:px-5"> <span className="sm:hidden" aria-hidden="true">Find</span><span className="hidden sm:inline">Find tenders</span><span className="hidden sm:inline" aria-hidden="true">→</span></Link>
+          <a href="#workspace" className="hidden min-h-11 items-center text-neutral-600 lg:inline-flex">Your workspace</a>
+        </nav>
+        <SettingsMenu />
+      </div>
     </header>
     <section aria-labelledby="brand-heading" className="mx-auto grid max-w-[1600px] grid-cols-1 items-center gap-6 px-5 pb-8 pt-3 sm:px-8 lg:grid-cols-2 lg:gap-12 lg:pb-12 lg:pt-5">
       <ScrollReveal className="brand-intro py-5 lg:py-8">

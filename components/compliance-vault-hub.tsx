@@ -172,7 +172,7 @@ export function ComplianceVaultHub({
                   {!disc.resolved && disc.severity !== 'verified' && disc.recommendedFix.trim() && (
                     <button
                       onClick={() => onApplyComplianceFix(disc)}
-                      className="min-h-[36px] px-3.5 py-1.5 rounded-full bg-[#DDFB82] text-[#0D0F0E] hover:bg-[#e3f776] text-xs font-bold flex items-center gap-1.5 whitespace-nowrap shrink-0 cursor-pointer"
+                      className="min-h-11 px-3.5 py-1.5 rounded-full bg-[#DDFB82] text-[#0D0F0E] hover:bg-[#e3f776] text-xs font-bold flex items-center gap-1.5 whitespace-nowrap shrink-0 cursor-pointer"
                     >
                       <Wrench size={14} weight="bold" />
                       <span>Apply suggested wording</span>

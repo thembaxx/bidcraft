@@ -114,7 +114,7 @@ export function DocumentComparisonTool({
           <div className="flex flex-wrap items-center gap-1 p-1 rounded-full bg-[#F8F6EF] dark:bg-[#0D0F0E]">
             <button
               onClick={() => setViewFormat('side-by-side')}
-              className={`min-h-[36px] px-3.5 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1.5 transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
+              className={`min-h-11 px-3.5 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1.5 transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
                 viewFormat === 'side-by-side'
                   ? 'bg-white dark:bg-[#1E2221] text-[#0D0F0E] dark:text-white shadow-xs'
                   : 'text-neutral-600 dark:text-neutral-400 hover:text-[#0D0F0E] dark:hover:text-white'
@@ -125,7 +125,7 @@ export function DocumentComparisonTool({
             </button>
             <button
               onClick={() => setViewFormat('overlay')}
-              className={`min-h-[36px] px-3.5 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1.5 transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
+              className={`min-h-11 px-3.5 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1.5 transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
                 viewFormat === 'overlay'
                   ? 'bg-white dark:bg-[#1E2221] text-[#0D0F0E] dark:text-white shadow-xs'
                   : 'text-neutral-600 dark:text-neutral-400 hover:text-[#0D0F0E] dark:hover:text-white'
@@ -140,7 +140,7 @@ export function DocumentComparisonTool({
           <div className="flex flex-wrap items-center gap-1 p-1 rounded-full bg-[#F8F6EF] dark:bg-[#0D0F0E]">
             <button
               onClick={() => setHighlightMode('all')}
-              className={`min-h-[36px] px-3 py-1.5 rounded-full text-xs font-semibold transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
+              className={`min-h-11 px-3 py-1.5 rounded-full text-xs font-semibold transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
                 highlightMode === 'all'
                   ? 'bg-[#0D0F0E] text-white dark:bg-[#DDFB82] dark:text-[#0D0F0E]'
                   : 'text-neutral-600 dark:text-neutral-400'
@@ -150,7 +150,7 @@ export function DocumentComparisonTool({
             </button>
             <button
               onClick={() => setHighlightMode('non-compliant')}
-              className={`min-h-[36px] px-3 py-1.5 rounded-full text-xs font-semibold transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
+              className={`min-h-11 px-3 py-1.5 rounded-full text-xs font-semibold transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
                 highlightMode === 'non-compliant'
                   ? 'bg-[#0D0F0E] text-white dark:bg-[#DDFB82] dark:text-[#0D0F0E]'
                   : 'text-neutral-600 dark:text-neutral-400'
@@ -162,7 +162,7 @@ export function DocumentComparisonTool({
               onClick={() =>
                 setHighlightMode(highlightMode === 'metrics' ? 'all' : 'metrics')
               }
-              className={`min-h-[36px] px-3 py-1.5 rounded-full text-xs font-semibold transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
+              className={`min-h-11 px-3 py-1.5 rounded-full text-xs font-semibold transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
                 highlightMode === 'metrics'
                   ? 'bg-[#DDFB82] text-[#0D0F0E]'
                   : 'text-neutral-600 dark:text-neutral-400'
@@ -263,7 +263,7 @@ export function DocumentComparisonTool({
                   <button
                     onClick={() => onDraftClauseWithAI(clause, 'strict-compliance')}
                     disabled={Boolean(draftingClauseId)}
-                    className="min-h-[36px] px-3 py-1.5 rounded-full bg-[#DDFB82] text-[#0D0F0E] hover:bg-[#e1f578] text-xs font-semibold flex items-center gap-1.5 whitespace-nowrap shrink-0 cursor-pointer"
+                    className="min-h-11 px-3 py-1.5 rounded-full bg-[#DDFB82] text-[#0D0F0E] hover:bg-[#e1f578] text-xs font-semibold flex items-center gap-1.5 whitespace-nowrap shrink-0 cursor-pointer"
                   >
                     <Lightning size={14} weight="fill" />
                     <span>{isDrafting ? 'Synthesizing...' : 'AI Auto-Align Clause'}</span>
@@ -271,7 +271,7 @@ export function DocumentComparisonTool({
                   {!isEditing ? (
                     <button
                       onClick={() => startManualEdit(clause)}
-                      className="min-h-[36px] px-3 py-1.5 rounded-full bg-[#F8F6EF] dark:bg-[#0D0F0E] text-[#0D0F0E] dark:text-white hover:bg-neutral-200 dark:hover:bg-neutral-800 text-xs font-semibold flex items-center gap-1.5 whitespace-nowrap shrink-0 cursor-pointer"
+                      className="min-h-11 px-3 py-1.5 rounded-full bg-[#F8F6EF] dark:bg-[#0D0F0E] text-[#0D0F0E] dark:text-white hover:bg-neutral-200 dark:hover:bg-neutral-800 text-xs font-semibold flex items-center gap-1.5 whitespace-nowrap shrink-0 cursor-pointer"
                     >
                       <PencilSimple size={14} />
                       <span>Manual Edit</span>
@@ -279,7 +279,7 @@ export function DocumentComparisonTool({
                   ) : (
                     <button
                       onClick={() => saveManualEdit(clause)}
-                      className="min-h-[36px] px-3.5 py-1.5 rounded-full bg-[#168B7A] text-white text-xs font-semibold flex items-center gap-1.5 whitespace-nowrap shrink-0 cursor-pointer"
+                      className="min-h-11 px-3.5 py-1.5 rounded-full bg-[#168B7A] text-white text-xs font-semibold flex items-center gap-1.5 whitespace-nowrap shrink-0 cursor-pointer"
                     >
                       <Check size={14} weight="bold" />
                       <span>Commit Version</span>

@@ -28,9 +28,6 @@ export function usePWAStatus() {
   const isOnline = useSyncExternalStore(subscribeOnline, () => navigator.onLine, () => true);
 
   useEffect(() => {
-    if (process.env.NODE_ENV === 'production' && 'serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js').catch(() => {});
-    }
     const handleBeforeInstallPrompt = (e: Event) => {
       e.preventDefault();
       setDeferredPrompt(e as BeforeInstallPromptEvent);
@@ -69,8 +66,8 @@ export function usePWAStatus() {
   };
 }
 
-export function PWAInstallControl() {
-  const { isInstallable, isInstalled, isIOS, installApp } = usePWAStatus();
+export function PWAInstallControl({ variant = 'button', status }: { variant?: 'button' | 'menu'; status: ReturnType<typeof usePWAStatus> }) {
+  const { isInstallable, isInstalled, isIOS, installApp } = status;
   const [showModal, setShowModal] = useState(false);
 
   if (isInstalled) return null;
@@ -85,11 +82,11 @@ export function PWAInstallControl() {
             setShowModal(true);
           }
         }}
-        className="min-h-[40px] px-3.5 py-2 rounded-full bg-[#DDFB82] text-[#0D0F0E] hover:bg-[#e3f773] transition-colors flex items-center gap-2 text-xs font-semibold whitespace-nowrap shrink-0 cursor-pointer"
+        className={variant === "menu" ? "flex min-h-11 w-full items-center gap-3 rounded-xl bg-[#DDFB82]/65 px-3 text-xs font-bold text-[#101714] transition-colors hover:bg-[#DDFB82] dark:bg-[#DDFB82]/90 dark:hover:bg-[#DDFB82]" : "min-h-11 px-3.5 py-2 rounded-full bg-[#DDFB82] text-[#0D0F0E] hover:bg-[#e3f773] transition-colors flex items-center gap-2 text-xs font-semibold whitespace-nowrap shrink-0 cursor-pointer"}
         title="Install Bidcraft as a standalone PWA"
       >
         <DownloadSimple size={16} weight="bold" />
-        <span>Install App</span>
+        <span>{variant === 'menu' ? 'Install Bidcraft' : 'Install App'}</span>
       </button>
 
       {showModal && (

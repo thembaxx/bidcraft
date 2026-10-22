@@ -29,8 +29,6 @@ import {
   ShieldCheck,
   FilePdf,
   Sparkle,
-  Sun,
-  Moon,
   LockSimple,
   CheckCircle,
   Columns,
@@ -57,7 +55,9 @@ import { ComplianceScoreGauge } from '@/components/compliance-score-gauge';
 import { DocumentComparisonTool } from '@/components/document-comparison-tool';
 import { VersionControlPanel } from '@/components/version-control-panel';
 import { ComplianceVaultHub } from '@/components/compliance-vault-hub';
-import { PWAInstallControl, OfflineBanner } from '@/components/pwa-controls';
+import { OfflineBanner } from '@/components/pwa-controls';
+import { SettingsMenu } from '@/components/settings-menu';
+import { useDarkTheme } from '@/components/theme-preference';
 
 import { isRecord, isTender, isDraftResult, isAuditResult, isOcrResult } from '@/lib/validation';
 import { commitProposal, restoreProposal } from '@/lib/proposals';
@@ -65,7 +65,6 @@ import { rankVaultDocuments } from '@/lib/search';
 import { formatRand, formatSouthAfricanDate } from '@/lib/locale';
 
 const STORAGE_KEY_TENDERS = 'quora_bid_architect_tenders_v1';
-const STORAGE_KEY_THEME = 'quora_bid_architect_theme_v1';
 
 type ActiveTab = 'anatomy' | 'summary' | 'comparison' | 'compliance' | 'versions';
 
@@ -115,7 +114,7 @@ function BidWorkspace() {
   const [activeTab, setActiveTab] = useState<ActiveTab>('summary');
   const [comparisonClauseId, setComparisonClauseId] = useState<string | undefined>();
   const [searchFilter, setSearchFilter] = useState('');
-  const [darkMode, setDarkMode] = useState(() => readPreference(STORAGE_KEY_THEME) === 'dark');
+  const darkMode = useDarkTheme();
   const [isAuditing, setIsAuditing] = useState(false);
   const [draftingClauseId, setDraftingClauseId] = useState<string | null>(null);
   const [isSearchingVectors, setIsSearchingVectors] = useState(false);
@@ -150,14 +149,9 @@ function BidWorkspace() {
     }
   }, [tenders]);
   useEffect(() => {
-    document.documentElement.classList.toggle('dark', darkMode);
-    try { localStorage.setItem(STORAGE_KEY_THEME, darkMode ? 'dark' : 'light'); } catch { /* Theme still works without storage. */ }
-  }, [darkMode]);
-  useEffect(() => {
     try { localStorage.setItem(STORAGE_KEY_SELECTION, selectedTenderId); } catch { /* Selection remains available for this session. */ }
   }, [selectedTenderId]);
 
-  const toggleTheme = () => setDarkMode((previous) => !previous);
   const notify = (message: string) => {
     if (toastTimer.current) clearTimeout(toastTimer.current);
     setStatusToast(message);
@@ -363,7 +357,7 @@ function BidWorkspace() {
       <header className="sticky top-0 z-30 border-y border-neutral-200/80 bg-[#F8F6EF]/95 px-4 py-3 backdrop-blur-md dark:border-neutral-800 dark:bg-[#0D0F0E]/95 lg:px-8">
         <div className="mx-auto flex max-w-[1536px] items-center justify-between gap-3">
           <div className="flex min-w-0 items-center gap-3"><BrandLogoMark size={30} /><div><p className="text-xs font-bold">The bid studio</p><p className="mt-0.5 text-[10px] text-neutral-500">Your evidence. Your edge.</p></div></div>
-          <div className="flex shrink-0 items-center gap-2"><PWAInstallControl /><button type="button" onClick={toggleTheme} aria-label="Toggle dark and light theme" className="grid h-10 w-10 place-items-center rounded-full border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-[#161918]">{darkMode ? <Sun size={18} /> : <Moon size={18} />}</button></div>
+          <SettingsMenu />
         </div>
       </header>
 
@@ -486,14 +480,16 @@ function BidWorkspace() {
               <button
                 onClick={() => handleRunComplianceAudit()}
                 title="Refresh Compliance Scores"
-                className="min-h-[36px] min-w-[36px] rounded-full bg-[#F8F6EF] dark:bg-[#1E2221] flex items-center justify-center text-neutral-600 dark:text-neutral-300 hover:bg-[#DDFB82] hover:text-[#0D0F0E] transition-colors cursor-pointer"
+                aria-label="Refresh compliance scores"
+                className="h-11 w-11 rounded-full bg-[#F8F6EF] dark:bg-[#1E2221] flex items-center justify-center text-neutral-600 dark:text-neutral-300 hover:bg-[#DDFB82] hover:text-[#0D0F0E] transition-colors cursor-pointer"
               >
                 <ArrowsClockwise size={16} weight="bold" />
               </button>
               <button
                 onClick={() => setShowNewTenderModal(true)}
                 title="Ingest New Tender RFP"
-                className="min-h-[36px] min-w-[36px] rounded-full bg-[#0D0F0E] text-white dark:bg-[#DDFB82] dark:text-[#0D0F0E] flex items-center justify-center hover:opacity-90 transition-opacity cursor-pointer"
+                aria-label="Create a new bid"
+                className="h-11 w-11 rounded-full bg-[#0D0F0E] text-white dark:bg-[#DDFB82] dark:text-[#0D0F0E] flex items-center justify-center hover:opacity-90 transition-opacity cursor-pointer"
               >
                 <Plus size={16} weight="bold" />
               </button>
@@ -514,7 +510,7 @@ function BidWorkspace() {
               value={searchFilter}
               onChange={(e) => setSearchFilter(e.target.value)}
               placeholder="Filter by buyer or bid reference..."
-              className="w-full min-h-[38px] pl-9 pr-3 py-1.5 rounded-full bg-[#F8F6EF] dark:bg-[#0D0F0E] border border-neutral-200 dark:border-neutral-800 text-xs text-[#0D0F0E] dark:text-white focus:outline-hidden focus:border-[#168B7A]"
+              className="w-full min-h-11 pl-9 pr-3 py-2 rounded-full bg-[#F8F6EF] dark:bg-[#0D0F0E] border border-neutral-200 dark:border-neutral-800 text-xs text-[#0D0F0E] dark:text-white focus:outline-hidden focus:border-[#168B7A]"
             />
           </div>
 
@@ -637,13 +633,13 @@ function BidWorkspace() {
         <section id="bid-studio" tabIndex={-1} aria-label="Bid studio" className="min-w-0 scroll-mt-24 lg:col-span-7 space-y-4">
           <p role="note" className="rounded-2xl border border-[#168B7A]/20 bg-[#168B7A]/5 px-4 py-3 text-[11px] leading-5 text-neutral-600 dark:text-neutral-300">AI drafting, reviews and OCR can transmit your clauses, evidence and uploaded files to Google Gemini. Outputs are not independently verified. Avoid sensitive information without appropriate safeguards. <Link href="/ai-disclosure" className="font-bold text-[#12695C] underline underline-offset-2 dark:text-[#9BDBBE]">How AI handles data</Link></p>
 
-          <div className="flex items-end gap-2 rounded-2xl border border-neutral-200/75 bg-white/80 p-3 dark:border-neutral-800 dark:bg-[#161918] lg:hidden">
-            <label htmlFor="mobile-bid-switcher" className="min-w-0 flex-1 text-[11px] font-bold text-neutral-500 dark:text-neutral-400">Current bid
-              <select id="mobile-bid-switcher" value={activeTender.id} onChange={(event) => { setSelectedTenderId(event.target.value); setActiveTab('summary'); }} className="mt-1.5 block min-h-12 w-full min-w-0 rounded-xl border border-neutral-200 bg-[#F8F6EF] px-3 text-sm font-semibold text-[#101714] focus:border-[#168B7A] dark:border-neutral-700 dark:bg-[#0D0F0E] dark:text-white">
+          <div className="grid grid-cols-[minmax(0,1fr)_3rem] items-end gap-2 rounded-2xl border border-neutral-200/75 bg-white/80 p-3 dark:border-neutral-800 dark:bg-[#161918] lg:hidden">
+            <label htmlFor="mobile-bid-switcher" className="block min-w-0 text-[11px] font-bold text-neutral-500 dark:text-neutral-400">Current bid
+              <select id="mobile-bid-switcher" value={activeTender.id} onChange={(event) => { setSelectedTenderId(event.target.value); setActiveTab('summary'); }} className="mt-1.5 block h-12 w-full min-w-0 rounded-xl border border-neutral-200 bg-[#F8F6EF] px-3 text-base font-semibold text-[#101714] focus:border-[#168B7A] dark:border-neutral-700 dark:bg-[#0D0F0E] dark:text-white">
                 {tenders.map((tender) => <option key={tender.id} value={tender.id}>{tender.title}</option>)}
               </select>
             </label>
-            <button type="button" aria-label="Create a new bid" onClick={() => setShowNewTenderModal(true)} className="grid min-h-12 min-w-12 place-items-center rounded-xl bg-[#101714] text-white dark:bg-[#DDFB82] dark:text-[#101714]"><Plus size={20} weight="bold" aria-hidden="true"/></button>
+            <button type="button" aria-label="Create a new bid" onClick={() => setShowNewTenderModal(true)} className="grid size-12 shrink-0 place-items-center rounded-xl bg-[#101714] text-white transition-transform active:scale-95 dark:bg-[#DDFB82] dark:text-[#101714]"><Plus size={20} weight="bold" aria-hidden="true"/></button>
           </div>
           <div className="space-y-2 lg:hidden">
             <button type="button" disabled={isAuditing} onClick={handleRunComplianceAudit} className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-[#DDFB82] px-5 text-xs font-bold text-[#101714] transition-transform active:scale-[.99]"><ShieldCheck size={18} aria-hidden="true"/>{isAuditing ? 'Checking compliance…' : 'Check this bid'}</button>
@@ -888,7 +884,7 @@ function BidWorkspace() {
               {/* Middle 4 Cols: "Up Next" Action Cards inspired directly by IMG_5846 & IMG_5847 */}
               <div className="xl:col-span-4 rounded-3xl bg-white dark:bg-[#161918] border border-neutral-200/80 dark:border-neutral-800 p-5 flex flex-col justify-between space-y-4">
                 <div className="space-y-3">
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
                     <h3 className="text-base font-bold text-[#0D0F0E] dark:text-white">
                       Up Next · Bid Sequence
                     </h3>
@@ -1051,7 +1047,7 @@ function BidWorkspace() {
                   value={newTenderTitle}
                   onChange={(e) => setNewTenderTitle(e.target.value)}
                   placeholder="e.g. Municipal water telemetry and maintenance"
-                  className="w-full min-h-[42px] px-3.5 py-2 rounded-2xl bg-[#F8F6EF] dark:bg-[#0D0F0E] border border-neutral-200 dark:border-neutral-800 text-xs text-[#0D0F0E] dark:text-white"
+                  className="w-full min-h-11 px-3.5 py-2 rounded-2xl bg-[#F8F6EF] dark:bg-[#0D0F0E] border border-neutral-200 dark:border-neutral-800 text-base sm:text-sm text-[#0D0F0E] dark:text-white"
                 />
               </div>
               <div>
@@ -1065,7 +1061,7 @@ function BidWorkspace() {
                   value={newTenderAuthority}
                   onChange={(e) => setNewTenderAuthority(e.target.value)}
                   placeholder="e.g. City of Tshwane / Department of Health"
-                  className="w-full min-h-[42px] px-3.5 py-2 rounded-2xl bg-[#F8F6EF] dark:bg-[#0D0F0E] border border-neutral-200 dark:border-neutral-800 text-xs text-[#0D0F0E] dark:text-white"
+                  className="w-full min-h-11 px-3.5 py-2 rounded-2xl bg-[#F8F6EF] dark:bg-[#0D0F0E] border border-neutral-200 dark:border-neutral-800 text-base sm:text-sm text-[#0D0F0E] dark:text-white"
                 />
               </div>
               <div>
@@ -1079,7 +1075,7 @@ function BidWorkspace() {
                   placeholder="e.g. R850 000,00 excl. VAT"
                   value={newTenderBudget}
                   onChange={(e) => setNewTenderBudget(e.target.value)}
-                  className="w-full min-h-[42px] px-3.5 py-2 rounded-2xl bg-[#F8F6EF] dark:bg-[#0D0F0E] border border-neutral-200 dark:border-neutral-800 text-xs font-mono text-[#0D0F0E] dark:text-white"
+                  className="w-full min-h-11 px-3.5 py-2 rounded-2xl bg-[#F8F6EF] dark:bg-[#0D0F0E] border border-neutral-200 dark:border-neutral-800 text-base sm:text-sm font-mono text-[#0D0F0E] dark:text-white"
                 />
                 <p className="mt-1 text-xs text-neutral-500">Use rand (ZAR) and state whether VAT is included. VAT is not added automatically.</p>
               </div>
@@ -1095,13 +1091,13 @@ function BidWorkspace() {
                 <button
                   type="button"
                   onClick={() => setShowNewTenderModal(false)}
-                  className="min-h-[40px] px-4 py-2 rounded-full text-xs font-semibold text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-800"
+                  className="min-h-11 px-4 py-2 rounded-full text-xs font-semibold text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-800"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="min-h-[40px] px-5 py-2 rounded-full bg-[#DDFB82] text-[#0D0F0E] text-xs font-bold cursor-pointer"
+                  className="min-h-11 px-5 py-2 rounded-full bg-[#DDFB82] text-[#0D0F0E] text-xs font-bold cursor-pointer"
                 >
                   Create workspace
                 </button>
