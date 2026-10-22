@@ -254,3 +254,10 @@
   .discovery-detail-actions > button:not(:first-child) { flex: 1 1 calc(50% - 6px); }
   .discovery-detail-actions { position: static; }
 }
+
+/* Allow long sort labels and result headings to wrap instead of colliding on phones. */
+@media (max-width: 680px) {
+  .discovery-results-heading { flex-wrap: wrap; }
+  .discovery-sort { width: min(100%, 11rem); }
+  .discovery-sort select { min-height: 44px; }
+}

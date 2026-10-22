@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { BrandWordmark } from '@/components/brand-logo';
+import { SettingsMenu } from '@/components/settings-menu';
 import { MobileGlobalNav } from '@/components/mobile-global-nav';
 import { TenderRealityCheck } from '@/components/tender-discovery/reality-check';
 
@@ -15,8 +16,8 @@ export default async function RealityCheckPage({ params }: { params: Promise<{ i
     <h1 className="text-2xl font-bold">Invalid tender reference</h1><Link href="/tenders" className="mt-4 inline-flex min-h-11 text-[#12695C]">Back to Discover</Link>
   </main>;
   return <div className="min-h-dvh bg-[#F8F6EF] text-[#101714] dark:bg-[#0D0F0E] dark:text-[#F5F7F6]">
-    <header className="mx-auto flex max-w-6xl items-center justify-between px-4 py-5 sm:px-8">
-      <BrandWordmark/><Link href="/tenders" className="min-h-11 content-center text-xs font-bold text-[#12695C] dark:text-[#9BDBBE]">Discover tenders</Link>
+    <header className="relative z-50 mx-auto flex max-w-6xl items-center justify-between gap-2 px-4 py-5 sm:px-8">
+      <BrandWordmark/><div className="flex shrink-0 items-center gap-2"><Link href="/tenders" aria-label="Discover tenders" className="inline-flex min-h-11 items-center text-xs font-bold text-[#12695C] dark:text-[#9BDBBE]"><span className="hidden sm:inline">Discover tenders</span><span className="sm:hidden" aria-hidden="true">↗</span></Link><SettingsMenu /></div>
     </header>
     <TenderRealityCheck id={id}/>
     <MobileGlobalNav/>

@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import { BrandWordmark } from '@/components/brand-logo';
+import { SettingsMenu } from '@/components/settings-menu';
 import { MobileGlobalNav } from '@/components/mobile-global-nav';
 import { TodayDashboard } from '@/components/today-dashboard';
 
@@ -14,12 +15,14 @@ export default function TodayPage() {
     <header className="sticky top-0 z-30 border-b border-neutral-200/75 bg-[#F8F6EF]/95 backdrop-blur-xl dark:border-neutral-800 dark:bg-[#0D0F0E]/95">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-5 py-4 sm:px-8">
         <BrandWordmark />
-        <nav aria-label="Main navigation" className="hidden items-center gap-7 text-sm font-semibold text-neutral-600 dark:text-neutral-300 lg:flex">
-          <Link href="/today" aria-current="page" className="text-[#168B7A] dark:text-[#9BDBBE]">Today</Link>
-          <Link href="/tenders" className="hover:text-[#168B7A]">Discover</Link>
-          <Link href="/#workspace" className="hover:text-[#168B7A]">My bids</Link>
-        </nav>
-        <Link href="/tenders" className="inline-flex min-h-11 items-center rounded-full bg-[#101714] px-4 text-xs font-semibold text-white transition-colors hover:bg-[#168B7A] dark:bg-[#DDFB82] dark:text-[#101714] lg:hidden">Discover</Link>
+        <div className="flex shrink-0 items-center gap-4">
+          <nav aria-label="Main navigation" className="hidden items-center gap-7 text-sm font-semibold text-neutral-600 dark:text-neutral-300 lg:flex">
+            <Link href="/today" aria-current="page" className="text-[#168B7A] dark:text-[#9BDBBE]">Today</Link>
+            <Link href="/tenders" className="hover:text-[#168B7A]">Discover</Link>
+            <Link href="/#workspace" className="hover:text-[#168B7A]">My bids</Link>
+          </nav>
+          <SettingsMenu />
+        </div>
       </div>
     </header>
     <TodayDashboard />

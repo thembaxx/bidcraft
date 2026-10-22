@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { BrandWordmark } from '@/components/brand-logo';
+import { SettingsMenu } from '@/components/settings-menu';
 import { legal, legalDetailsComplete } from '@/lib/legal';
 import type { ReactNode } from 'react';
 
@@ -11,9 +12,12 @@ const pages = [
 
 export function LegalShell({ children, title, subtitle, current }: { children: ReactNode; title: string; subtitle: string; current: string }) {
   return <div id="workspace" className="min-h-dvh bg-[#F8F6EF] text-[#101714] dark:bg-[#0D0F0E] dark:text-[#F5F7F6]">
-    <header className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-3 px-5 py-6 sm:px-8">
+    <header className="relative z-50 mx-auto flex max-w-5xl items-center justify-between gap-3 px-5 py-6 sm:px-8">
       <BrandWordmark/>
-      <Link href="/today" className="inline-flex min-h-11 items-center gap-2 text-xs font-semibold text-[#12695C] dark:text-[#9BDBBE]">Back to Bidcraft →</Link>
+      <div className="flex shrink-0 items-center gap-2">
+        <Link href="/today" aria-label="Back to Bidcraft" className="inline-flex min-h-11 items-center gap-2 text-xs font-semibold text-[#12695C] dark:text-[#9BDBBE]"><span className="hidden sm:inline">Back to Bidcraft</span><span aria-hidden="true">→</span></Link>
+        <SettingsMenu />
+      </div>
     </header>
     <main className="mx-auto max-w-5xl space-y-8 px-5 pb-20 sm:px-8">
       <div className="space-y-3 pt-5">

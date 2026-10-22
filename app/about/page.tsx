@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import { BrandWordmark } from '@/components/brand-logo';
+import { SettingsMenu } from '@/components/settings-menu';
 import { getSiteUrl } from '@/lib/site';
 import { SouthAfricanBidGuide } from '@/components/south-african-bid-guide';
 import { AboutFaq } from '@/components/about-faq';
@@ -18,7 +19,7 @@ const steps = [
 ];
 export default function About() {
   return <div className="mx-auto max-w-5xl px-6 py-6 sm:px-10">
-    <header className="flex items-center justify-between"><BrandWordmark /><Link href="/#workspace" className="rounded-full bg-[#101714] px-5 py-3 text-xs font-semibold text-white">Open workspace →</Link></header>
+    <header className="relative z-50 flex items-center justify-between gap-2"><BrandWordmark /><div className="flex shrink-0 items-center gap-2"><Link href="/#workspace" aria-label="Open workspace" className="inline-flex min-h-11 items-center rounded-full bg-[#101714] px-3 text-xs font-semibold text-white sm:px-5"><span className="hidden sm:inline">Open workspace&nbsp;</span><span aria-hidden="true">→</span></Link><SettingsMenu /></div></header>
     <main id="workspace" className="py-20">
       <p className="mb-6 text-xs font-bold uppercase tracking-[.2em] text-[#168B7A]">The Bidcraft approach</p>
       <h1 className="max-w-3xl text-5xl font-semibold leading-tight tracking-[-.055em] sm:text-7xl">A little more craft.<br /><span className="font-serif italic text-[#168B7A]">A better bid.</span></h1>
