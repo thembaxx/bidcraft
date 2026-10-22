@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
-import { ArrowLeft, ArrowRight, ArrowUpRight, ArrowsClockwise, BookmarkSimple, MagnifyingGlass, Moon, Sun, X } from '@phosphor-icons/react';
+import { ArrowLeft, ArrowRight, ArrowUpRight, ArrowsClockwise, BookmarkSimple, MagnifyingGlass, X } from '@phosphor-icons/react';
 import { DEFAULT_FILTERS, type DiscoveryFilters, type DiscoveryResponse, type TenderDetail, type TenderNotice } from '@/lib/discovery/types';
 import { filterParams, formatTenderDate, parseFilters, searchIndex } from '@/lib/discovery/model';
 import { importNoticeToWorkspace, isDiscoveryResponse, readDiscoveryCache, readSavedOpportunities, rememberDiscovery, writeSavedOpportunities } from '@/lib/discovery/storage';
@@ -13,7 +13,6 @@ import { NoticeCard } from './notice-card';
 import { NoticeDetail } from './notice-detail';
 
 const subscribeHydration = () => () => {};
-const themeKey = 'quora_bid_architect_theme_v1';
 
 export default function TenderDiscovery() {
   const hydrated = useSyncExternalStore(subscribeHydration, () => true, () => false);
@@ -36,18 +35,12 @@ function DiscoveryClient() {
   const [selected, setSelected] = useState<TenderNotice | null>(null);
   const [message, setMessage] = useState('');
   const [now, setNow] = useState(Date.now);
-  const [darkMode, setDarkMode] = useState(() => { try { return localStorage.getItem(themeKey) === 'dark'; } catch { return false; } });
   const requestKey = `${query}|${reload}`;
 
   useEffect(() => {
     const timer = setInterval(() => setNow(Date.now()), 60000);
     return () => clearInterval(timer);
   }, []);
-
-  useEffect(() => {
-    document.documentElement.classList.toggle('dark', darkMode);
-    try { localStorage.setItem(themeKey, darkMode ? 'dark' : 'light'); } catch { /* The selected theme still works. */ }
-  }, [darkMode]);
 
   useEffect(() => {
     if (savedView) return;
@@ -105,7 +98,7 @@ function DiscoveryClient() {
   return <div className="discovery-app">
     <div className="discovery-toolbar">
       <nav className="discovery-views" aria-label="Tender discovery views"><Link scroll={false} href={`/tenders${query ? `?${query}` : ''}`} aria-current={!savedView ? 'page' : undefined}>Discover</Link><Link scroll={false} href="/tenders?view=saved" aria-current={savedView ? 'page' : undefined}><BookmarkSimple size={16} aria-hidden="true" /> Saved <span>{saved.length}</span></Link></nav>
-      <div className="discovery-toolbar-actions"><span className="discovery-country">South Africa <span aria-hidden="true">·</span> ZA</span><button type="button" className="discovery-icon-button" onClick={() => setDarkMode(!darkMode)} aria-label="Toggle dark and light theme">{darkMode ? <Sun size={19} /> : <Moon size={19} />}</button></div>
+      <span className="discovery-country">South Africa <span aria-hidden="true">·</span> ZA</span>
     </div>
     <DiscoverySearch key={`${query}|${savedView}`} filters={filters} facets={response?.facets} busy={busy} onApply={apply} onReset={() => navigate({ ...DEFAULT_FILTERS, notices: savedView ? 'all' : 'opportunities' })}>
       <div className="discovery-results-heading"><div><h2 id="discovery-results-title">{savedView ? 'Your saved tenders' : 'Find your next opportunity'}</h2><p role="status">{busy && !response ? 'Checking National Treasury’s advertised notices…' : response ? `${response.total.toLocaleString('en-ZA')} ${response.total === 1 ? 'notice' : 'notices'}${savedView ? ' saved in this browser' : ' match your search'}` : 'Search official South African tender notices'}</p></div>

@@ -4,6 +4,7 @@ import { getSiteUrl, site } from '@/lib/site';
 import { iosSplashLinks } from '@/lib/pwa-splash';
 import './globals.css';
 import { LegalFooter } from '@/components/legal/legal-footer';
+import { AppClientSetup } from '@/components/theme-preference';
 
 const urbanist = Urbanist({ subsets: ['latin'], weight: ['400', '500', '600', '700'], variable: '--font-urbanist', display: 'swap' });
 const mono = JetBrains_Mono({ subsets: ['latin'], weight: ['400', '500', '600'], variable: '--font-jetbrains', display: 'swap' });
@@ -33,6 +34,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   };
   return <html lang="en-ZA" className={`${urbanist.variable} ${mono.variable}`} suppressHydrationWarning>
     <head>
+      <script dangerouslySetInnerHTML={{ __html: `(() => { try { const value = localStorage.getItem('quora_bid_architect_theme_v1'); const dark = value === 'dark' || (value !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches); document.documentElement.classList.toggle('dark', dark); document.documentElement.style.colorScheme = dark ? 'dark' : 'light'; } catch { const dark = matchMedia('(prefers-color-scheme: dark)').matches; document.documentElement.classList.toggle('dark', dark); document.documentElement.style.colorScheme = dark ? 'dark' : 'light'; } })();` }} />
       {iosSplashLinks.map(({ href, media }) => (
         <link key={href} rel="apple-touch-startup-image" href={href} media={media} />
       ))}
@@ -41,6 +43,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }} />
     </head>
     <body className="min-h-dvh bg-[#F8F6EF] font-sans text-[#0D0F0E] antialiased selection:bg-[#DDFB82] selection:text-[#0D0F0E] dark:bg-[#0D0F0E] dark:text-[#F5F7F6]">
+      <AppClientSetup />
       <a href="#workspace" className="skip-link">Skip to workspace</a>
       {children}
       <LegalFooter />
