@@ -192,19 +192,19 @@ export function OnboardingScene({ step, compact = false }: { step: number; compa
       aria-label="Turn the decorative bid documents"
       title="Turn the illustration"
       data-onboarding-scene={compact ? 'compact' : 'full'}
-      data-scene-mode={hasWebGL ? 'webgl' : 'fallback'}
+      data-scene-mode={hasWebGL && !prefersReducedMotion ? 'webgl' : 'fallback'}
       onClick={() => { controllerRef.current?.turn(); setTurns((value) => value + 1); }}
       className={`group relative isolate flex w-full items-center justify-center overflow-hidden rounded-[24px] border border-white/10 bg-[#14241D] focus-visible:outline-[#DDFB82] ${compact ? 'h-[108px]' : 'h-[235px]'}`}
     >
       <span aria-hidden="true" className="pointer-events-none absolute -left-12 -top-24 size-64 rounded-full bg-[#168B7A]/45 blur-3xl" />
       <span aria-hidden="true" className="pointer-events-none absolute -bottom-28 -right-12 size-64 rounded-full bg-[#DDFB82]/20 blur-3xl" />
       <span ref={sceneRef} aria-hidden="true" className="absolute inset-0 block" />
-      {!hasWebGL && (
+      {(!hasWebGL || prefersReducedMotion) && (
         <motion.span
           aria-hidden="true"
           initial={false}
           animate={{ rotate: turns % 2 === 0 ? -8 : 8, y: prefersReducedMotion ? 0 : turns % 2 ? -3 : 0 }}
-          transition={{ type: 'spring', stiffness: 130, damping: 16, duration: prefersReducedMotion ? 0 : undefined }}
+          transition={prefersReducedMotion ? { duration: 0 } : { type: 'spring', stiffness: 130, damping: 16 }}
           className="pointer-events-none relative grid h-[82%] max-h-44 aspect-[4/5] place-items-center rounded-[18px] border border-[#C9D2C5] bg-[#F8F6EF] shadow-[12px_14px_0_-4px_#168B7A,19px_22px_0_-7px_#31443A,0_20px_45px_#0006]"
         >
           <span className="absolute left-[18%] top-[22%] h-[8%] w-[56%] rounded-full bg-[#101714]" />
