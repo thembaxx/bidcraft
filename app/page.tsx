@@ -12,7 +12,7 @@ export default function Home() {
       <div className="flex shrink-0 items-center gap-2 sm:gap-4">
         <nav aria-label="Main navigation" className="flex items-center gap-3 text-xs font-semibold sm:gap-5">
           <Link href="/today" className="hidden min-h-11 items-center text-neutral-500 transition-colors hover:text-[#168B7A] sm:inline-flex">Today</Link>
-          <Link href="/tenders" aria-label="Find tenders" className="inline-flex size-11 items-center justify-center rounded-full bg-[#101714] text-white transition-colors hover:bg-[#168B7A] sm:h-11 sm:w-auto sm:gap-3 sm:px-5"> <span className="sm:hidden" aria-hidden="true">⌕</span><span className="hidden sm:inline">Find tenders</span><span className="hidden sm:inline" aria-hidden="true">→</span></Link>
+          <Link href="/tenders" aria-label="Find tenders" className="inline-flex size-11 items-center justify-center rounded-full bg-[#101714] text-white transition-colors hover:bg-[#168B7A] sm:h-11 sm:w-auto sm:gap-3 sm:px-5"> <span className="sm:hidden" aria-hidden="true">Find</span><span className="hidden sm:inline">Find tenders</span><span className="hidden sm:inline" aria-hidden="true">→</span></Link>
           <a href="#workspace" className="hidden min-h-11 items-center text-neutral-600 lg:inline-flex">Your workspace</a>
         </nav>
         <SettingsMenu />
