@@ -66,8 +66,8 @@ export function usePWAStatus() {
   };
 }
 
-export function PWAInstallControl({ variant = 'button' }: { variant?: 'button' | 'menu' }) {
-  const { isInstallable, isInstalled, isIOS, installApp } = usePWAStatus();
+export function PWAInstallControl({ variant = 'button', status }: { variant?: 'button' | 'menu'; status: ReturnType<typeof usePWAStatus> }) {
+  const { isInstallable, isInstalled, isIOS, installApp } = status;
   const [showModal, setShowModal] = useState(false);
 
   if (isInstalled) return null;
