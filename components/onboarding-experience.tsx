@@ -186,7 +186,7 @@ export function OnboardingExperience() {
           </div>
         </div>
 
-        <div className="relative hidden min-h-full overflow-hidden bg-[#101714] p-7 text-[#F8F6EF] md:flex md:flex-col md:justify-between" aria-hidden="true">
+        <div className="relative hidden min-h-full overflow-hidden bg-[#101714] p-7 text-[#F8F6EF] md:flex md:flex-col md:justify-between">
           <div className="absolute -right-24 -top-28 size-80 rounded-full bg-[#168B7A]/30 blur-3xl"/>
           <div className="absolute -bottom-32 -left-24 size-80 rounded-full bg-[#DDFB82]/20 blur-3xl"/>
           <div className="relative"><div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1.5 text-[11px] font-semibold"><Sparkle size={15} weight="fill"/> Less admin. More clarity.</div></div>
