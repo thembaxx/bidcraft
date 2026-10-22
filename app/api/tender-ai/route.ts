@@ -20,6 +20,13 @@ export async function POST(req: NextRequest) {
     const { action, payload } = body;
     if (!['compliance_audit', 'draft_clause', 'ocr_extract', 'vector_search'].includes(action as string)) return jsonError('Unsupported action.', 400);
     if (!Array.isArray(payload.vaultDocs) || payload.vaultDocs.length > 100 || !payload.vaultDocs.every(isVaultDocument)) return jsonError('Valid vault documents are required.', 400);
+    // Hard upper bounds on content sent to metered AI/embedding APIs. A simple
+    // request-byte cap does not bound work per model call or output cost.
+    const vaultSize = payload.vaultDocs.reduce((sum: number, doc: { title: string; excerpt: string; fullText: string }) => sum + doc.title.length + doc.excerpt.length + doc.fullText.length, 0);
+    if (vaultSize > 200_000 || payload.vaultDocs.some((doc: { fullText: string }) => doc.fullText.length > 50_000))
+      return jsonError('Vault evidence exceeds the AI processing limit.', 413);
+    const requestTextSize = JSON.stringify({ clauses: payload.clauses, clause: payload.clause, rawText: payload.rawText, query: payload.query, tenderTitle: payload.tenderTitle }).length;
+    if (requestTextSize > 80_000) return jsonError('The request exceeds the AI processing limit.', 413);
     if (action === 'compliance_audit' && (typeof payload.tenderTitle !== 'string' || !Array.isArray(payload.clauses) || !payload.clauses.length || !payload.clauses.every(isClause))) return jsonError('A tender title and at least one valid clause are required.', 400);
     if (action === 'draft_clause' && (!isClause(payload.clause) || (payload.mode !== undefined && !['strict-compliance', 'executive-concise', 'technical-depth'].includes(payload.mode as string)))) return jsonError('A valid clause and drafting mode are required.', 400);
     if (action === 'vector_search' && (typeof payload.query !== 'string' || !payload.query.trim())) return jsonError('Enter a search query.', 400);
