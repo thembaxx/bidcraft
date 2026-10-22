@@ -39,23 +39,18 @@ export function SettingsMenu() {
     const onPointer = (event: PointerEvent) => {
       if (event.target instanceof Node && !rootRef.current?.contains(event.target)) setOpen(false);
     };
-    const onFocus = (event: FocusEvent) => {
-      if (event.target instanceof Node && !rootRef.current?.contains(event.target)) setOpen(false);
-    };
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
+      if (event.key === 'Escape' && !document.querySelector('dialog[open]')) {
         event.preventDefault();
         setOpen(false);
         triggerRef.current?.focus({ preventScroll: true });
       }
     };
     document.addEventListener('pointerdown', onPointer);
-    document.addEventListener('focusin', onFocus);
     document.addEventListener('keydown', onKey);
     return () => {
       cancelAnimationFrame(focusId);
       document.removeEventListener('pointerdown', onPointer);
-      document.removeEventListener('focusin', onFocus);
       document.removeEventListener('keydown', onKey);
     };
   }, [open]);
