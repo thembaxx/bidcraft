@@ -37,7 +37,7 @@ jobs:
           CI: "true"
       - name: Preserve failing traces
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: playwright-results
           path: test-results/
