@@ -1,8 +1,8 @@
-export const DISCOVERY_SOURCE = 'National Treasury eTender' as const;
-export const DISCOVERY_HOME = 'https://www.etenders.gov.za/Home/opportunities?id=1';
-export const SAVED_TENDERS_KEY = 'bidcraft_saved_opportunities_v1';
-export const TENDER_STORAGE_KEY = 'quora_bid_architect_tenders_v1';
-export const SELECTION_STORAGE_KEY = 'quora_bid_architect_selection_v1';
+export const DISCOVERY_SOURCE = "National Treasury eTender" as const;
+export const DISCOVERY_HOME = "https://www.etenders.gov.za/Home/opportunities?id=1";
+export const SAVED_TENDERS_KEY = "bidcraft_saved_opportunities_v1";
+export const TENDER_STORAGE_KEY = "quora_bid_architect_tenders_v1";
+export const SELECTION_STORAGE_KEY = "quora_bid_architect_selection_v1";
 
 export interface TenderNotice {
   id: string;
@@ -15,14 +15,18 @@ export interface TenderNotice {
   sourceStatus: string;
   publishedAt: string | null;
   closesAt: string | null;
-  briefing: 'required' | 'optional' | 'none' | 'unknown';
+  briefing: "required" | "optional" | "none" | "unknown";
   briefingAt: string | null;
   documentCount: number;
-  noticeKind: 'opportunity' | 'information' | 'results';
+  noticeKind: "opportunity" | "information" | "results";
   sourceUrl: string;
 }
 
-export interface TenderDocument { id: string; title: string; url: string }
+export interface TenderDocument {
+  id: string;
+  title: string;
+  url: string;
+}
 export interface TenderDetail extends TenderNotice {
   description: string;
   conditions: string;
@@ -37,21 +41,39 @@ export interface TenderDetail extends TenderNotice {
 }
 
 export interface DiscoveryFilters {
-  q: string; province: string; category: string; buyer: string; type: string;
-  closing: 'any' | '7' | '14' | '30';
-  published: 'any' | '7' | '30';
-  briefing: 'any' | TenderNotice['briefing'];
-  notices: 'opportunities' | 'all';
-  sort: 'newest' | 'closing';
+  q: string;
+  province: string;
+  category: string;
+  buyer: string;
+  type: string;
+  closing: "any" | "7" | "14" | "30";
+  published: "any" | "7" | "30";
+  briefing: "any" | TenderNotice["briefing"];
+  notices: "opportunities" | "all";
+  sort: "newest" | "closing";
   page: number;
 }
 
 export const DEFAULT_FILTERS: DiscoveryFilters = {
-  q: '', province: '', category: '', buyer: '', type: '', closing: 'any', published: 'any',
-  briefing: 'any', notices: 'opportunities', sort: 'newest', page: 1,
+  q: "",
+  province: "",
+  category: "",
+  buyer: "",
+  type: "",
+  closing: "any",
+  published: "any",
+  briefing: "any",
+  notices: "opportunities",
+  sort: "newest",
+  page: 1,
 };
 
-export interface DiscoveryFacets { provinces: string[]; categories: string[]; buyers: string[]; types: string[] }
+export interface DiscoveryFacets {
+  provinces: string[];
+  categories: string[];
+  buyers: string[];
+  types: string[];
+}
 export interface DiscoveryIndex {
   notices: TenderNotice[];
   sourceTotal: number;
@@ -71,4 +93,8 @@ export interface DiscoveryResponse {
   facets: DiscoveryFacets;
 }
 
-export interface SavedTender { notice: TenderNotice; detail?: TenderDetail; savedAt: string }
+export interface SavedTender {
+  notice: TenderNotice;
+  detail?: TenderDetail;
+  savedAt: string;
+}

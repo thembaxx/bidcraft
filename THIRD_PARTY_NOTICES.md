@@ -33,7 +33,6 @@ The unmodified drawing kit files in `vendor/anatomy` are pinned to commit `1482e
 
 Tender discovery republishes data supplied through National Treasury's eTender portal and OCDS API. The [publication policy](https://data.etenders.gov.za/Home/LearnMore) permits commercial and non-commercial reuse and republication with a link to the original source. The [OCDS API schema](https://ocds-api.etenders.gov.za/swagger/v1/swagger.json) identifies the Open Data Commons Public Domain Dedication and Licence (PDDL). Source links and provider attribution are retained. This data is not a complete or guaranteed-current record of South African procurement.
 
-
 ## EasyUI component integrations (2026-10-21)
 
 The following components are adapted from the MIT-licensed [EasyUI source](https://github.com/Surajmaurya1/easyui) by Suraj Maurya, under the MIT copyright notice above:

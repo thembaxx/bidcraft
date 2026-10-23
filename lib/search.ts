@@ -15,7 +15,7 @@ export function cosineSimilarity(a: number[], b: number[]): number {
 // Deterministic fallback pseudo-embedding when offline or before live API call
 export function deterministicEmbedding(text: string, dims = 64): number[] {
   const vec = new Array(dims).fill(0);
-  const normalized = text.toLowerCase().replace(/[^a-z0-9\s]/g, '');
+  const normalized = text.toLowerCase().replace(/[^a-z0-9\s]/g, "");
   const tokens = normalized.split(/\s+/).filter(Boolean);
   for (const token of tokens) {
     let hash = 2166136261;
@@ -32,9 +32,28 @@ export function deterministicEmbedding(text: string, dims = 64): number[] {
   return vec.map((v) => Number((v / norm).toFixed(4)));
 }
 
-export function rankVaultDocuments(query: string, docs: { id: string; title: string; excerpt: string; fullText: string }[], queryVector = deterministicEmbedding(query), vectors?: Record<string, number[]>) {
-  return docs.map((doc) => ({
-    id: doc.id,
-    similarityScore: Number(Math.max(0, Math.min(1, cosineSimilarity(queryVector, vectors?.[doc.id] ?? deterministicEmbedding(`${doc.title} ${doc.excerpt} ${doc.fullText}`)))).toFixed(4)),
-  })).sort((a, b) => b.similarityScore - a.similarityScore);
+export function rankVaultDocuments(
+  query: string,
+  docs: { id: string; title: string; excerpt: string; fullText: string }[],
+  queryVector = deterministicEmbedding(query),
+  vectors?: Record<string, number[]>,
+) {
+  return docs
+    .map((doc) => ({
+      id: doc.id,
+      similarityScore: Number(
+        Math.max(
+          0,
+          Math.min(
+            1,
+            cosineSimilarity(
+              queryVector,
+              vectors?.[doc.id] ??
+                deterministicEmbedding(`${doc.title} ${doc.excerpt} ${doc.fullText}`),
+            ),
+          ),
+        ).toFixed(4),
+      ),
+    }))
+    .sort((a, b) => b.similarityScore - a.similarityScore);
 }

@@ -26,11 +26,12 @@ export const iosSplashDevices = [
 ] as const;
 
 export const iosSplashLinks = iosSplashDevices.flatMap(({ width, height, scale }) => {
-  const orientations = width >= 768 ? (['portrait', 'landscape'] as const) : (['portrait'] as const);
+  const orientations =
+    width >= 768 ? (["portrait", "landscape"] as const) : (["portrait"] as const);
   return orientations.flatMap((orientation) => {
-    const pixelWidth = (orientation === 'portrait' ? width : height) * scale;
-    const pixelHeight = (orientation === 'portrait' ? height : width) * scale;
-    return (['light', 'dark'] as const).map((mode) => ({
+    const pixelWidth = (orientation === "portrait" ? width : height) * scale;
+    const pixelHeight = (orientation === "portrait" ? height : width) * scale;
+    return (["light", "dark"] as const).map((mode) => ({
       href: `/pwa/splash?width=${pixelWidth}&height=${pixelHeight}&mode=${mode}&v=1`,
       media: `screen and (device-width: ${width}px) and (device-height: ${height}px) and (-webkit-device-pixel-ratio: ${scale}) and (orientation: ${orientation}) and (prefers-color-scheme: ${mode})`,
     }));
@@ -39,7 +40,7 @@ export const iosSplashLinks = iosSplashDevices.flatMap(({ width, height, scale }
 
 export const allowedSplashSizes = new Set(
   iosSplashLinks.map(({ href }) => {
-    const params = new URL(href, 'https://bidcraft.invalid').searchParams;
-    return `${params.get('width')}x${params.get('height')}`;
+    const params = new URL(href, "https://bidcraft.invalid").searchParams;
+    return `${params.get("width")}x${params.get("height")}`;
   }),
 );

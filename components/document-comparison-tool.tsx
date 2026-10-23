@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect } from "react";
 import {
   Columns,
   Stack,
@@ -11,14 +11,19 @@ import {
   Sparkle,
   Eye,
   CaretRight,
-} from '@phosphor-icons/react';
-import { TenderClause, VaultDocument } from '@/lib/types';
+} from "@phosphor-icons/react";
+import { TenderClause, VaultDocument } from "@/lib/types";
 
 interface DocumentComparisonToolProps {
   clauses: TenderClause[];
   initialClauseId?: string;
   vaultDocs: VaultDocument[];
-  onUpdateClause: (clauseId: string, newText: string, summaryNote: string, triggerType: 'Manual Edit' | 'AI Auto-Draft') => void;
+  onUpdateClause: (
+    clauseId: string,
+    newText: string,
+    summaryNote: string,
+    triggerType: "Manual Edit" | "AI Auto-Draft",
+  ) => void;
   onDraftClauseWithAI: (clause: TenderClause, mode: string) => Promise<void>;
   draftingClauseId: string | null;
 }
@@ -28,14 +33,14 @@ function computeWordDiff(original: string, proposal: string) {
   const origWords = new Set(
     original
       .toLowerCase()
-      .replace(/[^a-z0-9%.£$]/g, ' ')
+      .replace(/[^a-z0-9%.£$]/g, " ")
       .split(/\s+/)
-      .filter((w) => w.length > 3)
+      .filter((w) => w.length > 3),
   );
 
   const tokens = proposal.split(/(\s+)/);
   return tokens.map((token, idx) => {
-    const clean = token.toLowerCase().replace(/[^a-z0-9%.£$]/g, '');
+    const clean = token.toLowerCase().replace(/[^a-z0-9%.£$]/g, "");
     const isMatchedKeyword = clean.length > 3 && origWords.has(clean);
     const isNumericOrCode = /\d/.test(token) || /^[A-Z]{2,}-\d/.test(token);
     return {
@@ -55,27 +60,35 @@ export function DocumentComparisonTool({
   onDraftClauseWithAI,
   draftingClauseId,
 }: DocumentComparisonToolProps) {
-  const [viewFormat, setViewFormat] = useState<'side-by-side' | 'overlay'>('side-by-side');
-  const [highlightMode, setHighlightMode] = useState<'all' | 'non-compliant' | 'metrics'>('all');
-  const [selectedClauseId, setSelectedClauseId] = useState<string>(initialClauseId || clauses[0]?.id || '');
+  const [viewFormat, setViewFormat] = useState<"side-by-side" | "overlay">("side-by-side");
+  const [highlightMode, setHighlightMode] = useState<"all" | "non-compliant" | "metrics">("all");
+  const [selectedClauseId, setSelectedClauseId] = useState<string>(
+    initialClauseId || clauses[0]?.id || "",
+  );
   const [editingClauseId, setEditingClauseId] = useState<string | null>(null);
-  const [editDraftText, setEditDraftText] = useState<string>('');
+  const [editDraftText, setEditDraftText] = useState<string>("");
 
   const filteredClauses = useMemo(() => {
-    if (highlightMode === 'non-compliant') {
-      return clauses.filter((c) => (c.complianceStatus !== 'compliant' || c.review?.outcome === 'changes-requested'));
+    if (highlightMode === "non-compliant") {
+      return clauses.filter(
+        (c) => c.complianceStatus !== "compliant" || c.review?.outcome === "changes-requested",
+      );
     }
     return clauses;
   }, [clauses, highlightMode]);
 
   const activeClause = useMemo(
     () => filteredClauses.find((c) => c.id === selectedClauseId) || filteredClauses[0],
-    [filteredClauses, selectedClauseId]
+    [filteredClauses, selectedClauseId],
   );
 
   useEffect(() => {
     if (!initialClauseId) return;
-    const frame = requestAnimationFrame(() => document.getElementById(`clause-card-${initialClauseId}`)?.scrollIntoView({ block: 'center' }));
+    const frame = requestAnimationFrame(() =>
+      document
+        .getElementById(`clause-card-${initialClauseId}`)
+        ?.scrollIntoView({ block: "center" }),
+    );
     return () => cancelAnimationFrame(frame);
   }, [initialClauseId]);
 
@@ -90,7 +103,7 @@ export function DocumentComparisonTool({
         clause.id,
         editDraftText.trim(),
         `Manual refinement of ${clause.code} (${clause.title})`,
-        'Manual Edit'
+        "Manual Edit",
       );
     }
     setEditingClauseId(null);
@@ -105,7 +118,8 @@ export function DocumentComparisonTool({
             Interactive Tender vs. Proposal Comparison Studio
           </h3>
           <p className="text-xs text-neutral-500 dark:text-neutral-400">
-            Inspect original mandatory RFP clauses against AI-generated proposal responses with live semantic & numeric diff highlighting.
+            Inspect original mandatory RFP clauses against AI-generated proposal responses with live
+            semantic & numeric diff highlighting.
           </p>
         </div>
 
@@ -113,22 +127,22 @@ export function DocumentComparisonTool({
           {/* View Mode Segmented Switch */}
           <div className="flex flex-wrap items-center gap-1 p-1 rounded-full bg-[#F8F6EF] dark:bg-[#0D0F0E]">
             <button
-              onClick={() => setViewFormat('side-by-side')}
+              onClick={() => setViewFormat("side-by-side")}
               className={`min-h-11 px-3.5 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1.5 transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
-                viewFormat === 'side-by-side'
-                  ? 'bg-white dark:bg-[#1E2221] text-[#0D0F0E] dark:text-white shadow-xs'
-                  : 'text-neutral-600 dark:text-neutral-400 hover:text-[#0D0F0E] dark:hover:text-white'
+                viewFormat === "side-by-side"
+                  ? "bg-white dark:bg-[#1E2221] text-[#0D0F0E] dark:text-white shadow-xs"
+                  : "text-neutral-600 dark:text-neutral-400 hover:text-[#0D0F0E] dark:hover:text-white"
               }`}
             >
               <Columns size={15} weight="bold" className="text-[#168B7A]" />
               <span>50/50 Side-by-Side</span>
             </button>
             <button
-              onClick={() => setViewFormat('overlay')}
+              onClick={() => setViewFormat("overlay")}
               className={`min-h-11 px-3.5 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1.5 transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
-                viewFormat === 'overlay'
-                  ? 'bg-white dark:bg-[#1E2221] text-[#0D0F0E] dark:text-white shadow-xs'
-                  : 'text-neutral-600 dark:text-neutral-400 hover:text-[#0D0F0E] dark:hover:text-white'
+                viewFormat === "overlay"
+                  ? "bg-white dark:bg-[#1E2221] text-[#0D0F0E] dark:text-white shadow-xs"
+                  : "text-neutral-600 dark:text-neutral-400 hover:text-[#0D0F0E] dark:hover:text-white"
               }`}
             >
               <Stack size={15} weight="bold" className="text-[#168B7A]" />
@@ -139,33 +153,38 @@ export function DocumentComparisonTool({
           {/* Filter / Highlight Mode */}
           <div className="flex flex-wrap items-center gap-1 p-1 rounded-full bg-[#F8F6EF] dark:bg-[#0D0F0E]">
             <button
-              onClick={() => setHighlightMode('all')}
+              onClick={() => setHighlightMode("all")}
               className={`min-h-11 px-3 py-1.5 rounded-full text-xs font-semibold transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
-                highlightMode === 'all'
-                  ? 'bg-[#0D0F0E] text-white dark:bg-[#DDFB82] dark:text-[#0D0F0E]'
-                  : 'text-neutral-600 dark:text-neutral-400'
+                highlightMode === "all"
+                  ? "bg-[#0D0F0E] text-white dark:bg-[#DDFB82] dark:text-[#0D0F0E]"
+                  : "text-neutral-600 dark:text-neutral-400"
               }`}
             >
               All Clauses ({clauses.length})
             </button>
             <button
-              onClick={() => setHighlightMode('non-compliant')}
+              onClick={() => setHighlightMode("non-compliant")}
               className={`min-h-11 px-3 py-1.5 rounded-full text-xs font-semibold transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
-                highlightMode === 'non-compliant'
-                  ? 'bg-[#0D0F0E] text-white dark:bg-[#DDFB82] dark:text-[#0D0F0E]'
-                  : 'text-neutral-600 dark:text-neutral-400'
+                highlightMode === "non-compliant"
+                  ? "bg-[#0D0F0E] text-white dark:bg-[#DDFB82] dark:text-[#0D0F0E]"
+                  : "text-neutral-600 dark:text-neutral-400"
               }`}
             >
-              Needs Review ({clauses.filter((c) => (c.complianceStatus !== 'compliant' || c.review?.outcome === 'changes-requested')).length})
+              Needs Review (
+              {
+                clauses.filter(
+                  (c) =>
+                    c.complianceStatus !== "compliant" || c.review?.outcome === "changes-requested",
+                ).length
+              }
+              )
             </button>
             <button
-              onClick={() =>
-                setHighlightMode(highlightMode === 'metrics' ? 'all' : 'metrics')
-              }
+              onClick={() => setHighlightMode(highlightMode === "metrics" ? "all" : "metrics")}
               className={`min-h-11 px-3 py-1.5 rounded-full text-xs font-semibold transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
-                highlightMode === 'metrics'
-                  ? 'bg-[#DDFB82] text-[#0D0F0E]'
-                  : 'text-neutral-600 dark:text-neutral-400'
+                highlightMode === "metrics"
+                  ? "bg-[#DDFB82] text-[#0D0F0E]"
+                  : "text-neutral-600 dark:text-neutral-400"
               }`}
             >
               Highlight SLAs & Numbers
@@ -181,11 +200,19 @@ export function DocumentComparisonTool({
           return (
             <button
               key={clause.id}
-              onClick={() => { setSelectedClauseId(clause.id); document.getElementById(`clause-card-${clause.id}`)?.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth', block: 'center' }); }}
+              onClick={() => {
+                setSelectedClauseId(clause.id);
+                document.getElementById(`clause-card-${clause.id}`)?.scrollIntoView({
+                  behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+                    ? "instant"
+                    : "smooth",
+                  block: "center",
+                });
+              }}
               className={`min-h-[42px] px-4 py-2 rounded-2xl text-xs font-semibold flex items-center gap-2 transition-colors whitespace-nowrap shrink-0 cursor-pointer border ${
                 isSelected
-                  ? 'bg-[#0D0F0E] text-white dark:bg-[#DDFB82] dark:text-[#0D0F0E] border-transparent'
-                  : 'bg-white dark:bg-[#161918] text-neutral-700 dark:text-neutral-300 border-neutral-200 dark:border-neutral-800 hover:border-[#168B7A]'
+                  ? "bg-[#0D0F0E] text-white dark:bg-[#DDFB82] dark:text-[#0D0F0E] border-transparent"
+                  : "bg-white dark:bg-[#161918] text-neutral-700 dark:text-neutral-300 border-neutral-200 dark:border-neutral-800 hover:border-[#168B7A]"
               }`}
             >
               <span className="font-mono font-bold">{clause.code}</span>
@@ -193,11 +220,11 @@ export function DocumentComparisonTool({
               <span className="truncate max-w-[180px]">{clause.title}</span>
               <span
                 className={`ml-1 text-[11px] font-mono tabular-nums ${
-                  clause.complianceStatus === 'compliant'
+                  clause.complianceStatus === "compliant"
                     ? isSelected
-                      ? 'text-[#DDFB82] dark:text-[#0D0F0E]'
-                      : 'text-[#168B7A]'
-                    : 'text-amber-500'
+                      ? "text-[#DDFB82] dark:text-[#0D0F0E]"
+                      : "text-[#168B7A]"
+                    : "text-amber-500"
                 }`}
               >
                 {clause.confidenceScore}%
@@ -207,7 +234,16 @@ export function DocumentComparisonTool({
         })}
       </div>
 
-      {filteredClauses.length === 0 && <p role="status" className="rounded-2xl bg-white p-8 text-center text-sm text-neutral-500 dark:bg-[#161918]">{clauses.length ? 'No clauses need review in this view.' : 'Import tender requirements from Compliance & vault to start comparing.'}</p>}
+      {filteredClauses.length === 0 && (
+        <p
+          role="status"
+          className="rounded-2xl bg-white p-8 text-center text-sm text-neutral-500 dark:bg-[#161918]"
+        >
+          {clauses.length
+            ? "No clauses need review in this view."
+            : "Import tender requirements from Compliance & vault to start comparing."}
+        </p>
+      )}
       {/* Comparison Matrix Content */}
       <div className="space-y-4">
         {filteredClauses.map((clause) => {
@@ -222,8 +258,8 @@ export function DocumentComparisonTool({
               id={`clause-card-${clause.id}`}
               className={`rounded-3xl bg-white dark:bg-[#161918] border transition-colors p-5 ${
                 activeClause?.id === clause.id
-                  ? 'border-[#168B7A] dark:border-[#DDFB82]/70'
-                  : 'border-neutral-200/80 dark:border-neutral-800'
+                  ? "border-[#168B7A] dark:border-[#DDFB82]/70"
+                  : "border-neutral-200/80 dark:border-neutral-800"
               }`}
             >
               {/* Clause Header Metadata (Zero-Pill Unboxed Text Discipline) */}
@@ -235,22 +271,22 @@ export function DocumentComparisonTool({
                   <span aria-hidden="true">·</span>
                   <span>{clause.category}</span>
                   <span aria-hidden="true">·</span>
-                  <span>{clause.mandatory ? 'Mandatory Requirement' : 'Evaluated Criteria'}</span>
+                  <span>{clause.mandatory ? "Mandatory Requirement" : "Evaluated Criteria"}</span>
                   <span aria-hidden="true">·</span>
                   <span
                     className={`font-semibold ${
-                      clause.complianceStatus === 'compliant'
-                        ? 'text-[#168B7A]'
-                        : clause.complianceStatus === 'partial'
-                        ? 'text-amber-600 dark:text-amber-400'
-                        : 'text-rose-600 dark:text-rose-400'
+                      clause.complianceStatus === "compliant"
+                        ? "text-[#168B7A]"
+                        : clause.complianceStatus === "partial"
+                          ? "text-amber-600 dark:text-amber-400"
+                          : "text-rose-600 dark:text-rose-400"
                     }`}
                   >
-                    {clause.complianceStatus === 'compliant'
-                      ? 'Verified Compliant'
-                      : clause.complianceStatus === 'partial'
-                      ? 'Partial Alignment (Needs Review)'
-                      : 'Discrepancy Flagged'}
+                    {clause.complianceStatus === "compliant"
+                      ? "Verified Compliant"
+                      : clause.complianceStatus === "partial"
+                        ? "Partial Alignment (Needs Review)"
+                        : "Discrepancy Flagged"}
                   </span>
                   <span aria-hidden="true">·</span>
                   <span className="font-mono tabular-nums">
@@ -261,12 +297,12 @@ export function DocumentComparisonTool({
                 {/* Action Pills */}
                 <div className="flex flex-wrap items-center gap-2">
                   <button
-                    onClick={() => onDraftClauseWithAI(clause, 'strict-compliance')}
+                    onClick={() => onDraftClauseWithAI(clause, "strict-compliance")}
                     disabled={Boolean(draftingClauseId)}
                     className="min-h-11 px-3 py-1.5 rounded-full bg-[#DDFB82] text-[#0D0F0E] hover:bg-[#e1f578] text-xs font-semibold flex items-center gap-1.5 whitespace-nowrap shrink-0 cursor-pointer"
                   >
                     <Lightning size={14} weight="fill" />
-                    <span>{isDrafting ? 'Synthesizing...' : 'AI Auto-Align Clause'}</span>
+                    <span>{isDrafting ? "Synthesizing..." : "AI Auto-Align Clause"}</span>
                   </button>
                   {!isEditing ? (
                     <button
@@ -293,7 +329,7 @@ export function DocumentComparisonTool({
               </h4>
 
               {/* Side-by-Side or Overlay Diff Layout */}
-              {viewFormat === 'side-by-side' ? (
+              {viewFormat === "side-by-side" ? (
                 <div className="mt-4 grid grid-cols-1 lg:grid-cols-2 gap-4 items-stretch">
                   {/* Left Column: Original RFP Document Clause */}
                   <div className="rounded-2xl bg-[#F8F9F8] dark:bg-[#111413] border border-neutral-200/70 dark:border-neutral-800 p-4 flex flex-col justify-between">
@@ -360,7 +396,7 @@ export function DocumentComparisonTool({
                       ) : (
                         <p className="text-sm text-[#0D0F0E] dark:text-neutral-100 leading-relaxed">
                           {diffTokens.map((item) => {
-                            if (highlightMode === 'metrics' && item.isNumericOrCode) {
+                            if (highlightMode === "metrics" && item.isNumericOrCode) {
                               return (
                                 <mark
                                   key={item.key}
@@ -399,7 +435,10 @@ export function DocumentComparisonTool({
                 <div className="mt-4 rounded-2xl bg-[#F8F9F8] dark:bg-[#111413] border border-neutral-200 dark:border-neutral-800 p-4 space-y-3">
                   <div className="text-xs text-neutral-500 dark:text-neutral-400 flex items-center gap-2">
                     <Eye size={14} className="text-[#168B7A]" />
-                    <span>Unified Clause Overlay — Source Requirement (Top) vs. Proposal Commitment (Bottom)</span>
+                    <span>
+                      Unified Clause Overlay — Source Requirement (Top) vs. Proposal Commitment
+                      (Bottom)
+                    </span>
                   </div>
                   <div className="p-3 rounded-xl bg-rose-500/10 dark:bg-rose-500/15 text-xs text-neutral-700 dark:text-neutral-200 font-mono leading-relaxed">
                     <span className="font-bold text-rose-600 dark:text-rose-400 mr-2">
@@ -414,8 +453,26 @@ export function DocumentComparisonTool({
                     <span className="font-bold text-[#168B7A] dark:text-[#DDFB82] mr-2">
                       [PROPOSAL COMMIT]
                     </span>
-                    {isEditing ? <textarea aria-label={`Edit response for ${clause.code}`} value={editDraftText} onChange={(event) => setEditDraftText(event.target.value)} rows={5} className="mt-3 w-full rounded-xl border border-[#168B7A] bg-white p-3 text-sm text-[#0D0F0E] dark:bg-[#0D0F0E] dark:text-white" /> : clause.proposalResponseText}
-                    {isEditing && <button type="button" onClick={() => setEditingClauseId(null)} className="mt-2 block text-xs underline">Cancel edit</button>}
+                    {isEditing ? (
+                      <textarea
+                        aria-label={`Edit response for ${clause.code}`}
+                        value={editDraftText}
+                        onChange={(event) => setEditDraftText(event.target.value)}
+                        rows={5}
+                        className="mt-3 w-full rounded-xl border border-[#168B7A] bg-white p-3 text-sm text-[#0D0F0E] dark:bg-[#0D0F0E] dark:text-white"
+                      />
+                    ) : (
+                      clause.proposalResponseText
+                    )}
+                    {isEditing && (
+                      <button
+                        type="button"
+                        onClick={() => setEditingClauseId(null)}
+                        className="mt-2 block text-xs underline"
+                      >
+                        Cancel edit
+                      </button>
+                    )}
                   </div>
                 </div>
               )}

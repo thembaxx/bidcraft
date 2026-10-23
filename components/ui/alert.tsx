@@ -78,7 +78,9 @@ export function Alert({
             {...props}
           >
             {icon !== false && (
-              <span className={cn("mt-0.5 shrink-0 [&>svg]:size-4", t.icon)}>{icon ?? <t.Icon />}</span>
+              <span className={cn("mt-0.5 shrink-0 [&>svg]:size-4", t.icon)}>
+                {icon ?? <t.Icon />}
+              </span>
             )}
             <div className="min-w-0 flex-1">{children}</div>
             {action && <div className="-my-1 shrink-0">{action}</div>}
@@ -100,9 +102,13 @@ export function Alert({
 }
 
 export function AlertTitle({ className, ...props }: React.ComponentProps<"p">) {
-  return <p className={cn("font-medium text-neutral-900 dark:text-neutral-100", className)} {...props} />;
+  return (
+    <p className={cn("font-medium text-neutral-900 dark:text-neutral-100", className)} {...props} />
+  );
 }
 
 export function AlertDescription({ className, ...props }: React.ComponentProps<"p">) {
-  return <p className={cn("mt-0.5 text-neutral-600 dark:text-neutral-400", className)} {...props} />;
+  return (
+    <p className={cn("mt-0.5 text-neutral-600 dark:text-neutral-400", className)} {...props} />
+  );
 }

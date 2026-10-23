@@ -1,4 +1,4 @@
-import Image from 'next/image';
+import Image from "next/image";
 
 export default function Loading() {
   return (
@@ -21,7 +21,9 @@ export default function Loading() {
           <p className="text-3xl font-bold tracking-[-0.06em]">
             bidcraft<span className="text-[#168B7A] dark:text-[#DDFB82]">.</span>
           </p>
-          <p className="mt-1.5 text-sm font-medium text-[#52615A] dark:text-[#B9C7BF]">Make every bid count.</p>
+          <p className="mt-1.5 text-sm font-medium text-[#52615A] dark:text-[#B9C7BF]">
+            Make every bid count.
+          </p>
         </div>
       </div>
       <span className="sr-only">Preparing your workspace…</span>

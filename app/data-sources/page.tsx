@@ -1,21 +1,153 @@
-import type { Metadata } from 'next';
-import Link from 'next/link';
-import { LegalShell } from '@/components/legal/legal-shell';
+import type { Metadata } from "next";
+import Link from "next/link";
+import { LegalShell } from "@/components/legal/legal-shell";
 
-export const metadata: Metadata = { title: 'Tender data sources and reliability', description: 'How Bidcraft retrieves National Treasury notices, interprets data and displays uncertainty.' };
+export const metadata: Metadata = {
+  title: "Tender data sources and reliability",
+  description:
+    "How Bidcraft retrieves National Treasury notices, interprets data and displays uncertainty.",
+};
 export default function DataSourcesPage() {
-  return <LegalShell current="/data-sources" title="Data sources & reliability" subtitle="Where tender notices come from, what can be missing and how to check the authoritative source yourself.">
-    <section><h2>1. Provenance</h2><p>Bidcraft displays public procurement notices obtained from the South African National Treasury’s <a href="https://www.etenders.gov.za/Home/opportunities?id=1" target="_blank" rel="noopener noreferrer">eTender advertised-opportunity portal</a>. Bidcraft is a separate private software service and is not a government website, official tender publisher or authorised submission agent.</p></section>
-    <section><h2>2. How records are retrieved</h2><p>Our existing adapter retrieves the portal’s publicly accessible advertised-notice listing data using an undocumented endpoint. It processes a bounded collection of up to 8,000 source records, caches upstream result pages for approximately 15 minutes at the application layer, and applies filters to the retrieved set. Endpoint formats and availability can change without notice. The app may show locally cached search results when a refresh fails, with a stale indication. Saved opportunities, selected source snapshots and recent searches may remain on your device.</p><p>For selected details, Bidcraft may additionally compare records with Treasury’s <a href="https://ocds-api.etenders.gov.za/swagger/v1/swagger.json" target="_blank" rel="noopener noreferrer">Open Contracting Data Standard (OCDS) API</a> where a matching record is found. This is not a full document-level validation or live change-monitoring service.</p></section>
-    <section><h2>3. Coverage and accuracy</h2><p>Treasury expressly states its publication is not a complete record of South African procurement and does not guarantee the accuracy, completeness or timeliness of supplied records. Documents and listing metadata can disagree. Bidcraft may omit opportunities, miss updates or display a date after it has changed. Apparent availability does not establish that a compulsory briefing is still open, a tender is still active or your organisation qualifies.</p></section>
-    <section><h2>4. Deadlines, times and amendments</h2><p>Bidcraft presents dates in South African Standard Time where supported by source formatting, but time-zone conventions may differ between official feeds. The tender document and subsequent clarification from the procuring entity must determine the valid time and submission procedure. Bidcraft cannot promise to find all amendments, extensions, withdrawals or cancellations. Open the original notice and documents before making a decision or sending a bid.</p></section>
-    <section><h2>5. Licence and attribution</h2><p>National Treasury publishes open procurement datasets for reuse and its transparency portal describes a <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">Creative Commons Attribution 4.0</a> licence. Its <a href="https://data.etenders.gov.za/Home/LearnMore" target="_blank" rel="noopener noreferrer">publication policy</a> asks republishers to keep links to the original source. Other OCDS metadata may describe an alternative database licence; consult the applicable record and terms. Bidcraft identifies the origin and links to official listings and attachments when they are supplied. Third-party tender attachments may have separate rights; an open-data licence must not be assumed to license every attachment independently.</p></section>
-    <section><h2>6. Important source links</h2><ul>
-      <li><a href="https://www.etenders.gov.za/Home/opportunities?id=1" target="_blank" rel="noopener noreferrer">National Treasury — advertised opportunities</a></li>
-      <li><a href="https://data.etenders.gov.za/Home" target="_blank" rel="noopener noreferrer">National Treasury — transparency portal</a></li>
-      <li><a href="https://data.etenders.gov.za/Home/LearnMore" target="_blank" rel="noopener noreferrer">Treasury — publication, licensing and quality limitations</a></li>
-      <li><a href="https://ocds-api.etenders.gov.za/swagger/v1/swagger.json" target="_blank" rel="noopener noreferrer">OCDS API specification</a></li>
-    </ul></section>
-    <section><h2>7. Responsible decisions</h2><p>Do not treat Bidcraft search results as legal procurement records, proof of eligibility, complete market coverage, a guarantee that a deadline is current or confirmation that a bid was filed. Refer to the <Link href="/terms">terms</Link> for user responsibilities.</p></section>
-  </LegalShell>;
+  return (
+    <LegalShell
+      current="/data-sources"
+      title="Data sources & reliability"
+      subtitle="Where tender notices come from, what can be missing and how to check the authoritative source yourself."
+    >
+      <section>
+        <h2>1. Provenance</h2>
+        <p>
+          Bidcraft displays public procurement notices obtained from the South African National
+          Treasury’s{" "}
+          <a
+            href="https://www.etenders.gov.za/Home/opportunities?id=1"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            eTender advertised-opportunity portal
+          </a>
+          . Bidcraft is a separate private software service and is not a government website,
+          official tender publisher or authorised submission agent.
+        </p>
+      </section>
+      <section>
+        <h2>2. How records are retrieved</h2>
+        <p>
+          Our existing adapter retrieves the portal’s publicly accessible advertised-notice listing
+          data using an undocumented endpoint. It processes a bounded collection of up to 8,000
+          source records, caches upstream result pages for approximately 15 minutes at the
+          application layer, and applies filters to the retrieved set. Endpoint formats and
+          availability can change without notice. The app may show locally cached search results
+          when a refresh fails, with a stale indication. Saved opportunities, selected source
+          snapshots and recent searches may remain on your device.
+        </p>
+        <p>
+          For selected details, Bidcraft may additionally compare records with Treasury’s{" "}
+          <a
+            href="https://ocds-api.etenders.gov.za/swagger/v1/swagger.json"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Open Contracting Data Standard (OCDS) API
+          </a>{" "}
+          where a matching record is found. This is not a full document-level validation or live
+          change-monitoring service.
+        </p>
+      </section>
+      <section>
+        <h2>3. Coverage and accuracy</h2>
+        <p>
+          Treasury expressly states its publication is not a complete record of South African
+          procurement and does not guarantee the accuracy, completeness or timeliness of supplied
+          records. Documents and listing metadata can disagree. Bidcraft may omit opportunities,
+          miss updates or display a date after it has changed. Apparent availability does not
+          establish that a compulsory briefing is still open, a tender is still active or your
+          organisation qualifies.
+        </p>
+      </section>
+      <section>
+        <h2>4. Deadlines, times and amendments</h2>
+        <p>
+          Bidcraft presents dates in South African Standard Time where supported by source
+          formatting, but time-zone conventions may differ between official feeds. The tender
+          document and subsequent clarification from the procuring entity must determine the valid
+          time and submission procedure. Bidcraft cannot promise to find all amendments, extensions,
+          withdrawals or cancellations. Open the original notice and documents before making a
+          decision or sending a bid.
+        </p>
+      </section>
+      <section>
+        <h2>5. Licence and attribution</h2>
+        <p>
+          National Treasury publishes open procurement datasets for reuse and its transparency
+          portal describes a{" "}
+          <a
+            href="https://creativecommons.org/licenses/by/4.0/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Creative Commons Attribution 4.0
+          </a>{" "}
+          licence. Its{" "}
+          <a
+            href="https://data.etenders.gov.za/Home/LearnMore"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            publication policy
+          </a>{" "}
+          asks republishers to keep links to the original source. Other OCDS metadata may describe
+          an alternative database licence; consult the applicable record and terms. Bidcraft
+          identifies the origin and links to official listings and attachments when they are
+          supplied. Third-party tender attachments may have separate rights; an open-data licence
+          must not be assumed to license every attachment independently.
+        </p>
+      </section>
+      <section>
+        <h2>6. Important source links</h2>
+        <ul>
+          <li>
+            <a
+              href="https://www.etenders.gov.za/Home/opportunities?id=1"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              National Treasury — advertised opportunities
+            </a>
+          </li>
+          <li>
+            <a href="https://data.etenders.gov.za/Home" target="_blank" rel="noopener noreferrer">
+              National Treasury — transparency portal
+            </a>
+          </li>
+          <li>
+            <a
+              href="https://data.etenders.gov.za/Home/LearnMore"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Treasury — publication, licensing and quality limitations
+            </a>
+          </li>
+          <li>
+            <a
+              href="https://ocds-api.etenders.gov.za/swagger/v1/swagger.json"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              OCDS API specification
+            </a>
+          </li>
+        </ul>
+      </section>
+      <section>
+        <h2>7. Responsible decisions</h2>
+        <p>
+          Do not treat Bidcraft search results as legal procurement records, proof of eligibility,
+          complete market coverage, a guarantee that a deadline is current or confirmation that a
+          bid was filed. Refer to the <Link href="/terms">terms</Link> for user responsibilities.
+        </p>
+      </section>
+    </LegalShell>
+  );
 }

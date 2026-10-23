@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useEffect, useRef, type ReactNode } from 'react';
-import { motion, useAnimationControls, useInView, useReducedMotion } from 'motion/react';
+import { useEffect, useRef, type ReactNode } from "react";
+import { motion, useAnimationControls, useInView, useReducedMotion } from "motion/react";
 
 /**
  * Progressive-enhancement scroll reveal for editorial sections.
@@ -10,7 +10,7 @@ import { motion, useAnimationControls, useInView, useReducedMotion } from 'motio
  */
 export function ScrollReveal({
   children,
-  className = '',
+  className = "",
   delay = 0,
   distance = 20,
 }: {
@@ -21,7 +21,7 @@ export function ScrollReveal({
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const reducedMotion = useReducedMotion();
-  const inView = useInView(ref, { once: true, amount: 0.12, margin: '0px 0px -24px 0px' });
+  const inView = useInView(ref, { once: true, amount: 0.12, margin: "0px 0px -24px 0px" });
   const controls = useAnimationControls();
 
   useEffect(() => {
@@ -29,9 +29,13 @@ export function ScrollReveal({
     void controls.start({
       opacity: [0.74, 1],
       y: [distance, 0],
-      transition: { type: 'spring', stiffness: 110, damping: 24, mass: 0.85, delay },
+      transition: { type: "spring", stiffness: 110, damping: 24, mass: 0.85, delay },
     });
   }, [controls, delay, distance, inView, reducedMotion]);
 
-  return <motion.div ref={ref} className={className} initial={false} animate={controls}>{children}</motion.div>;
+  return (
+    <motion.div ref={ref} className={className} initial={false} animate={controls}>
+      {children}
+    </motion.div>
+  );
 }
