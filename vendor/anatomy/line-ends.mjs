@@ -1,5 +1,16 @@
-function lineEnds({ select = null, tolerance = 1, root: rootSlack = 2, mark = 7, least = 0.3, cover = 0.5, show = false } = {}) {
-  const plate = select == null ? document.querySelector(".iso-plate") || document.body : document.querySelector(select);
+function lineEnds({
+  select = null,
+  tolerance = 1,
+  root: rootSlack = 2,
+  mark = 7,
+  least = 0.3,
+  cover = 0.5,
+  show = false,
+} = {}) {
+  const plate =
+    select == null
+      ? document.querySelector(".iso-plate") || document.body
+      : document.querySelector(select);
   if (!plate) throw new Error(`Line target not found: ${select}`);
   const box = plate.getBoundingClientRect();
   const style = document.createElement("style");
@@ -7,7 +18,11 @@ function lineEnds({ select = null, tolerance = 1, root: rootSlack = 2, mark = 7,
   document.head.append(style);
   const skipClass = ["iso-edge", "iso-bevel", "iso-crease", "tb-edge"];
   const svgs = [...(plate.matches("svg") ? [plate] : []), ...plate.querySelectorAll("svg")];
-  const shapes = svgs.flatMap((svg) => [...svg.querySelectorAll("path, line, polyline, polygon, circle, ellipse, rect")]).filter((el) => !el.closest("defs, clipPath, mask, pattern, marker, symbol"));
+  const shapes = svgs
+    .flatMap((svg) => [
+      ...svg.querySelectorAll("path, line, polyline, polygon, circle, ellipse, rect"),
+    ])
+    .filter((el) => !el.closest("defs, clipPath, mask, pattern, marker, symbol"));
   const opacityOf = (el) => {
     let alpha = 1;
     for (let node = el; node && node.nodeType === 1; node = node.parentElement) {
@@ -43,17 +58,28 @@ function lineEnds({ select = null, tolerance = 1, root: rootSlack = 2, mark = 7,
       const dx = last[0] - first[0];
       const dy = last[1] - first[1];
       const span = dx * dx + dy * dy;
-      const along = span > 0 ? Math.max(0, Math.min(1, ((point[0] - first[0]) * dx + (point[1] - first[1]) * dy) / span)) : 0;
+      const along =
+        span > 0
+          ? Math.max(
+              0,
+              Math.min(1, ((point[0] - first[0]) * dx + (point[1] - first[1]) * dy) / span),
+            )
+          : 0;
       return Math.hypot(point[0] - first[0] - along * dx, point[1] - first[1] - along * dy);
     };
     const curve = (points) => {
       const pending = [points];
       while (pending.length) {
-        if (--curveBudget < 0) throw new Error("Curve audit could not establish its screen-space sampling bound");
+        if (--curveBudget < 0)
+          throw new Error("Curve audit could not establish its screen-space sampling bound");
         const controlPoints = pending.pop();
         const first = controlPoints[0];
         const last = controlPoints[controlPoints.length - 1];
-        if (controlPoints.slice(1, -1).every((point) => chordDistance(point, first, last) <= curveTolerance)) {
+        if (
+          controlPoints
+            .slice(1, -1)
+            .every((point) => chordDistance(point, first, last) <= curveTolerance)
+        ) {
           push(...last);
           continue;
         }
@@ -61,7 +87,12 @@ function lineEnds({ select = null, tolerance = 1, root: rootSlack = 2, mark = 7,
         const right = [last];
         let level = controlPoints;
         while (level.length > 1) {
-          level = level.slice(1).map((point, index) => [(level[index][0] + point[0]) / 2, (level[index][1] + point[1]) / 2]);
+          level = level
+            .slice(1)
+            .map((point, index) => [
+              (level[index][0] + point[0]) / 2,
+              (level[index][1] + point[1]) / 2,
+            ]);
           left.push(level[0]);
           right.push(level[level.length - 1]);
         }
@@ -69,14 +100,25 @@ function lineEnds({ select = null, tolerance = 1, root: rootSlack = 2, mark = 7,
       }
     };
     const cubic = (x1, y1, x2, y2, px, py) => {
-      curve([[x, y], [x1, y1], [x2, y2], [px, py]]);
+      curve([
+        [x, y],
+        [x1, y1],
+        [x2, y2],
+        [px, py],
+      ]);
       control = { kind: "cubic", point: [x2, y2] };
     };
     const quad = (x1, y1, px, py) => {
-      curve([[x, y], [x1, y1], [px, py]]);
+      curve([
+        [x, y],
+        [x1, y1],
+        [px, py],
+      ]);
       control = { kind: "quadratic", point: [x1, y1] };
     };
-    for (const [, command, args] of d.matchAll(/([MmLlHhVvCcSsQqTtAaZz])([^MmLlHhVvCcSsQqTtAaZz]*)/g)) {
+    for (const [, command, args] of d.matchAll(
+      /([MmLlHhVvCcSsQqTtAaZz])([^MmLlHhVvCcSsQqTtAaZz]*)/g,
+    )) {
       const v = numbers(args);
       const rel = command === command.toLowerCase();
       const C = command.toUpperCase();
@@ -102,16 +144,40 @@ function lineEnds({ select = null, tolerance = 1, root: rootSlack = 2, mark = 7,
       if (C === "L") for (let i = 0; i + 1 < v.length; i += 2) push(v[i] + ox(), v[i + 1] + oy());
       else if (C === "H") for (const value of v) push(value + ox(), y);
       else if (C === "V") for (const value of v) push(x, value + oy());
-      else if (C === "C") for (let i = 0; i + 5 < v.length; i += 6) cubic(v[i] + ox(), v[i + 1] + oy(), v[i + 2] + ox(), v[i + 3] + oy(), v[i + 4] + ox(), v[i + 5] + oy());
+      else if (C === "C")
+        for (let i = 0; i + 5 < v.length; i += 6)
+          cubic(
+            v[i] + ox(),
+            v[i + 1] + oy(),
+            v[i + 2] + ox(),
+            v[i + 3] + oy(),
+            v[i + 4] + ox(),
+            v[i + 5] + oy(),
+          );
       else if (C === "S")
         for (let i = 0; i + 3 < v.length; i += 4) {
-          const reflected = control?.kind === "cubic" ? [2 * x - control.point[0], 2 * y - control.point[1]] : [x, y];
-          cubic(reflected[0], reflected[1], v[i] + ox(), v[i + 1] + oy(), v[i + 2] + ox(), v[i + 3] + oy());
+          const reflected =
+            control?.kind === "cubic"
+              ? [2 * x - control.point[0], 2 * y - control.point[1]]
+              : [x, y];
+          cubic(
+            reflected[0],
+            reflected[1],
+            v[i] + ox(),
+            v[i + 1] + oy(),
+            v[i + 2] + ox(),
+            v[i + 3] + oy(),
+          );
         }
-      else if (C === "Q") for (let i = 0; i + 3 < v.length; i += 4) quad(v[i] + ox(), v[i + 1] + oy(), v[i + 2] + ox(), v[i + 3] + oy());
+      else if (C === "Q")
+        for (let i = 0; i + 3 < v.length; i += 4)
+          quad(v[i] + ox(), v[i + 1] + oy(), v[i + 2] + ox(), v[i + 3] + oy());
       else if (C === "T")
         for (let i = 0; i + 1 < v.length; i += 2) {
-          const reflected = control?.kind === "quadratic" ? [2 * x - control.point[0], 2 * y - control.point[1]] : [x, y];
+          const reflected =
+            control?.kind === "quadratic"
+              ? [2 * x - control.point[0], 2 * y - control.point[1]]
+              : [x, y];
           quad(reflected[0], reflected[1], v[i] + ox(), v[i + 1] + oy());
         }
       else if (C === "A") {
@@ -120,7 +186,7 @@ function lineEnds({ select = null, tolerance = 1, root: rootSlack = 2, mark = 7,
         const length = arc.getTotalLength();
         const count = Math.max(8, Math.ceil(length / 2));
         for (let index = 1; index <= count; index++) {
-          const point = arc.getPointAtLength(length * index / count);
+          const point = arc.getPointAtLength((length * index) / count);
           push(point.x, point.y);
         }
       }
@@ -132,7 +198,16 @@ function lineEnds({ select = null, tolerance = 1, root: rootSlack = 2, mark = 7,
     const tag = el.tagName.toLowerCase();
     const num = (name) => Number(el.getAttribute(name) || 0);
     if (tag === "path") return subpathsOf(el.getAttribute("d") || "", curveTolerance);
-    if (tag === "line") return [{ points: [[num("x1"), num("y1")], [num("x2"), num("y2")]], closed: false }];
+    if (tag === "line")
+      return [
+        {
+          points: [
+            [num("x1"), num("y1")],
+            [num("x2"), num("y2")],
+          ],
+          closed: false,
+        },
+      ];
     if (tag === "polyline" || tag === "polygon") {
       const v = numbers(el.getAttribute("points") || "");
       const points = [];
@@ -144,11 +219,28 @@ function lineEnds({ select = null, tolerance = 1, root: rootSlack = 2, mark = 7,
       const [x, y, w, h] = [num("x"), num("y"), num("width"), num("height")];
       const rx = Math.min(w / 2, Math.max(0, el.hasAttribute("rx") ? num("rx") : num("ry")));
       const ry = Math.min(h / 2, Math.max(0, el.hasAttribute("ry") ? num("ry") : num("rx")));
-      if (!rx || !ry) return [{ points: [[x, y], [x + w, y], [x + w, y + h], [x, y + h], [x, y]], closed: true }];
+      if (!rx || !ry)
+        return [
+          {
+            points: [
+              [x, y],
+              [x + w, y],
+              [x + w, y + h],
+              [x, y + h],
+              [x, y],
+            ],
+            closed: true,
+          },
+        ];
       const points = [];
-      for (const [cx, cy, start] of [[x + w - rx, y + ry, -Math.PI / 2], [x + w - rx, y + h - ry, 0], [x + rx, y + h - ry, Math.PI / 2], [x + rx, y + ry, Math.PI]]) {
+      for (const [cx, cy, start] of [
+        [x + w - rx, y + ry, -Math.PI / 2],
+        [x + w - rx, y + h - ry, 0],
+        [x + rx, y + h - ry, Math.PI / 2],
+        [x + rx, y + ry, Math.PI],
+      ]) {
         for (let index = 0; index <= 32; index++) {
-          const angle = start + index * Math.PI / 64;
+          const angle = start + (index * Math.PI) / 64;
           points.push([cx + rx * Math.cos(angle), cy + ry * Math.sin(angle)]);
         }
       }
@@ -174,7 +266,8 @@ function lineEnds({ select = null, tolerance = 1, root: rootSlack = 2, mark = 7,
     if (!ctm) continue;
     const map = ([px, py]) => [ctm.a * px + ctm.c * py + ctm.e, ctm.b * px + ctm.d * py + ctm.f];
     const tag = el.tagName.toLowerCase();
-    const stroked = cs.stroke !== "none" && parseFloat(cs.strokeWidth) > 0 && Number(cs.strokeOpacity) > 0.05;
+    const stroked =
+      cs.stroke !== "none" && parseFloat(cs.strokeWidth) > 0 && Number(cs.strokeOpacity) > 0.05;
     const filled = cs.fill !== "none" && Number(cs.fillOpacity) > 0.05;
     if (tag === "circle" || tag === "ellipse") {
       if (!stroked && !filled) continue;
@@ -184,13 +277,23 @@ function lineEnds({ select = null, tolerance = 1, root: rootSlack = 2, mark = 7,
       const ry = Number(el.getAttribute(tag === "circle" ? "r" : "ry") || 0);
       if (rx <= 0 || ry <= 0) continue;
       const points = Array.from({ length: 128 }, (_, index) => {
-        const angle = index * Math.PI * 2 / 128;
+        const angle = (index * Math.PI * 2) / 128;
         return map([cx + rx * Math.cos(angle), cy + ry * Math.sin(angle)]);
       });
       const entry = { el, kind: "round", points, cx, cy, rx, ry, filled };
       const xs = points.map(([x]) => x);
       const ys = points.map(([, y]) => y);
-      for (let gx = Math.floor(Math.min(...xs) / cell); gx <= Math.floor(Math.max(...xs) / cell); gx++) for (let gy = Math.floor(Math.min(...ys) / cell); gy <= Math.floor(Math.max(...ys) / cell); gy++) add(gx, gy, entry);
+      for (
+        let gx = Math.floor(Math.min(...xs) / cell);
+        gx <= Math.floor(Math.max(...xs) / cell);
+        gx++
+      )
+        for (
+          let gy = Math.floor(Math.min(...ys) / cell);
+          gy <= Math.floor(Math.max(...ys) / cell);
+          gy++
+        )
+          add(gx, gy, entry);
       continue;
     }
     if (!stroked) continue;
@@ -198,31 +301,59 @@ function lineEnds({ select = null, tolerance = 1, root: rootSlack = 2, mark = 7,
     const viewCtm = owner && owner.getScreenCTM();
     if (viewCtm) scale = Math.hypot(viewCtm.a, viewCtm.b) || scale;
     const curveTolerance = 0.15 / Math.max(1, Math.hypot(ctm.a, ctm.b, ctm.c, ctm.d));
-    const subpaths = geometryOf(el, curveTolerance).map((sub, index) => ({ ...sub, index, flat: sub.points.map(map) }));
+    const subpaths = geometryOf(el, curveTolerance).map((sub, index) => ({
+      ...sub,
+      index,
+      flat: sub.points.map(map),
+    }));
     subpaths.forEach((sub) => {
       for (let i = 0; i < sub.flat.length - 1; i++) {
         const a = sub.flat[i];
         const b = sub.flat[i + 1];
         const entry = { el, kind: "segment", a, b, sub: sub.index, i };
-        for (let gx = Math.floor(Math.min(a[0], b[0]) / cell); gx <= Math.floor(Math.max(a[0], b[0]) / cell); gx++) for (let gy = Math.floor(Math.min(a[1], b[1]) / cell); gy <= Math.floor(Math.max(a[1], b[1]) / cell); gy++) add(gx, gy, entry);
+        for (
+          let gx = Math.floor(Math.min(a[0], b[0]) / cell);
+          gx <= Math.floor(Math.max(a[0], b[0]) / cell);
+          gx++
+        )
+          for (
+            let gy = Math.floor(Math.min(a[1], b[1]) / cell);
+            gy <= Math.floor(Math.max(a[1], b[1]) / cell);
+            gy++
+          )
+            add(gx, gy, entry);
       }
     });
-    const checked = el.classList.contains("iso-line") && !skipClass.some((name) => el.classList.contains(name)) && alpha >= least;
+    const checked =
+      el.classList.contains("iso-line") &&
+      !skipClass.some((name) => el.classList.contains(name)) &&
+      alpha >= least;
     if (checked) lines.push({ el, subpaths, alpha, free: el.getAttribute("data-free") });
   }
   const near = (p, reach) => {
     const out = new Set();
-    for (let gx = Math.floor((p[0] - reach) / cell); gx <= Math.floor((p[0] + reach) / cell); gx++) for (let gy = Math.floor((p[1] - reach) / cell); gy <= Math.floor((p[1] + reach) / cell); gy++) for (const entry of grid.get(`${gx},${gy}`) || []) out.add(entry);
+    for (let gx = Math.floor((p[0] - reach) / cell); gx <= Math.floor((p[0] + reach) / cell); gx++)
+      for (
+        let gy = Math.floor((p[1] - reach) / cell);
+        gy <= Math.floor((p[1] + reach) / cell);
+        gy++
+      )
+        for (const entry of grid.get(`${gx},${gy}`) || []) out.add(entry);
     return out;
   };
   const segmentDistance = (p, a, b) => {
     const dx = b[0] - a[0];
     const dy = b[1] - a[1];
     const span = dx * dx + dy * dy;
-    const t = span > 0 ? Math.max(0, Math.min(1, ((p[0] - a[0]) * dx + (p[1] - a[1]) * dy) / span)) : 0;
+    const t =
+      span > 0 ? Math.max(0, Math.min(1, ((p[0] - a[0]) * dx + (p[1] - a[1]) * dy) / span)) : 0;
     return Math.hypot(p[0] - a[0] - dx * t, p[1] - a[1] - dy * t);
   };
-  const lengthOf = (flat) => flat.reduce((sum, p, i) => (i ? sum + Math.hypot(p[0] - flat[i - 1][0], p[1] - flat[i - 1][1]) : 0), 0);
+  const lengthOf = (flat) =>
+    flat.reduce(
+      (sum, p, i) => (i ? sum + Math.hypot(p[0] - flat[i - 1][0], p[1] - flat[i - 1][1]) : 0),
+      0,
+    );
   const hidden = (el, p) => {
     const stack = document.elementsFromPoint(p[0], p[1]);
     const at = stack.indexOf(el);
@@ -230,7 +361,11 @@ function lineEnds({ select = null, tolerance = 1, root: rootSlack = 2, mark = 7,
     return above.some((node) => {
       if (!(node instanceof SVGGeometryElement) || node.contains(el)) return false;
       const cs = getComputedStyle(node);
-      return cs.fill !== "none" && Number(cs.fillOpacity) * opacityOf(node) >= cover && node.isPointInFill(new DOMPoint(...inverse(node, p)));
+      return (
+        cs.fill !== "none" &&
+        Number(cs.fillOpacity) * opacityOf(node) >= cover &&
+        node.isPointInFill(new DOMPoint(...inverse(node, p)))
+      );
     });
   };
   const inverse = (node, p) => {
@@ -242,14 +377,25 @@ function lineEnds({ select = null, tolerance = 1, root: rootSlack = 2, mark = 7,
     const own = sub.flat;
     const skipNear = 2 * reach;
     const along = [0];
-    for (let i = 1; i < own.length; i++) along.push(along[i - 1] + Math.hypot(own[i][0] - own[i - 1][0], own[i][1] - own[i - 1][1]));
+    for (let i = 1; i < own.length; i++)
+      along.push(along[i - 1] + Math.hypot(own[i][0] - own[i - 1][0], own[i][1] - own[i - 1][1]));
     const total = along[along.length - 1];
     for (const entry of near(p, reach * 4)) {
       if (entry.kind === "round") {
         const local = inverse(entry.el, p);
-        const inside = ((local[0] - entry.cx) / entry.rx) ** 2 + ((local[1] - entry.cy) / entry.ry) ** 2 <= 1;
+        const inside =
+          ((local[0] - entry.cx) / entry.rx) ** 2 + ((local[1] - entry.cy) / entry.ry) ** 2 <= 1;
         if (entry.filled && inside) best = 0;
-        else for (let index = 0; index < entry.points.length; index++) best = Math.min(best, segmentDistance(p, entry.points[index], entry.points[(index + 1) % entry.points.length]));
+        else
+          for (let index = 0; index < entry.points.length; index++)
+            best = Math.min(
+              best,
+              segmentDistance(
+                p,
+                entry.points[index],
+                entry.points[(index + 1) % entry.points.length],
+              ),
+            );
         continue;
       }
       if (entry.el === line.el && entry.sub === sub.index) {
@@ -264,7 +410,13 @@ function lineEnds({ select = null, tolerance = 1, root: rootSlack = 2, mark = 7,
   };
   const describe = (el) => {
     const item = el.closest("[data-part], [data-name], [data-item], .it");
-    const tag = item && item !== el ? (item.getAttribute("data-part") || item.getAttribute("data-name") || item.getAttribute("data-item") || `it k ${item.getAttribute("data-k") || ""}`) : "";
+    const tag =
+      item && item !== el
+        ? item.getAttribute("data-part") ||
+          item.getAttribute("data-name") ||
+          item.getAttribute("data-item") ||
+          `it k ${item.getAttribute("data-k") || ""}`
+        : "";
     return `${el.getAttribute("class")}${el.getAttribute("data-tone") ? ` ${el.getAttribute("data-tone")}` : ""}${tag ? ` in ${tag}` : ""}`;
   };
   const problems = [];
@@ -280,25 +432,43 @@ function lineEnds({ select = null, tolerance = 1, root: rootSlack = 2, mark = 7,
       const length = lengthOf(sub.flat);
       if (length < 0.2 * scale) continue;
       const result = {};
-      for (const [end, p] of [["start", first], ["end", last]]) {
+      for (const [end, p] of [
+        ["start", first],
+        ["end", last],
+      ]) {
         if (line.free === "" || line.free === "both" || line.free === end) {
           result[end] = 0;
           continue;
         }
         ends++;
-        result[end] = hidden(line.el, p) ? 0 : clearance(line, sub, end, p, Math.max(slack, rooted));
+        result[end] = hidden(line.el, p)
+          ? 0
+          : clearance(line, sub, end, p, Math.max(slack, rooted));
       }
-      const straight = sub.flat.length === 2 || sub.flat.every((q) => segmentDistance(q, first, last) < 0.15 * scale);
+      const straight =
+        sub.flat.length === 2 ||
+        sub.flat.every((q) => segmentDistance(q, first, last) < 0.15 * scale);
       const isMark = straight && length <= mark * scale;
       const fail = (end) => result[end] !== undefined && result[end] > slack;
       let bad = [];
       if (isMark) {
         const best = Math.min(result.start ?? Infinity, result.end ?? Infinity);
-        if (!(best <= rooted)) bad = ["start", "end"].filter((end) => result[end] !== undefined && result[end] > 0);
+        if (!(best <= rooted))
+          bad = ["start", "end"].filter((end) => result[end] !== undefined && result[end] > 0);
       } else bad = ["start", "end"].filter(fail);
       for (const end of bad) {
         const p = end === "start" ? first : last;
-        problems.push({ what: describe(line.el), d: (line.el.getAttribute("d") || "").slice(0, 36), end, mark: isMark, gap: result[end] / scale, at: [Math.round((p[0] - box.left) * 10) / 10, Math.round((p[1] - box.top) * 10) / 10], client: p, opacity: Math.round(line.alpha * 100) / 100, length: Math.round((length / scale) * 10) / 10 });
+        problems.push({
+          what: describe(line.el),
+          d: (line.el.getAttribute("d") || "").slice(0, 36),
+          end,
+          mark: isMark,
+          gap: result[end] / scale,
+          at: [Math.round((p[0] - box.left) * 10) / 10, Math.round((p[1] - box.top) * 10) / 10],
+          client: p,
+          opacity: Math.round(line.alpha * 100) / 100,
+          length: Math.round((length / scale) * 10) / 10,
+        });
       }
     }
   }
@@ -308,7 +478,10 @@ function lineEnds({ select = null, tolerance = 1, root: rootSlack = 2, mark = 7,
     const ns = "http://www.w3.org/2000/svg";
     const overlay = document.createElementNS(ns, "svg");
     overlay.setAttribute("data-line-ends", "");
-    overlay.setAttribute("style", `position:fixed;left:0;top:0;width:${innerWidth}px;height:${innerHeight}px;pointer-events:none;z-index:2147483647;overflow:visible`);
+    overlay.setAttribute(
+      "style",
+      `position:fixed;left:0;top:0;width:${innerWidth}px;height:${innerHeight}px;pointer-events:none;z-index:2147483647;overflow:visible`,
+    );
     for (const problem of problems) {
       const ring = document.createElementNS(ns, "circle");
       ring.setAttribute("cx", problem.client[0]);

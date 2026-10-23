@@ -1,8 +1,14 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { ArrowUpRight, DotsThree, ShieldCheck, WarningCircle, CheckCircle } from '@phosphor-icons/react';
-import { TenderProject } from '@/lib/types';
+import React from "react";
+import {
+  ArrowUpRight,
+  DotsThree,
+  ShieldCheck,
+  WarningCircle,
+  CheckCircle,
+} from "@phosphor-icons/react";
+import { TenderProject } from "@/lib/types";
 
 interface ComplianceScoreGaugeProps {
   tender: TenderProject;
@@ -18,7 +24,7 @@ export function ComplianceScoreGauge({
   const totalTicks = 48;
   const activeTicks = Math.round((tender.leadScore / 100) * totalTicks);
 
-  const compliantCount = tender.clauses.filter((c) => c.complianceStatus === 'compliant').length;
+  const compliantCount = tender.clauses.filter((c) => c.complianceStatus === "compliant").length;
   const openDiscrepancies = tender.discrepancies.filter((d) => !d.resolved).length;
 
   return (
@@ -71,7 +77,7 @@ export function ComplianceScoreGauge({
               <div
                 key={idx}
                 className={`h-1.5 rounded-xs transition-colors ${
-                  filled ? 'bg-[#168B7A]' : 'bg-neutral-200 dark:bg-neutral-800'
+                  filled ? "bg-[#168B7A]" : "bg-neutral-200 dark:bg-neutral-800"
                 }`}
               />
             );
@@ -85,7 +91,7 @@ export function ComplianceScoreGauge({
               <CheckCircle size={13} weight="bold" />
             </span>
             <span className="text-neutral-600 dark:text-neutral-300">
-              Award timeframe is{' '}
+              Award timeframe is{" "}
               <strong className="font-semibold text-[#0D0F0E] dark:text-white">
                 {tender.purchaseTimeframe}
               </strong>
@@ -96,7 +102,7 @@ export function ComplianceScoreGauge({
               <ShieldCheck size={13} weight="bold" />
             </span>
             <span className="text-neutral-600 dark:text-neutral-300">
-              Procurement procedure is{' '}
+              Procurement procedure is{" "}
               <strong className="font-semibold text-[#0D0F0E] dark:text-white">
                 {tender.procurementType}
               </strong>
@@ -107,10 +113,10 @@ export function ComplianceScoreGauge({
               <WarningCircle size={13} weight="bold" />
             </span>
             <span className="text-neutral-600 dark:text-neutral-300">
-              Clause alignment:{' '}
+              Clause alignment:{" "}
               <strong className="font-semibold text-[#0D0F0E] dark:text-white tabular-nums">
                 {compliantCount}/{tender.clauses.length} marked aligned by AI
-              </strong>{' '}
+              </strong>{" "}
               ({openDiscrepancies} open flags)
             </span>
           </li>
@@ -119,7 +125,7 @@ export function ComplianceScoreGauge({
               <CheckCircle size={13} weight="bold" />
             </span>
             <span className="text-neutral-600 dark:text-neutral-300">
-              Estimated contract value is{' '}
+              Estimated contract value is{" "}
               <strong className="font-semibold text-[#0D0F0E] dark:text-white tabular-nums">
                 {tender.budget}
               </strong>
@@ -134,7 +140,9 @@ export function ComplianceScoreGauge({
         className="mt-5 w-full min-h-[44px] rounded-2xl bg-[#0D0F0E] text-white dark:bg-[#DDFB82] dark:text-[#0D0F0E] hover:opacity-90 transition-opacity text-xs font-bold flex items-center justify-center gap-2 cursor-pointer"
       >
         <ShieldCheck size={16} weight="bold" />
-        <span>{isAuditing ? 'Auditing Against Vector Vault...' : 'Run Full AI Compliance Audit'}</span>
+        <span>
+          {isAuditing ? "Auditing Against Vector Vault..." : "Run Full AI Compliance Audit"}
+        </span>
       </button>
     </div>
   );

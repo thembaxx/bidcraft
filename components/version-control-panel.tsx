@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   ClockCounterClockwise,
   GitDiff,
@@ -9,9 +9,9 @@ import {
   Sparkle,
   UserCircle,
   Scan,
-} from '@phosphor-icons/react';
-import { ProposalVersion, TenderClause } from '@/lib/types';
-import { formatSouthAfricanDate } from '@/lib/locale';
+} from "@phosphor-icons/react";
+import { ProposalVersion, TenderClause } from "@/lib/types";
+import { formatSouthAfricanDate } from "@/lib/locale";
 
 interface VersionControlPanelProps {
   versions: ProposalVersion[];
@@ -28,16 +28,13 @@ export function VersionControlPanel({
   onRestoreVersion,
   onCreateCheckpoint,
 }: VersionControlPanelProps) {
-  const [selectedVersionId, setSelectedVersionId] = useState<string>(
-    versions[0]?.id || ''
-  );
+  const [selectedVersionId, setSelectedVersionId] = useState<string>(versions[0]?.id || "");
   const [compareTargetId, setCompareTargetId] = useState<string>(
-    versions[1]?.id || versions[0]?.id || ''
+    versions[1]?.id || versions[0]?.id || "",
   );
-  const [checkpointNote, setCheckpointNote] = useState('');
+  const [checkpointNote, setCheckpointNote] = useState("");
 
-  const selectedVersion =
-    versions.find((v) => v.id === selectedVersionId) || versions[0];
+  const selectedVersion = versions.find((v) => v.id === selectedVersionId) || versions[0];
   const compareTarget =
     versions.find((v) => v.id === compareTargetId) || versions[1] || versions[0];
 
@@ -45,7 +42,7 @@ export function VersionControlPanel({
     e.preventDefault();
     if (!checkpointNote.trim()) return;
     onCreateCheckpoint(checkpointNote.trim());
-    setCheckpointNote('');
+    setCheckpointNote("");
   };
 
   return (
@@ -58,11 +55,15 @@ export function VersionControlPanel({
             <span>Proposal Version Control & Immutable Audit Trail</span>
           </h3>
           <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-0.5">
-            Track automated AI drafts, OCR clause syncs, and manual legal edits. Compare any two versions or restore a prior state with one click.
+            Track automated AI drafts, OCR clause syncs, and manual legal edits. Compare any two
+            versions or restore a prior state with one click.
           </p>
         </div>
 
-        <form onSubmit={handleCreateManualSnapshot} className="flex items-center gap-2 w-full sm:w-auto">
+        <form
+          onSubmit={handleCreateManualSnapshot}
+          className="flex items-center gap-2 w-full sm:w-auto"
+        >
           <input
             type="text"
             value={checkpointNote}
@@ -97,13 +98,20 @@ export function VersionControlPanel({
             return (
               <div
                 key={ver.id}
-                role="button" tabIndex={0} aria-pressed={isSelected}
-                onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); setSelectedVersionId(ver.id); } }}
+                role="button"
+                tabIndex={0}
+                aria-pressed={isSelected}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    setSelectedVersionId(ver.id);
+                  }
+                }}
                 onClick={() => setSelectedVersionId(ver.id)}
                 className={`rounded-2xl p-4 transition-colors cursor-pointer border ${
                   isSelected
-                    ? 'bg-[#DDFB82]/35 dark:bg-[#DDFB82]/15 border-[#168B7A] dark:border-[#DDFB82]'
-                    : 'bg-[#F8F9F8] dark:bg-[#111413] border-transparent hover:border-neutral-300 dark:hover:border-neutral-700'
+                    ? "bg-[#DDFB82]/35 dark:bg-[#DDFB82]/15 border-[#168B7A] dark:border-[#DDFB82]"
+                    : "bg-[#F8F9F8] dark:bg-[#111413] border-transparent hover:border-neutral-300 dark:hover:border-neutral-700"
                 }`}
               >
                 <div className="flex items-center justify-between gap-2">
@@ -118,9 +126,7 @@ export function VersionControlPanel({
                     {isLatest && (
                       <>
                         <span aria-hidden="true">·</span>
-                        <span className="font-bold text-[#0D0F0E] dark:text-white">
-                          HEAD
-                        </span>
+                        <span className="font-bold text-[#0D0F0E] dark:text-white">HEAD</span>
                       </>
                     )}
                   </div>
@@ -135,16 +141,18 @@ export function VersionControlPanel({
 
                 <div className="mt-2.5 flex items-center justify-between text-[11px] text-neutral-500 dark:text-neutral-400">
                   <span className="flex items-center gap-1">
-                    {(ver.triggerType === 'Manual Edit' || ver.triggerType === 'Human Review') ? (
+                    {ver.triggerType === "Manual Edit" || ver.triggerType === "Human Review" ? (
                       <UserCircle size={13} />
-                    ) : ver.triggerType === 'OCR Clause Sync' ? (
+                    ) : ver.triggerType === "OCR Clause Sync" ? (
                       <Scan size={13} />
                     ) : (
                       <Sparkle size={13} />
                     )}
                     <span>{ver.author}</span>
                   </span>
-                  <span className="font-mono tabular-nums">{formatSouthAfricanDate(ver.timestamp, true)} SAST</span>
+                  <span className="font-mono tabular-nums">
+                    {formatSouthAfricanDate(ver.timestamp, true)} SAST
+                  </span>
                 </div>
               </div>
             );
@@ -193,8 +201,8 @@ export function VersionControlPanel({
                       onClick={() => setCompareTargetId(v.id)}
                       className={`px-3 py-1 rounded-full font-mono text-xs transition-colors cursor-pointer ${
                         compareTarget?.id === v.id
-                          ? 'bg-[#168B7A] text-white font-bold'
-                          : 'bg-white dark:bg-[#161918] text-neutral-600 dark:text-neutral-300'
+                          ? "bg-[#168B7A] text-white font-bold"
+                          : "bg-white dark:bg-[#161918] text-neutral-600 dark:text-neutral-300"
                       }`}
                     >
                       {v.versionNumber} ({v.complianceScoreSnapshot}%)
@@ -206,8 +214,8 @@ export function VersionControlPanel({
               {/* Executive Summary Snapshot Comparison */}
               <div className="space-y-2">
                 <h5 className="text-xs font-bold text-neutral-500 dark:text-neutral-400">
-                  Executive Summary Snapshot Diff ({selectedVersion.versionNumber} vs.{' '}
-                  {compareTarget?.versionNumber || 'Current'})
+                  Executive Summary Snapshot Diff ({selectedVersion.versionNumber} vs.{" "}
+                  {compareTarget?.versionNumber || "Current"})
                 </h5>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   <div className="p-3.5 rounded-2xl bg-[#F8FAF9] dark:bg-[#111716] border border-[#168B7A]/30 text-xs leading-relaxed">
@@ -234,15 +242,35 @@ export function VersionControlPanel({
                 <h5 className="text-xs font-bold text-neutral-500 dark:text-neutral-400">
                   Clause Snapshot Comparison
                 </h5>
-                {selectedVersion.clausesSnapshot.length === 0 && <p className="text-xs text-neutral-500">This snapshot contains no clauses.</p>}
-                {compareTarget?.clausesSnapshot.filter((clause) => !selectedVersion.clausesSnapshot.some((selected) => selected.code === clause.code)).map((clause) => <p key={clause.id} className="text-xs text-rose-600">{clause.code} — absent from this version</p>)}
+                {selectedVersion.clausesSnapshot.length === 0 && (
+                  <p className="text-xs text-neutral-500">This snapshot contains no clauses.</p>
+                )}
+                {compareTarget?.clausesSnapshot
+                  .filter(
+                    (clause) =>
+                      !selectedVersion.clausesSnapshot.some(
+                        (selected) => selected.code === clause.code,
+                      ),
+                  )
+                  .map((clause) => (
+                    <p key={clause.id} className="text-xs text-rose-600">
+                      {clause.code} — absent from this version
+                    </p>
+                  ))}
                 {selectedVersion.clausesSnapshot.map((clause) => {
                   const comparedClause = compareTarget?.clausesSnapshot.find(
-                    (c) => c.code === clause.code
+                    (c) => c.code === clause.code,
                   );
-                  const responseChanged = comparedClause && comparedClause.proposalResponseText !== clause.proposalResponseText;
-                  const reviewChanged = comparedClause && JSON.stringify(comparedClause.review) !== JSON.stringify(clause.review);
-                  const evidenceChanged = comparedClause && JSON.stringify(comparedClause.matchedVaultDocIds) !== JSON.stringify(clause.matchedVaultDocIds);
+                  const responseChanged =
+                    comparedClause &&
+                    comparedClause.proposalResponseText !== clause.proposalResponseText;
+                  const reviewChanged =
+                    comparedClause &&
+                    JSON.stringify(comparedClause.review) !== JSON.stringify(clause.review);
+                  const evidenceChanged =
+                    comparedClause &&
+                    JSON.stringify(comparedClause.matchedVaultDocIds) !==
+                      JSON.stringify(clause.matchedVaultDocIds);
                   const changed = responseChanged || reviewChanged || evidenceChanged;
 
                   return (
@@ -257,20 +285,33 @@ export function VersionControlPanel({
                         </span>
                         <span
                           className={`font-mono text-[11px] font-bold ${
-                            changed ? 'text-[#168B7A] dark:text-[#DDFB82]' : 'text-neutral-400'
+                            changed ? "text-[#168B7A] dark:text-[#DDFB82]" : "text-neutral-400"
                           }`}
                         >
-                          {!comparedClause ? 'Added in this version' : reviewChanged && !responseChanged ? 'Review updated' : changed ? 'Modified in this version' : 'Unchanged'}
+                          {!comparedClause
+                            ? "Added in this version"
+                            : reviewChanged && !responseChanged
+                              ? "Review updated"
+                              : changed
+                                ? "Modified in this version"
+                                : "Unchanged"}
                         </span>
                       </div>
                       <p className="text-xs text-neutral-700 dark:text-neutral-300 leading-relaxed">
                         {clause.proposalResponseText}
                       </p>
-                      {clause.review && <div className="rounded-xl border border-[#168B7A]/30 p-3 text-xs leading-relaxed">
-                        <p className="font-semibold">{clause.review.outcome === 'approved' ? 'Human approval recorded' : 'Changes requested'} · {clause.review.reviewer}</p>
-                        <p className="mt-1 text-neutral-500">{clause.review.reviewedAt}</p>
-                        <p className="mt-1">{clause.review.note}</p>
-                      </div>}
+                      {clause.review && (
+                        <div className="rounded-xl border border-[#168B7A]/30 p-3 text-xs leading-relaxed">
+                          <p className="font-semibold">
+                            {clause.review.outcome === "approved"
+                              ? "Human approval recorded"
+                              : "Changes requested"}{" "}
+                            · {clause.review.reviewer}
+                          </p>
+                          <p className="mt-1 text-neutral-500">{clause.review.reviewedAt}</p>
+                          <p className="mt-1">{clause.review.note}</p>
+                        </div>
+                      )}
                       {responseChanged && comparedClause && (
                         <div className="pt-2 border-t border-neutral-200 dark:border-neutral-800 text-[11px] text-neutral-500">
                           <span className="font-mono font-semibold mr-1.5">

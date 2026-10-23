@@ -18,58 +18,159 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
-:root { --brand-ink: #101714; --brand-paper: #F8F6EF; --brand-teal: #168B7A; --brand-lime: #DDFB82; }
-html { scroll-behavior: smooth; }
-body { overflow-wrap: break-word; }
-button, a, input, textarea { -webkit-tap-highlight-color: transparent; }
-button, a { touch-action: manipulation; }
-button { cursor: pointer; }
-button:disabled { cursor: wait; opacity: .5; }
-:focus-visible { outline: 2px solid #168B7A; outline-offset: 4px; }
-.skip-link { position: fixed; z-index: 100; left: 1rem; top: -5rem; padding: .8rem 1.2rem; background: #DDFB82; color: #101714; border-radius: 1rem; }
-.skip-link:focus { top: 1rem; }
-.brand-mark { transition: transform .35s cubic-bezier(.2,.8,.2,1); }
-a:hover .brand-mark { transform: rotate(-5deg) scale(1.04); }
-.brand-cta { transition: transform .25s, box-shadow .25s; }
-.brand-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 22px #168B7A20; }
-.brand-dialog[open] { animation: dialog-enter .2s ease-out; }
-@keyframes dialog-enter { from { opacity: 0; transform: translateY(12px) scale(.98); } to { opacity: 1; transform: none; } }
+:root {
+  --brand-ink: #101714;
+  --brand-paper: #f8f6ef;
+  --brand-teal: #168b7a;
+  --brand-lime: #ddfb82;
+}
+html {
+  scroll-behavior: smooth;
+}
+body {
+  overflow-wrap: break-word;
+}
+button,
+a,
+input,
+textarea {
+  -webkit-tap-highlight-color: transparent;
+}
+button,
+a {
+  touch-action: manipulation;
+}
+button {
+  cursor: pointer;
+}
+button:disabled {
+  cursor: wait;
+  opacity: 0.5;
+}
+:focus-visible {
+  outline: 2px solid #168b7a;
+  outline-offset: 4px;
+}
+.skip-link {
+  position: fixed;
+  z-index: 100;
+  left: 1rem;
+  top: -5rem;
+  padding: 0.8rem 1.2rem;
+  background: #ddfb82;
+  color: #101714;
+  border-radius: 1rem;
+}
+.skip-link:focus {
+  top: 1rem;
+}
+.brand-mark {
+  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+a:hover .brand-mark {
+  transform: rotate(-5deg) scale(1.04);
+}
+.brand-cta {
+  transition:
+    transform 0.25s,
+    box-shadow 0.25s;
+}
+.brand-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px #168b7a20;
+}
+.brand-dialog[open] {
+  animation: dialog-enter 0.2s ease-out;
+}
+@keyframes dialog-enter {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
 @media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 /* Onboarding opens with a short, physical entrance without shifting app layout. */
 @media (prefers-reduced-motion: no-preference) {
   .onboarding-shell[open] {
-    animation: onboarding-arrive 420ms cubic-bezier(.22, 1, .36, 1) both;
+    animation: onboarding-arrive 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
   }
   @keyframes onboarding-arrive {
-    from { opacity: 0; transform: translateY(14px) scale(.985); }
-    to { opacity: 1; transform: translateY(0) scale(1); }
+    from {
+      opacity: 0;
+      transform: translateY(14px) scale(0.985);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
   }
 }
 
 /* Space for shared app navigation only at mobile/tablet sizes. */
 @media (max-width: 1023px) {
-  #workspace { scroll-margin-top: 5rem; }
+  #workspace {
+    scroll-margin-top: 5rem;
+  }
 }
 @media (prefers-reduced-motion: no-preference) {
-  .interactive-lift { transition: transform .22s cubic-bezier(.2,.8,.2,1), box-shadow .22s ease; }
-  .interactive-lift:hover { transform: translateY(-2px); box-shadow: 0 10px 26px #10171413; }
-  .interactive-lift:active { transform: scale(.99); }
+  .interactive-lift {
+    transition:
+      transform 0.22s cubic-bezier(0.2, 0.8, 0.2, 1),
+      box-shadow 0.22s ease;
+  }
+  .interactive-lift:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 26px #10171413;
+  }
+  .interactive-lift:active {
+    transform: scale(0.99);
+  }
 }
 
 /* Deliberate physical feedback for interactive surfaces. Hover motion is pointer-only. */
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-  .motion-surface { transition: transform .35s cubic-bezier(.32,.72,0,1), box-shadow .35s cubic-bezier(.32,.72,0,1); }
-  .motion-surface:hover { transform: translateY(-3px); box-shadow: 0 15px 32px #10171412; }
-  .motion-surface:active { transform: translateY(-1px) scale(.995); }
-  .motion-arrow svg:last-child { transition: transform .35s cubic-bezier(.32,.72,0,1); }
-  .motion-arrow:hover svg:last-child { transform: translate(2px,-2px); }
+  .motion-surface {
+    transition:
+      transform 0.35s cubic-bezier(0.32, 0.72, 0, 1),
+      box-shadow 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+  }
+  .motion-surface:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 32px #10171412;
+  }
+  .motion-surface:active {
+    transform: translateY(-1px) scale(0.995);
+  }
+  .motion-arrow svg:last-child {
+    transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+  }
+  .motion-arrow:hover svg:last-child {
+    transform: translate(2px, -2px);
+  }
 }
 
 /* Native iOS inputs must remain at least 16px to avoid zooming on focus. */
 @media (max-width: 767px) {
-  input:not([type="checkbox"]):not([type="radio"]), select, textarea { font-size: 16px !important; }
+  input:not([type="checkbox"]):not([type="radio"]),
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
 }

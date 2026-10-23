@@ -1,15 +1,89 @@
-import type { Metadata } from 'next';
-import Link from 'next/link';
-import { LegalShell } from '@/components/legal/legal-shell';
+import type { Metadata } from "next";
+import Link from "next/link";
+import { LegalShell } from "@/components/legal/legal-shell";
 
-export const metadata: Metadata = { title: 'AI disclosure and limitations', description: 'Clear boundaries for Bidcraft AI drafting, OCR, scores and Google Gemini data processing.' };
+export const metadata: Metadata = {
+  title: "AI disclosure and limitations",
+  description:
+    "Clear boundaries for Bidcraft AI drafting, OCR, scores and Google Gemini data processing.",
+};
 export default function AIDisclosurePage() {
-  return <LegalShell current="/ai-disclosure" title="AI & limitations" subtitle="AI can help organise tender work. It cannot determine legal eligibility, verify credentials or take responsibility for your submission.">
-    <section><h2>Which features use AI?</h2><p>When configured, Bidcraft sends relevant supplied content to Google’s Gemini API for suggested proposal language, automated clause reviews, extracted document text and live semantic evidence ranking. A similarity-search fallback uses deterministic server-side text-based calculations when Gemini embeddings are unavailable. Drafts and audits are not performed automatically simply by viewing tender discovery.</p></section>
-    <section><h2>What is not independently verified?</h2><p>AI-generated compliance grades, confidence values, flags, suggested remedies and evidence matches are heuristics. They do not verify SARS, CSD, B-BBEE, financial capability, insurance, professional credentials, compulsory briefings or the actual acceptance of a bid. A locally saved human review record does not authenticate the reviewer. Automated OCR can misread and omit pages, tables, numbers and required forms.</p></section>
-    <section><h2>Where does submitted content go?</h2><p>AI requests transmit selected tender clauses, draft responses, evidence excerpts, query text or selected uploaded files to Bidcraft’s application server, which passes relevant material to Google Gemini. The server’s Gemini API key is not exposed to browser code. Google may process this material outside South Africa. Do not send personal, sensitive or confidential client material without confirming you have permission and appropriate processing terms.</p></section>
-    <section><h2>Free vs paid Gemini services</h2><p>As described in Google’s terms effective 23 March 2026, unpaid Gemini API use can permit submitted content and responses to be used for improvement and may involve human review. Under Google’s published paid-service terms, prompts and responses are not used to improve its models, but limited safety and operational retention may still apply. A deployed project’s billing classification cannot be determined from Bidcraft’s public interface. The operator must verify the billing agreement and data-processing terms before inviting use with sensitive documents. <a href="https://ai.google.dev/gemini-api/terms" target="_blank" rel="noopener noreferrer">Read the Google Gemini API terms</a>.</p></section>
-    <section><h2>Using the output responsibly</h2><p>Compare every requirement with the original tender document, check extracted text, replace demonstration documents with real authorised evidence, have competent people review commitments and keep an independent export before submitting via the official process. No AI output is guaranteed complete, correct, original, lawful, confidential or suitable for a particular procurement.</p></section>
-    <section><h2>Privacy and procurement</h2><p>See the <Link href="/privacy">privacy notice</Link>, <Link href="/data-sources">source-data statement</Link> and <Link href="/terms">terms of use</Link>. Bidcraft neither files bids nor provides a guaranteed background notification service.</p></section>
-  </LegalShell>;
+  return (
+    <LegalShell
+      current="/ai-disclosure"
+      title="AI & limitations"
+      subtitle="AI can help organise tender work. It cannot determine legal eligibility, verify credentials or take responsibility for your submission."
+    >
+      <section>
+        <h2>Which features use AI?</h2>
+        <p>
+          When configured, Bidcraft sends relevant supplied content to Google’s Gemini API for
+          suggested proposal language, automated clause reviews, extracted document text and live
+          semantic evidence ranking. A similarity-search fallback uses deterministic server-side
+          text-based calculations when Gemini embeddings are unavailable. Drafts and audits are not
+          performed automatically simply by viewing tender discovery.
+        </p>
+      </section>
+      <section>
+        <h2>What is not independently verified?</h2>
+        <p>
+          AI-generated compliance grades, confidence values, flags, suggested remedies and evidence
+          matches are heuristics. They do not verify SARS, CSD, B-BBEE, financial capability,
+          insurance, professional credentials, compulsory briefings or the actual acceptance of a
+          bid. A locally saved human review record does not authenticate the reviewer. Automated OCR
+          can misread and omit pages, tables, numbers and required forms.
+        </p>
+      </section>
+      <section>
+        <h2>Where does submitted content go?</h2>
+        <p>
+          AI requests transmit selected tender clauses, draft responses, evidence excerpts, query
+          text or selected uploaded files to Bidcraft’s application server, which passes relevant
+          material to Google Gemini. The server’s Gemini API key is not exposed to browser code.
+          Google may process this material outside South Africa. Do not send personal, sensitive or
+          confidential client material without confirming you have permission and appropriate
+          processing terms.
+        </p>
+      </section>
+      <section>
+        <h2>Free vs paid Gemini services</h2>
+        <p>
+          As described in Google’s terms effective 23 March 2026, unpaid Gemini API use can permit
+          submitted content and responses to be used for improvement and may involve human review.
+          Under Google’s published paid-service terms, prompts and responses are not used to improve
+          its models, but limited safety and operational retention may still apply. A deployed
+          project’s billing classification cannot be determined from Bidcraft’s public interface.
+          The operator must verify the billing agreement and data-processing terms before inviting
+          use with sensitive documents.{" "}
+          <a
+            href="https://ai.google.dev/gemini-api/terms"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Read the Google Gemini API terms
+          </a>
+          .
+        </p>
+      </section>
+      <section>
+        <h2>Using the output responsibly</h2>
+        <p>
+          Compare every requirement with the original tender document, check extracted text, replace
+          demonstration documents with real authorised evidence, have competent people review
+          commitments and keep an independent export before submitting via the official process. No
+          AI output is guaranteed complete, correct, original, lawful, confidential or suitable for
+          a particular procurement.
+        </p>
+      </section>
+      <section>
+        <h2>Privacy and procurement</h2>
+        <p>
+          See the <Link href="/privacy">privacy notice</Link>,{" "}
+          <Link href="/data-sources">source-data statement</Link> and{" "}
+          <Link href="/terms">terms of use</Link>. Bidcraft neither files bids nor provides a
+          guaranteed background notification service.
+        </p>
+      </section>
+    </LegalShell>
+  );
 }

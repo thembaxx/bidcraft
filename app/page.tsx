@@ -1,39 +1,101 @@
-import BidWorkspace from '@/components/bid-workspace';
-import { BrandWordmark } from '@/components/brand-logo';
-import { SettingsMenu } from '@/components/settings-menu';
-import { BrandScene } from '@/components/brand-scene';
-import Link from 'next/link';
-import { ScrollReveal } from '@/components/ui/scroll-reveal';
+import BidWorkspace from "@/components/bid-workspace";
+import { BrandWordmark } from "@/components/brand-logo";
+import { SettingsMenu } from "@/components/settings-menu";
+import { BrandScene } from "@/components/brand-scene";
+import Link from "next/link";
+import { ScrollReveal } from "@/components/ui/scroll-reveal";
 
 export default function Home() {
-  return <>
-    <header className="relative z-50 mx-auto flex max-w-[1600px] items-center justify-between gap-2 px-4 py-4 sm:px-8 sm:py-5">
-      <BrandWordmark />
-      <div className="flex shrink-0 items-center gap-2 sm:gap-4">
-        <nav aria-label="Main navigation" className="flex items-center gap-3 text-xs font-semibold sm:gap-5">
-          <Link href="/today" className="hidden min-h-11 items-center text-neutral-500 transition-colors hover:text-[#168B7A] sm:inline-flex">Today</Link>
-          <Link href="/tenders" aria-label="Find tenders" className="inline-flex size-11 items-center justify-center rounded-full bg-[#101714] text-white transition-colors hover:bg-[#168B7A] sm:h-11 sm:w-auto sm:gap-3 sm:px-5"> <span className="sm:hidden" aria-hidden="true">Find</span><span className="hidden sm:inline">Find tenders</span><span className="hidden sm:inline" aria-hidden="true">→</span></Link>
-          <a href="#workspace" className="hidden min-h-11 items-center text-neutral-600 lg:inline-flex">Your workspace</a>
-        </nav>
-        <SettingsMenu />
-      </div>
-    </header>
-    <section aria-labelledby="brand-heading" className="mx-auto grid max-w-[1600px] grid-cols-1 items-center gap-6 px-5 pb-8 pt-3 sm:px-8 lg:grid-cols-2 lg:gap-12 lg:pb-12 lg:pt-5">
-      <ScrollReveal className="brand-intro py-5 lg:py-8">
-        <p className="mb-5 flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.22em] text-[#168B7A]"><span className="h-1.5 w-1.5 rounded-full bg-[#168B7A]" /> Built for South African bid teams</p>
-        <h1 id="brand-heading" className="text-[clamp(3rem,10vw,5rem)] lg:text-[clamp(3.5rem,6.4vw,7rem)] font-semibold leading-[0.93] tracking-[-0.065em]">Make every<br />bid <span className="font-serif font-normal italic text-[#168B7A]">count.</span></h1>
-        <p className="mt-6 max-w-[430px] text-sm leading-7 text-neutral-500 sm:text-base">Find South African tenders and turn complex requirements into clear, considered proposals. Your evidence, suggested reviews, and drafts — organised in this browser.</p>
-        <div className="mt-7 flex flex-wrap items-center gap-5 text-xs font-semibold">
-          <a href="#workspace" className="brand-cta inline-flex min-h-12 items-center gap-8 rounded-full bg-[#DDFB82] px-6 text-[#101714]">Let’s craft your next bid <span aria-hidden="true">→</span></a>
-          <Link href="/today" className="inline-flex min-h-11 items-center font-semibold text-[#12695C] dark:text-[#9BDBBE]">See what needs attention →</Link>
+  return (
+    <>
+      <header className="relative z-50 mx-auto flex max-w-[1600px] items-center justify-between gap-2 px-4 py-4 sm:px-8 sm:py-5">
+        <BrandWordmark />
+        <div className="flex shrink-0 items-center gap-2 sm:gap-4">
+          <nav
+            aria-label="Main navigation"
+            className="flex items-center gap-3 text-xs font-semibold sm:gap-5"
+          >
+            <Link
+              href="/today"
+              className="hidden min-h-11 items-center text-neutral-500 transition-colors hover:text-[#168B7A] sm:inline-flex"
+            >
+              Today
+            </Link>
+            <Link
+              href="/tenders"
+              aria-label="Find tenders"
+              className="inline-flex size-11 items-center justify-center rounded-full bg-[#101714] text-white transition-colors hover:bg-[#168B7A] sm:h-11 sm:w-auto sm:gap-3 sm:px-5"
+            >
+              {" "}
+              <span className="sm:hidden" aria-hidden="true">
+                Find
+              </span>
+              <span className="hidden sm:inline">Find tenders</span>
+              <span className="hidden sm:inline" aria-hidden="true">
+                →
+              </span>
+            </Link>
+            <a
+              href="#workspace"
+              className="hidden min-h-11 items-center text-neutral-600 lg:inline-flex"
+            >
+              Your workspace
+            </a>
+          </nav>
+          <SettingsMenu />
         </div>
-      </ScrollReveal>
-      <ScrollReveal className="hidden lg:block" delay={0.14} distance={28}><BrandScene /></ScrollReveal>
-    </section>
-    <BidWorkspace />
-    <footer className="mx-auto flex max-w-[1600px] flex-wrap items-center justify-between gap-4 px-6 pb-24 pt-7 text-xs text-neutral-500 lg:pb-8">
-      <p>Bidcraft. A little more craft. A better bid.</p>
-      <nav aria-label="Footer" className="flex gap-5"><a href="/about">About & guidance</a><a href="/llms.txt">For AI readers</a><a href="/brand/bidcraft-icon-original.png" download>Download the mark →</a></nav>
-    </footer>
-  </>;
+      </header>
+      <section
+        aria-labelledby="brand-heading"
+        className="mx-auto grid max-w-[1600px] grid-cols-1 items-center gap-6 px-5 pb-8 pt-3 sm:px-8 lg:grid-cols-2 lg:gap-12 lg:pb-12 lg:pt-5"
+      >
+        <ScrollReveal className="brand-intro py-5 lg:py-8">
+          <p className="mb-5 flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.22em] text-[#168B7A]">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#168B7A]" /> Built for South African bid
+            teams
+          </p>
+          <h1
+            id="brand-heading"
+            className="text-[clamp(3rem,10vw,5rem)] lg:text-[clamp(3.5rem,6.4vw,7rem)] font-semibold leading-[0.93] tracking-[-0.065em]"
+          >
+            Make every
+            <br />
+            bid <span className="font-serif font-normal italic text-[#168B7A]">count.</span>
+          </h1>
+          <p className="mt-6 max-w-[430px] text-sm leading-7 text-neutral-500 sm:text-base">
+            Find South African tenders and turn complex requirements into clear, considered
+            proposals. Your evidence, suggested reviews, and drafts — organised in this browser.
+          </p>
+          <div className="mt-7 flex flex-wrap items-center gap-5 text-xs font-semibold">
+            <a
+              href="#workspace"
+              className="brand-cta inline-flex min-h-12 items-center gap-8 rounded-full bg-[#DDFB82] px-6 text-[#101714]"
+            >
+              Let’s craft your next bid <span aria-hidden="true">→</span>
+            </a>
+            <Link
+              href="/today"
+              className="inline-flex min-h-11 items-center font-semibold text-[#12695C] dark:text-[#9BDBBE]"
+            >
+              See what needs attention →
+            </Link>
+          </div>
+        </ScrollReveal>
+        <ScrollReveal className="hidden lg:block" delay={0.14} distance={28}>
+          <BrandScene />
+        </ScrollReveal>
+      </section>
+      <BidWorkspace />
+      <footer className="mx-auto flex max-w-[1600px] flex-wrap items-center justify-between gap-4 px-6 pb-24 pt-7 text-xs text-neutral-500 lg:pb-8">
+        <p>Bidcraft. A little more craft. A better bid.</p>
+        <nav aria-label="Footer" className="flex gap-5">
+          <a href="/about">About & guidance</a>
+          <a href="/llms.txt">For AI readers</a>
+          <a href="/brand/bidcraft-icon-original.png" download>
+            Download the mark →
+          </a>
+        </nav>
+      </footer>
+    </>
+  );
 }

@@ -1,7 +1,7 @@
-export type PipelineStage = 'qualify' | 'develop' | 'propose' | 'close';
+export type PipelineStage = "qualify" | "develop" | "propose" | "close";
 
 export interface ClauseReview {
-  outcome: 'approved' | 'changes-requested';
+  outcome: "approved" | "changes-requested";
   reviewedAt: string;
   reviewer: string;
   note: string;
@@ -12,11 +12,11 @@ export interface TenderClause {
   code: string;
   title: string;
   mandatory: boolean;
-  category: 'Legal & Statutory' | 'Technical Architecture' | 'Financial & SLA' | 'Security & ISO';
+  category: "Legal & Statutory" | "Technical Architecture" | "Financial & SLA" | "Security & ISO";
   originalText: string;
   proposalSectionTitle: string;
   proposalResponseText: string;
-  complianceStatus: 'compliant' | 'partial' | 'non-compliant';
+  complianceStatus: "compliant" | "partial" | "non-compliant";
   confidenceScore: number;
   matchedVaultDocIds: string[];
   aiNote: string;
@@ -28,7 +28,13 @@ export interface ProposalVersion {
   versionNumber: string;
   timestamp: string;
   author: string;
-  triggerType: 'AI Auto-Draft' | 'Manual Edit' | 'AI Compliance Fix' | 'AI Compliance Audit' | 'OCR Clause Sync' | 'Human Review';
+  triggerType:
+    | "AI Auto-Draft"
+    | "Manual Edit"
+    | "AI Compliance Fix"
+    | "AI Compliance Audit"
+    | "OCR Clause Sync"
+    | "Human Review";
   summary: string;
   complianceScoreSnapshot: number;
   clausesSnapshot: TenderClause[];
@@ -39,7 +45,7 @@ export interface ProposalVersion {
 export interface VaultDocument {
   id: string;
   title: string;
-  category: 'Past Winning Bid' | 'Statutory & Legal' | 'ISO & Security Cert' | 'Financial Audit';
+  category: "Past Winning Bid" | "Statutory & Legal" | "ISO & Security Cert" | "Financial Audit";
   dateUpdated: string;
   referenceCode: string;
   excerpt: string;
@@ -51,7 +57,7 @@ export interface VaultDocument {
 export interface ComplianceDiscrepancy {
   id: string;
   clauseCode: string;
-  severity: 'critical' | 'warning' | 'verified';
+  severity: "critical" | "warning" | "verified";
   issueTitle: string;
   tenderRequirement: string;
   currentProposalText: string;

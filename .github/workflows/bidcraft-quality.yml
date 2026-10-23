@@ -18,9 +18,11 @@ jobs:
       - uses: oven-sh/setup-bun@v2
       - uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: "22"
       - name: Install dependencies
         run: bun install --frozen-lockfile
+      - name: Format check
+        run: npm run format:check
       - name: Lint
         run: npm run lint
       - name: Typecheck
@@ -32,7 +34,7 @@ jobs:
       - name: Regression tests
         run: npm test
         env:
-          CI: 'true'
+          CI: "true"
       - name: Preserve failing traces
         if: failure()
         uses: actions/upload-artifact@v4
