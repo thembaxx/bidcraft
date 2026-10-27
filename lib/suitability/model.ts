@@ -1,5 +1,6 @@
 import type { TenderDetail, TenderNotice } from "@/lib/discovery/types";
 import { isOfficialUrl } from "@/lib/discovery/model";
+import { isReviewedDocumentSnapshot, type ReviewedDocumentSnapshot } from "./document-review";
 
 export type Answer = "yes" | "no" | "unknown";
 export type ResultState =
@@ -35,6 +36,7 @@ export interface RecordedRequirement {
   sourceUrl: string;
   page: string;
   createdAt: string;
+  documentHash?: string;
 }
 export interface Criterion {
   id: string;
@@ -47,6 +49,7 @@ export interface Criterion {
   answer: Answer;
   reviewed: boolean;
   state: CriterionState;
+  documentHash?: string;
 }
 export interface RealityCheck {
   tenderId: string;
@@ -58,6 +61,53 @@ export interface RealityCheck {
   manualRequirements: RecordedRequirement[];
   completedActions: string[];
   sourceSnapshot?: TenderDetail;
+  documentSnapshots?: ReviewedDocumentSnapshot[];
+}
+
+export const MAX_REVIEWED_DOCUMENTS = 3;
+const MAX_REVIEWED_DOCUMENT_TEXT = 200_000;
+
+/** Older assessments have no document snapshots; malformed additions are never trusted. */
+export function validDocumentSnapshots(
+  value: unknown,
+): value is ReviewedDocumentSnapshot[] | undefined {
+  if (value === undefined) return true;
+  if (!Array.isArray(value) || value.length > MAX_REVIEWED_DOCUMENTS) return false;
+  let characters = 0;
+  return value.every((snapshot) => {
+    if (!isReviewedDocumentSnapshot(snapshot) || !snapshot.reviewedAt) return false;
+    characters += snapshot.pages.reduce((total, page) => total + page.text.length, 0);
+    return characters <= MAX_REVIEWED_DOCUMENT_TEXT;
+  });
+}
+
+export function rememberReviewedDocument(
+  previous: ReviewedDocumentSnapshot[] | undefined,
+  snapshot: ReviewedDocumentSnapshot,
+): ReviewedDocumentSnapshot[] {
+  if (
+    !validDocumentSnapshots(previous) ||
+    !isReviewedDocumentSnapshot(snapshot) ||
+    !snapshot.reviewedAt
+  )
+    throw new Error("The document review is incomplete or unsupported.");
+  const next = [
+    ...(previous ?? []).filter(
+      (item) => item.sha256 !== snapshot.sha256 || item.sourceUrl !== snapshot.sourceUrl,
+    ),
+    snapshot,
+  ].slice(-MAX_REVIEWED_DOCUMENTS);
+  while (
+    next.length > 1 &&
+    next.reduce(
+      (total, item) => total + item.pages.reduce((count, page) => count + page.text.length, 0),
+      0,
+    ) > MAX_REVIEWED_DOCUMENT_TEXT
+  )
+    next.shift();
+  if (!validDocumentSnapshots(next))
+    throw new Error("This document exceeds local review storage limits.");
+  return next;
 }
 export interface Decision {
   state: ResultState;
@@ -144,6 +194,9 @@ export function evaluateRealityCheck(
     check.sourceFingerprint && fingerprint && check.sourceFingerprint !== fingerprint,
   );
   const limitations: string[] = [];
+  const documentsInvalid = !validDocumentSnapshots(check.documentSnapshots);
+  if (documentsInvalid)
+    limitations.push("Saved PDF review data is unsupported. Review the original documents again.");
   if (notice?.briefing === "required" || detail?.briefing === "required") {
     const answer = check.answers.briefing || "unknown";
     const reviewed = check.reviewed.briefing === true;
@@ -171,7 +224,11 @@ export function evaluateRealityCheck(
   for (const r of check.manualRequirements) {
     const answer = check.answers[r.id] || "unknown",
       reviewed = check.reviewed[r.id] === true;
-    const citationReady = officialRequirementLink(r.sourceUrl) && r.excerpt.trim().length >= 12;
+    const citationReady =
+      officialRequirementLink(r.sourceUrl) &&
+      r.excerpt.trim().length >= 12 &&
+      (r.documentHash === undefined ||
+        (typeof r.documentHash === "string" && /^[a-f0-9]{64}$/.test(r.documentHash)));
     criteria.push({
       id: r.id,
       label: r.label,
@@ -180,6 +237,7 @@ export function evaluateRealityCheck(
       excerpt: r.excerpt,
       url: r.sourceUrl,
       page: r.page,
+      ...(r.documentHash ? { documentHash: r.documentHash } : {}),
       answer,
       reviewed,
       state: !citationReady
@@ -211,6 +269,10 @@ export function evaluateRealityCheck(
     );
   if (!detail?.documents.length)
     limitations.push("No official tender document links were available to examine.");
+  else if (check.documentSnapshots?.length && !documentsInvalid)
+    limitations.push(
+      "Selected local PDF text was reviewed by you. File hashes do not verify official origin or establish that the complete pack was examined.",
+    );
   else
     limitations.push(
       "Bidcraft has not automatically read the linked PDF contents. Review the actual documents.",
@@ -233,6 +295,7 @@ export function evaluateRealityCheck(
     !sourceCurrent ||
     detail.deadlineConflict ||
     stale ||
+    documentsInvalid ||
     !detail.documents.length
   ) {
     state = "insufficient_source_information";
