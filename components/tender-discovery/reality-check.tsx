@@ -31,6 +31,8 @@ import {
   sourceChanges,
   sourceFingerprint,
   supplierContext,
+  rememberReviewedDocument,
+  validDocumentSnapshots,
   type Answer,
   type RecordedRequirement,
   type RequirementKind,
@@ -38,12 +40,19 @@ import {
   type SupplierProfile,
 } from "@/lib/suitability/model";
 import {
-  readRealityCheck,
+  readRealityCheckState,
   readRealityEntry,
   readSupplierProfile,
   writeRealityCheck,
   writeSupplierProfile,
 } from "@/lib/suitability/storage";
+import { DocumentReview } from "./document-review";
+import {
+  invalidateDocumentAssessment,
+  isReviewedDocumentSnapshot,
+  type DocumentCandidate,
+  type ReviewedDocumentSnapshot,
+} from "@/lib/suitability/document-review";
 
 const provinces = [
   "Eastern Cape",
@@ -94,11 +103,14 @@ export function TenderRealityCheck({ id }: { id: string }) {
   const [check, setCheck] = useState<RealityCheck>(() => emptyCheck(id));
   const [screen, setScreen] = useState<Screen>("result");
   const [message, setMessage] = useState("");
+  const [storageWarning, setStorageWarning] = useState("");
+  const [recoveryRaw, setRecoveryRaw] = useState<string | null>(null);
   const [newLabel, setNewLabel] = useState("");
   const [newExcerpt, setNewExcerpt] = useState("");
   const [newUrl, setNewUrl] = useState("");
   const [newPage, setNewPage] = useState("");
   const [newKind, setNewKind] = useState<RequirementKind>("mandatory");
+  const [documentSource, setDocumentSource] = useState("");
 
   useEffect(() => {
     // Browser storage is not available to the server render. Hydrate in a cancellable
@@ -107,7 +119,10 @@ export function TenderRealityCheck({ id }: { id: string }) {
     queueMicrotask(() => {
       if (cancelled) return;
       const entry = readRealityEntry(id);
-      const previous = readRealityCheck(id);
+      const restored = readRealityCheckState(id);
+      const previous = restored.check;
+      setStorageWarning(restored.warning);
+      setRecoveryRaw(restored.originalRaw);
       setNotice(entry.notice);
       setDetail(entry.detail || previous.sourceSnapshot || null);
       setCheck(previous);
@@ -151,6 +166,76 @@ export function TenderRealityCheck({ id }: { id: string }) {
   const title = notice?.title || "Tender details unavailable";
   const mandatory = decision.criteria.filter((c) => c.kind === "mandatory");
   const fromSource = detail?.documents ?? [];
+  const noticeSource = detail?.sourceUrl || notice?.sourceUrl || "";
+  const reviewSource = documentSource || noticeSource;
+  const previousDocument = [...(check.documentSnapshots ?? [])]
+    .reverse()
+    .find((snapshot) => snapshot.sourceUrl === reviewSource);
+  const retainedRequirements = check.manualRequirements.filter(
+    (requirement) => !previousDocument || requirement.documentHash !== previousDocument.sha256,
+  );
+
+  const approveDocumentReview = (
+    candidates: DocumentCandidate[],
+    snapshot: ReviewedDocumentSnapshot,
+  ) => {
+    if (
+      !isReviewedDocumentSnapshot(snapshot) ||
+      snapshot.sourceUrl !== reviewSource ||
+      !snapshot.reviewedAt ||
+      candidates.length > 40 ||
+      new Set(candidates.map((candidate) => candidate.id)).size !== candidates.length ||
+      candidates.some(
+        (candidate) =>
+          !/^manual-[a-f0-9-]{12,}$/.test(candidate.id) ||
+          !candidate.label.trim() ||
+          candidate.label.length > 180 ||
+          !["mandatory", "submission", "evaluation"].includes(candidate.kind) ||
+          candidate.sourceUrl !== snapshot.sourceUrl ||
+          candidate.documentHash !== snapshot.sha256 ||
+          candidate.excerpt.trim().length < 12 ||
+          candidate.excerpt.length > 1500 ||
+          !Number.isInteger(candidate.pageNumber) ||
+          candidate.page !== String(candidate.pageNumber) ||
+          !snapshot.pages
+            .find((page) => page.page === candidate.pageNumber)
+            ?.text.includes(candidate.excerpt),
+      )
+    )
+      throw new Error("Review valid source passages and their page references before saving.");
+    const unique = [...retainedRequirements];
+    for (const candidate of candidates) {
+      if (
+        !unique.some(
+          (item) =>
+            item.sourceUrl === candidate.sourceUrl &&
+            item.page === candidate.page &&
+            item.excerpt === candidate.excerpt &&
+            item.kind === candidate.kind,
+        )
+      ) {
+        const { pageNumber: _pageNumber, ...record } = candidate;
+        unique.push({ ...record, label: record.label.trim() });
+      }
+    }
+    if (unique.length > 40)
+      throw new Error("An assessment supports up to 40 requirements. Keep fewer passages.");
+    const next: RealityCheck = {
+      ...invalidateDocumentAssessment(check),
+      manualRequirements: unique,
+      documentSnapshots: rememberReviewedDocument(check.documentSnapshots, snapshot),
+    };
+    if (detail && !next.sourceFingerprint) {
+      next.sourceFingerprint = sourceFingerprint(detail);
+      next.sourceSnapshot = detail;
+    }
+    // Storage must succeed before replacing the visible assessment or discarding its answers.
+    writeRealityCheck(next);
+    setCheck(next);
+    setMessage(
+      "PDF review saved locally. Previous assessment answers were cleared; assess the current pack again.",
+    );
+  };
 
   const changeCheck = (patch: Partial<RealityCheck>) => {
     const next = { ...check, ...patch };
@@ -159,6 +244,8 @@ export function TenderRealityCheck({ id }: { id: string }) {
       next.sourceSnapshot = detail;
     }
     try {
+      if (!validDocumentSnapshots(next.documentSnapshots))
+        throw new Error("Unsupported PDF review.");
       writeRealityCheck(next);
       setCheck(next);
       setMessage("Saved in this browser.");
@@ -313,9 +400,20 @@ export function TenderRealityCheck({ id }: { id: string }) {
           " | " +
           c.url +
           (c.page ? " | page " + c.page : "") +
+          (c.documentHash ? " | local PDF SHA-256 " + c.documentHash : "") +
           " | " +
           c.excerpt,
       );
+    if (check.documentSnapshots?.length) {
+      lines.push("", "## Reviewed local PDF snapshots");
+      for (const snapshot of check.documentSnapshots)
+        lines.push(
+          `- ${snapshot.fileName} | source ${snapshot.sourceUrl} | reviewed ${snapshot.reviewedAt} | ${snapshot.pages.length} pages | SHA-256 ${snapshot.sha256}`,
+        );
+      lines.push(
+        "Hashes identify the selected local files; they do not authenticate official origin.",
+      );
+    }
     lines.push(
       "",
       "Source and supplier details must be independently checked. This does not verify eligibility, file a tender or send alerts.",
@@ -365,6 +463,36 @@ export function TenderRealityCheck({ id }: { id: string }) {
           <span>Closes {formatTenderDate(notice?.closesAt || null, true)} SAST</span>
         </div>
       </header>
+      {(storageWarning || recoveryRaw) && (
+        <section
+          className={card + " space-y-3 border-amber-400/50"}
+          aria-label="Saved data recovery"
+        >
+          {storageWarning && (
+            <p role="alert" className="text-sm leading-7">
+              {storageWarning}
+            </p>
+          )}
+          {recoveryRaw && (
+            <button
+              type="button"
+              className={secondary}
+              onClick={() => {
+                const url = URL.createObjectURL(
+                  new Blob([recoveryRaw], { type: "application/json" }),
+                );
+                const link = document.createElement("a");
+                link.href = url;
+                link.download = "bidcraft-assessment-recovery.json";
+                link.click();
+                window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+              }}
+            >
+              Download original saved recovery data
+            </button>
+          )}
+        </section>
+      )}
       {network !== "ready" && (
         <div
           role="status"
@@ -699,9 +827,9 @@ export function TenderRealityCheck({ id }: { id: string }) {
               <section className={card + " space-y-3"}>
                 <h2 className="text-lg font-bold">Mandatory and supporting requirements</h2>
                 <p className="text-sm leading-7 text-neutral-600 dark:text-neutral-300">
-                  Treasury notice fields are separate from the tender PDF. Only requirements you
-                  manually record from the source pack appear below; the app does not automatically
-                  analyse or verify linked PDFs.
+                  Treasury notice fields are separate from the tender PDF. Record passages yourself
+                  or explicitly review a local PDF below. Source association and supplier answers
+                  require your confirmation; the app does not independently verify the pack.
                 </p>
                 {detail?.conditions && (
                   <details className="rounded-xl bg-[#F8F6EF] p-3 dark:bg-[#101714]">
@@ -745,7 +873,9 @@ export function TenderRealityCheck({ id }: { id: string }) {
                       <p>
                         {c.source === "notice_metadata"
                           ? "Source: Treasury listing metadata. Original PDF has not been examined."
-                          : "Source: supplier-transcribed excerpt. Bidcraft has not validated the document text."}
+                          : c.documentHash
+                            ? "Source: local PDF passage selected and reviewed by you. The file hash identifies local bytes, not official authenticity."
+                            : "Source: supplier-transcribed excerpt. Bidcraft has not validated the document text."}
                         {c.page ? " · Page " + c.page : ""}
                       </p>
                       {officialRequirementLink(c.url) && (
@@ -796,6 +926,53 @@ export function TenderRealityCheck({ id }: { id: string }) {
                     </div>
                   </details>
                 ))}
+              </section>
+              <section className={card + " space-y-3"}>
+                <label className="block space-y-1 text-xs font-bold">
+                  Official source associated with the local PDF
+                  <select
+                    className={input}
+                    value={reviewSource}
+                    onChange={(event) => setDocumentSource(event.target.value)}
+                  >
+                    {Array.from(
+                      new Set([noticeSource, ...fromSource.map((document) => document.url)]),
+                    )
+                      .filter(officialRequirementLink)
+                      .map((url) => (
+                        <option key={url} value={url}>
+                          {url === noticeSource
+                            ? "Official tender notice"
+                            : fromSource.find((document) => document.url === url)?.title ||
+                              "Official attachment"}
+                        </option>
+                      ))}
+                  </select>
+                </label>
+                <DocumentReview
+                  key={id + ":" + reviewSource}
+                  sourceUrl={reviewSource}
+                  existing={previousDocument}
+                  remainingSlots={40 - retainedRequirements.length}
+                  onApprove={approveDocumentReview}
+                />
+                {!!check.documentSnapshots?.length && (
+                  <details className="text-xs leading-6">
+                    <summary className="min-h-11 cursor-pointer font-bold">
+                      Saved local document reviews
+                    </summary>
+                    <p>
+                      Up to three recent snapshots and 200,000 text characters are retained per
+                      assessment.
+                    </p>
+                    {check.documentSnapshots.map((snapshot) => (
+                      <p className="break-words" key={snapshot.sha256 + snapshot.sourceUrl}>
+                        {snapshot.fileName} · {snapshot.pages.length} pages · reviewed{" "}
+                        {snapshot.reviewedAt} · SHA-256 {snapshot.sha256}
+                      </p>
+                    ))}
+                  </details>
+                )}
               </section>
               <section className={card + " space-y-3"}>
                 <h2 className="text-base font-bold">Record a requirement from the original pack</h2>
