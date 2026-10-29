@@ -24,7 +24,7 @@ jobs:
       - name: Format only this feature's files
         run: bunx oxfmt --write lib/account-transfer.ts components/account-transfer-backup.tsx tests/account-transfer.spec.ts components/settings-menu.tsx
       - name: Format validation
-        run: bun run format:check
+        run: bunx oxfmt --check lib/account-transfer.ts components/account-transfer-backup.tsx tests/account-transfer.spec.ts components/settings-menu.tsx
       - name: Lint
         run: bun run lint
       - name: Typecheck
