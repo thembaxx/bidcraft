@@ -27,7 +27,9 @@ test("refuses invalid, duplicate, truncated or oversized data instead of silentl
   expect(previewAccountTransfer(null).status).toBe("empty");
   expect(previewAccountTransfer("{not json").status).toBe("invalid");
   expect(previewAccountTransfer(JSON.stringify([project, project])).status).toBe("invalid");
-  expect(previewAccountTransfer(JSON.stringify([project, { id: "partial" }])).status).toBe("invalid");
+  expect(previewAccountTransfer(JSON.stringify([project, { id: "partial" }])).status).toBe(
+    "invalid",
+  );
   expect(previewAccountTransfer("x".repeat(5 * 1024 * 1024 + 1)).status).toBe("invalid");
 });
 
