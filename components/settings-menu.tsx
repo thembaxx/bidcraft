@@ -16,6 +16,7 @@ import {
   Sun,
 } from "@phosphor-icons/react";
 import { PWAInstallControl, usePWAStatus } from "@/components/pwa-controls";
+import { AccountTransferBackup } from "@/components/account-transfer-backup";
 import { ONBOARDING_REPLAY_EVENT } from "@/lib/onboarding";
 import {
   setThemePreference,
@@ -169,6 +170,8 @@ export function SettingsMenu() {
                 Saved bids stay in this browser. Live discovery and AI need a connection.
               </p>
             </section>
+            <div className="my-4 h-px bg-neutral-200 dark:bg-neutral-700" />
+            <AccountTransferBackup />
             <div className="my-4 h-px bg-neutral-200 dark:bg-neutral-700" />
             <nav aria-label="Help and policies" className="space-y-0.5">
               <p className="mb-2 text-[11px] font-bold uppercase tracking-[.12em] text-neutral-500 dark:text-neutral-400">
