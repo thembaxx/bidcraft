@@ -80,7 +80,9 @@ test("browser PDF worker extracts an original local PDF with source-cited passag
     buffer: makePdfFixture(),
   });
   await expect(page.getByText("requirements.pdf · 1 pages")).toBeVisible({ timeout: 15000 });
-  await expect(page.getByText("A signed supplier declaration is required.")).toBeVisible();
+  await expect(
+    page.getByRole("article").getByText("A signed supplier declaration is required."),
+  ).toBeVisible();
   await expect(page.getByText(/Local file SHA-256:/)).toBeVisible();
   expect(errors).toEqual([]);
 });
