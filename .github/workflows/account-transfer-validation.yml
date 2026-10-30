@@ -2,11 +2,11 @@ name: Account transfer validation
 on:
   pull_request:
     paths:
-      - '.github/workflows/account-transfer-validation.yml'
-      - 'lib/account-transfer.ts'
-      - 'components/account-transfer-backup.tsx'
-      - 'components/settings-menu.tsx'
-      - 'tests/account-transfer.spec.ts'
+      - ".github/workflows/account-transfer-validation.yml"
+      - "lib/account-transfer.ts"
+      - "components/account-transfer-backup.tsx"
+      - "components/settings-menu.tsx"
+      - "tests/account-transfer.spec.ts"
   workflow_dispatch:
 permissions:
   contents: read
@@ -21,7 +21,7 @@ jobs:
       - uses: oven-sh/setup-bun@v2
       - uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: "22"
       - run: bun install --frozen-lockfile --ignore-scripts
       - name: Check account transfer file formatting
         run: bunx oxfmt --check lib/account-transfer.ts components/account-transfer-backup.tsx components/settings-menu.tsx tests/account-transfer.spec.ts
