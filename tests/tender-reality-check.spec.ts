@@ -43,6 +43,50 @@ const detail: TenderDetail = {
   deadlineConflict: false,
 };
 
+/** Minimal original one-page PDF: exercise actual pdf.js worker decoding, not a mock. */
+function makePdfFixture() {
+  const text = "BT /F1 12 Tf 72 720 Td (A signed supplier declaration is required.) Tj ET";
+  const objects = [
+    "<< /Type /Catalog /Pages 2 0 R >>",
+    "<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
+    "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>",
+    "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>",
+    `<< /Length ${Buffer.byteLength(text)} >>\nstream\n${text}\nendstream`,
+  ];
+  let pdf = "%PDF-1.4\n";
+  const offsets: number[] = [];
+  for (const [index, object] of objects.entries()) {
+    offsets.push(Buffer.byteLength(pdf));
+    pdf += `${index + 1} 0 obj\n${object}\nendobj\n`;
+  }
+  const startXref = Buffer.byteLength(pdf);
+  pdf += "xref\n0 6\n0000000000 65535 f \n";
+  pdf += offsets.map((offset) => `${String(offset).padStart(10, "0")} 00000 n \n`).join("");
+  pdf += "trailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n" + startXref + "\n%%EOF\n";
+  return Buffer.from(pdf);
+}
+
+test("browser PDF worker extracts an original local PDF with source-cited passages", async ({
+  page,
+}) => {
+  const errors: string[] = [];
+  page.on("pageerror", (error) => errors.push(error.message));
+  await page.route("**/api/tenders/1001", (route) => route.fulfill({ json: detail }));
+  await page.goto("/tenders/check/1001");
+  await page.getByRole("button", { name: "Requirements", exact: true }).click();
+  await page.locator('input[type="file"][accept*=".pdf"]').setInputFiles({
+    name: "requirements.pdf",
+    mimeType: "application/pdf",
+    buffer: makePdfFixture(),
+  });
+  await expect(page.getByText("requirements.pdf · 1 pages")).toBeVisible({ timeout: 15000 });
+  await expect(
+    page.getByRole("article").getByText("A signed supplier declaration is required."),
+  ).toBeVisible();
+  await expect(page.getByText(/Local file SHA-256:/)).toBeVisible();
+  expect(errors).toEqual([]);
+});
+
 test("assessment rules distinguish missing sources, self-report, blockers and reviewed potential fit", () => {
   const base = emptyCheck(notice.id);
   expect(evaluateRealityCheck(notice, null, base, false).state).toBe(

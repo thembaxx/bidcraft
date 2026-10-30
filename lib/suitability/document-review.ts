@@ -172,10 +172,10 @@ export async function extractDocumentPDF(
     .join("");
   const pdf = await import("pdfjs-dist");
   check();
-  pdf.GlobalWorkerOptions.workerSrc = new URL(
-    "pdfjs-dist/build/pdf.worker.min.mjs",
-    import.meta.url,
-  ).toString();
+  // Resolve the Webpack-managed worker only in the browser. Playwright imports the
+  // pure validation helpers in Node, where import.meta is not supported by its loader.
+  const { pdfWorkerUrl } = await import("./pdf-worker-url");
+  pdf.GlobalWorkerOptions.workerSrc = pdfWorkerUrl();
   const task = pdf.getDocument({ data });
   let destroyed: Promise<void> | undefined;
   const destroy = () => (destroyed ??= task.destroy());
