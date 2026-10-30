@@ -19,6 +19,7 @@
     "public/sw.js",
     "public/sw-assets.json",
     "public/voice-runtime/**",
+    "public/vision/**",
     "public/models/**",
     "bun.lock",
     "package-lock.json",
