@@ -144,6 +144,7 @@ export function VectorCore3D() {
     let reducedMotion = preference.matches;
     const onMotionChange = () => {
       reducedMotion = preference.matches;
+      syncLoop();
       draw();
     };
     preference.addEventListener("change", onMotionChange);
@@ -160,6 +161,7 @@ export function VectorCore3D() {
     observer.observe(container);
     const intersection = new IntersectionObserver(([entry]) => {
       visible = entry.isIntersecting;
+      syncLoop();
     });
     intersection.observe(container);
     const pointerMove = (event: PointerEvent) => {
@@ -178,13 +180,14 @@ export function VectorCore3D() {
       if (!disposed) renderer.render(scene, camera);
     }
     function animate(time: number) {
-      if (disposed) return;
-      frame = requestAnimationFrame(animate);
+      frame = 0;
+      if (disposed || !visible || document.hidden || reducedMotion) return;
+      if (time - lastTime < 1000 / 30) {
+        frame = requestAnimationFrame(animate);
+        return;
+      }
       const delta = Math.min((time - lastTime) / 1000, 0.1);
-      if (time - lastTime < 1000 / 30) return;
       lastTime = time;
-      if (!visible || document.hidden) return;
-      if (reducedMotion) return;
       if (playingRef.current) elapsed += delta;
       root.rotation.y = THREE.MathUtils.damp(
         root.rotation.y,
@@ -208,9 +211,23 @@ export function VectorCore3D() {
       );
       orbit.rotation.y = elapsed * 0.07;
       draw();
+      frame = requestAnimationFrame(animate);
     }
+    function syncLoop() {
+      if (disposed) return;
+      if (visible && !document.hidden && !reducedMotion) {
+        if (!frame) {
+          lastTime = performance.now();
+          frame = requestAnimationFrame(animate);
+        }
+      } else {
+        cancelAnimationFrame(frame);
+        frame = 0;
+      }
+    }
+    document.addEventListener("visibilitychange", syncLoop);
     resize();
-    frame = requestAnimationFrame(animate);
+    syncLoop();
     const readyFrame = requestAnimationFrame(() => setHas3D(true));
     return () => {
       disposed = true;
@@ -218,6 +235,7 @@ export function VectorCore3D() {
       cancelAnimationFrame(frame);
       observer.disconnect();
       intersection.disconnect();
+      document.removeEventListener("visibilitychange", syncLoop);
       preference.removeEventListener("change", onMotionChange);
       container.removeEventListener("pointermove", pointerMove);
       container.removeEventListener("pointerleave", pointerLeave);
