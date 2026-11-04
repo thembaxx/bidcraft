@@ -3,6 +3,7 @@ import { Urbanist, JetBrains_Mono } from "next/font/google";
 import { getSiteUrl, site } from "@/lib/site";
 import { iosSplashLinks } from "@/lib/pwa-splash";
 import "./globals.css";
+import "./mobile-dashboard.css";
 import { LegalFooter } from "@/components/legal/legal-footer";
 import { AppClientSetup } from "@/components/theme-preference";
 import { OnboardingExperience } from "@/components/onboarding-experience";
