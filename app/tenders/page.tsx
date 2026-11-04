@@ -7,6 +7,7 @@ import TenderDiscovery from "@/components/tender-discovery/discovery";
 import { MobileGlobalNav } from "@/components/mobile-global-nav";
 import { getSiteUrl } from "@/lib/site";
 import "@/components/tender-discovery/discovery.css";
+import "@/components/tender-discovery/mobile-legibility.css";
 import { ScrollReveal } from "@/components/ui/scroll-reveal";
 
 export const metadata: Metadata = {
