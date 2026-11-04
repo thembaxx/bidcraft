@@ -1,0 +1,53 @@
+/* Tender discovery: readable deadlines, predictable filters and touch-friendly actions.
+   Complements the existing EasyButton and discovery styles without new dependencies. */
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+.discovery-page :is(.discovery-layout, .discovery-results, .discovery-notice, .discovery-filters) {
+  min-width: 0;
+}
+.discovery-page :is(.discovery-notice h3, .discovery-buyer, .discovery-source, .discovery-detail-facts) {
+  overflow-wrap: anywhere;
+}
+.discovery-page .discovery-notice-meta {
+  font-size: 12px;
+  line-height: 1.55;
+}
+.discovery-page .discovery-notice h3 {
+  font-size: clamp(16px, 1.5vw, 19px);
+  line-height: 1.35;
+}
+.discovery-page :is(.discovery-query input, .discovery-sort select, .discovery-filter-fields select) {
+  font-size: 16px;
+}
+.discovery-page :is(.discovery-filter-toggle, .discovery-reset, .discovery-bookmark, .discovery-pagination button) {
+  min-height: 44px;
+}
+@media (max-width: 680px) {
+  .discovery-page :is(.discovery-site-header, .discovery-main) {
+    padding-inline: max(16px, env(safe-area-inset-left)) max(16px, env(safe-area-inset-right));
+  }
+  .discovery-page .discovery-notice-meta {
+    gap: 8px 14px;
+  }
+  .discovery-page .discovery-notice-meta > span {
+    min-width: 0;
+  }
+  .discovery-page .discovery-search-bar {
+    min-width: 0;
+  }
+  .discovery-page .discovery-query {
+    min-width: 0;
+  }
+  .discovery-page .discovery-query input {
+    min-width: 0;
+    width: 100%;
+    font-size: 16px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .discovery-page :is(.discovery-notice, .discovery-primary, .discovery-secondary) {
+    transition: none;
+  }
+}
