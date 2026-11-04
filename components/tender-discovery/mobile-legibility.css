@@ -5,12 +5,8 @@
   text-size-adjust: 100%;
 }
 
-.discovery-page :is(
-  .discovery-notice,
-  .discovery-filters,
-  .discovery-results,
-  .discovery-search-bar
-) {
+.discovery-page
+  :is(.discovery-notice, .discovery-filters, .discovery-results, .discovery-search-bar) {
   min-width: 0;
 }
 
@@ -19,11 +15,8 @@
 }
 
 @media (pointer: coarse), (max-width: 680px) {
-  .discovery-page :is(
-    input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
-    select,
-    textarea
-  ) {
+  .discovery-page
+    :is(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]), select, textarea) {
     font-size: 16px;
   }
 
@@ -43,13 +36,14 @@
     gap: 8px 14px;
   }
 
-  .discovery-page :is(
-    .discovery-filter-toggle,
-    .discovery-chips button,
-    .discovery-pagination button,
-    .discovery-bookmark,
-    .discovery-notice h3 button
-  ) {
+  .discovery-page
+    :is(
+      .discovery-filter-toggle,
+      .discovery-chips button,
+      .discovery-pagination button,
+      .discovery-bookmark,
+      .discovery-notice h3 button
+    ) {
     min-height: 44px;
   }
 
