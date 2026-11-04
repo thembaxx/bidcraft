@@ -180,3 +180,12 @@ button:disabled {
     font-size: 16px !important;
   }
 }
+
+/* Installed PWA: retain the branded canvas behind browserless OS chrome.
+   Avoid blanket top padding: iOS default status-bar mode already reserves it. */
+@media (display-mode: standalone) {
+  html { background: var(--brand-paper); scroll-padding-top: env(safe-area-inset-top, 0px); }
+  html.dark { background: #0d0f0e; }
+  body { min-height: 100dvh; padding-bottom: env(safe-area-inset-bottom, 0px); }
+  .skip-link:focus { top: calc(1rem + env(safe-area-inset-top, 0px)); }
+}
