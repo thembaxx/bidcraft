@@ -1,0 +1,90 @@
+/* Mobile tender discovery: readable search and scannable evidence-first cards.
+   Existing EasyButton, results logic, provenance and state remain unchanged. */
+.discovery-page {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+.discovery-page
+  :is(.discovery-notice, .discovery-filters, .discovery-results, .discovery-search-bar) {
+  min-width: 0;
+}
+
+.discovery-page :is(.discovery-notice h3, .discovery-buyer, .discovery-notice-meta) {
+  overflow-wrap: anywhere;
+}
+
+@media (pointer: coarse), (max-width: 680px) {
+  .discovery-page
+    :is(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]), select, textarea) {
+    font-size: 16px;
+  }
+
+  .discovery-page .discovery-query input {
+    font-size: 16px;
+    line-height: 1.5;
+  }
+
+  .discovery-page .discovery-notice h3 {
+    font-size: 16px;
+    line-height: 1.5;
+  }
+
+  .discovery-page .discovery-notice-meta {
+    font-size: 12px;
+    line-height: 1.5;
+    gap: 8px 14px;
+  }
+
+  .discovery-page
+    :is(
+      .discovery-filter-toggle,
+      .discovery-chips button,
+      .discovery-pagination button,
+      .discovery-bookmark,
+      .discovery-notice h3 button
+    ) {
+    min-height: 44px;
+  }
+
+  .discovery-page .discovery-notice-kicker {
+    gap: 8px;
+  }
+
+  .discovery-page .discovery-pagination {
+    flex-wrap: wrap;
+    row-gap: 12px;
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 400px) {
+  .discovery-page .discovery-search-bar {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .discovery-page .discovery-query {
+    flex-basis: 100%;
+    padding-block: 4px;
+  }
+
+  .discovery-page .discovery-search-bar > button {
+    flex: 1 1 100%;
+    justify-content: center;
+  }
+
+  .discovery-page .discovery-notice {
+    padding: 18px 16px;
+  }
+
+  .discovery-page .discovery-results-heading {
+    row-gap: 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .discovery-page .discovery-search-bar {
+    transition: none;
+  }
+}

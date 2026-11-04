@@ -60,7 +60,7 @@ export function DiscoverySearch({
             name="q"
             defaultValue={filters.q}
             maxLength={180}
-            placeholder="What does your business do? Try solar, cleaning, IT…"
+            placeholder="Search skills, services or tenders…"
           />
         </label>
         <EasyButton
